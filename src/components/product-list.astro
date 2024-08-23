@@ -1,0 +1,23 @@
+---
+import { getAllProducts } from "@lib/contentful";
+
+import Product from "@components/product.astro";
+import Section from "./ui/section.astro";
+
+const products = await getAllProducts();
+---
+
+<Section sectionId="products" title="Produktai" mode="light">
+  {
+    products.map(({ fields: { title, variants, features, slug } }) => {
+      return (
+        <Product
+          title={title}
+          variants={variants}
+          features={features}
+          slug={slug}
+        />
+      );
+    })
+  }
+</Section>

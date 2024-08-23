@@ -1,0 +1,58 @@
+---
+import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
+import { getAboutUs } from "@src/lib/contentful";
+import { options } from "@lib/contentful";
+import Section from "./ui/section.astro";
+
+const response = await getAboutUs();
+---
+
+<Section sectionId="about" title="Apie mus" mode="light">
+  {
+    response && (
+      <article
+        set:html={documentToHtmlString(response.fields.content, options)}
+      />
+    )
+  }
+</Section>
+
+<style>
+  #about {
+    padding-bottom: var(--default-spacing);
+  }
+
+  #about article {
+    display: flex;
+  }
+
+  #about article > * {
+    flex: 1;
+  }
+
+  /* MEDIA QUERIES */
+
+  /* 800px */
+  @media only screen and (max-width: 50em) {
+    #about article {
+      flex-direction: column;
+    }
+
+    #about article div {
+      padding-top: var(--default-spacing);
+      border-top: 1px solid var(--color-divider);
+      margin-top: var(--default-spacing);
+    }
+  }
+
+  /* 448px */
+  @media only screen and (max-width: 28em) {
+    article div:nth-child(2) {
+      padding: var(--default-spacing) 1rem;
+    }
+
+    #about article div p {
+      padding: 1rem 3rem;
+    }
+  }
+</style>

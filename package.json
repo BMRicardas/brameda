@@ -7,11 +7,17 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "compile": "tsc",
+    "contentful-typescript-codegen": "contentful-typescript-codegen --output @types/generated/contentful.d.ts"
   },
   "dependencies": {
-    "astro": "^4.11.5",
     "@astrojs/check": "^0.8.1",
+    "@astrojs/tailwind": "^5.1.0",
+    "@contentful/rich-text-html-renderer": "^16.6.1",
+    "astro": "^4.11.5",
+    "astro-robots-txt": "^1.0.0",
+    "contentful": "^10.12.8",
     "typescript": "^5.5.3"
   }
 }

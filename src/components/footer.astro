@@ -1,0 +1,52 @@
+---
+import Container from "./ui/container.astro";
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer>
+  <Container>
+    <div class="container">
+      <p>
+        {currentYear} &copy; UAB „Brameda“ visos teisės saugomos
+      </p>
+      <p>
+        Sprendimas
+        <a
+          href="http://www.ricardas.io"
+          target="_blank"
+          rel="noopener noreferrer">ricardas.io</a
+        >
+      </p>
+    </div>
+  </Container>
+</footer>
+
+<style>
+  footer {
+    background-color: var(--color-grey-dark2);
+  }
+
+  footer .container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  footer p {
+    color: var(--color-white);
+    font-size: 1.5rem;
+    text-align: center;
+    padding: var(--default-spacing) 0 1rem 0;
+  }
+
+  footer a:link,
+  footer a:visited {
+    color: var(--color-grey-light);
+    text-decoration: none;
+  }
+
+  footer a:hover,
+  footer a:active {
+    text-decoration: underline;
+  }
+</style>

@@ -1,0 +1,64 @@
+---
+import Container from "./container.astro";
+
+type Mode = "light" | "dark";
+
+type Props = {
+  sectionId?: string;
+  title?: string;
+  mode?: Mode;
+};
+
+const { sectionId, title, mode = "light" }: Props = Astro.props;
+---
+
+<section
+  id={sectionId}
+  class:list={mode === "light" ? "section" : "section dark"}>
+  <Container>
+    {
+      title && (
+        <h2 class:list={mode === "light" ? "title" : "title dark"}>{title}</h2>
+      )
+    }
+    <slot />
+  </Container>
+</section>
+
+<style>
+  .section {
+    background-color: var(--color-white);
+    color: var(--color-grey-dark2);
+    padding-bottom: var(--default-spacing);
+
+    &.dark {
+      background-color: var(--color-grey-dark2);
+      color: var(--color-grey-light2);
+    }
+  }
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: var(--default-spacing) 0;
+    display: flex;
+    align-items: center;
+
+    &::after {
+      content: "";
+      flex: 1;
+      margin-left: 1.5rem;
+      height: 1px;
+      background-color: var(--color-divider);
+    }
+
+    &.dark {
+      color: var(--color-grey-light2);
+
+      &::after {
+        background-color: var(--color-grey-light);
+      }
+    }
+  }
+</style>

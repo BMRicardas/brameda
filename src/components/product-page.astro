@@ -1,0 +1,295 @@
+---
+import { Image } from "astro:assets";
+
+import Link from "./ui/link.astro";
+import Container from "./ui/container.astro";
+import Section from "./ui/section.astro";
+import type { Asset } from "contentful";
+import type { TypeVariantSkeleton } from "@src/types/contentful-types";
+import Button from "./ui/button.astro";
+import ContactForm from "./contact-form.astro";
+
+type Props = {
+  title: string;
+  variants: TypeVariantSkeleton[];
+  description: string;
+  specifications: object;
+  embeddedYouTubeLink: string;
+};
+
+const {
+  title,
+  variants,
+  description,
+  specifications,
+  embeddedYouTubeLink,
+}: Props = Astro.props;
+
+const mainImageSrc = "https:" + variants[0]?.fields?.image?.fields?.file?.url;
+---
+
+<main id="main">
+  <Container>
+    <Section title="Produktai">
+      <section id="product" class="container">
+        <article>
+          <div class="product__media">
+            <div class="product__img">
+              <Image
+                src={mainImageSrc}
+                id="product__thumbs--current"
+                alt="Avalynę padengiantys įrenginiai"
+                class="main-image"
+                inferSize
+              />
+            </div>
+
+            <ul class="product__thumbs">
+              {
+                variants
+                  ? variants.map((variant) => {
+                      const imageSrc =
+                        "https:" + variant?.fields?.image?.fields?.file?.url;
+                      const color = variant.fields.color;
+
+                      return (
+                        <li class="product__thumbs__img-container">
+                          <Image
+                            src={imageSrc}
+                            alt="Avalynę padengiantys įrenginiai"
+                            class="product__thumbs__img"
+                            data-color={color}
+                            inferSize
+                          />
+                        </li>
+                      );
+                    })
+                  : null
+              }
+            </ul>
+
+            {
+              embeddedYouTubeLink && (
+                <div class="product__video">
+                  <iframe
+                    src={embeddedYouTubeLink}
+                    frameborder="0"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                  />
+                </div>
+              )
+            }
+          </div>
+
+          <h3 class="product__title">{title}</h3>
+
+          <div class="product__desc">
+            <p>
+              {description}
+            </p>
+          </div>
+
+          <ul class="product__specs">
+            <li>
+              <p>Spalva</p>
+              <p id="color">{variants[0]?.fields.color}</p>
+            </li>
+            {
+              Object.entries(specifications).map(([key, value]) => {
+                return (
+                  <li>
+                    <p>{key}</p>
+                    <p>{value}</p>
+                  </li>
+                );
+              })
+            }
+          </ul>
+          <div class="product__back">
+            <Link href="/" linkType="internal">Atgal</Link>
+          </div>
+        </article>
+      </section>
+    </Section>
+  </Container>
+</main>
+
+<style>
+  #product article {
+    margin-bottom: var(--default-spacing);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto 1fr auto;
+    align-items: start;
+    grid-gap: 5rem;
+    grid-template-areas:
+      "media title"
+      "media desc"
+      "media specs"
+      "media back";
+  }
+
+  #product article .product__media {
+    grid-area: media;
+  }
+
+  #product article .product__img {
+    grid-area: img;
+    background: var(--color-grey-light);
+    border-radius: 15px;
+    margin-bottom: 1.5rem;
+    width: 100%; /* Adjust as needed */
+    overflow: hidden; /* Hides any overflow content */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & .main-image {
+      width: 100%;
+      height: 100%;
+      max-height: 38.8rem;
+      object-fit: contain;
+      padding: var(--default-spacing);
+    }
+  }
+
+  #product article .product__img #product__thumbs--current {
+    padding: 0.5rem var(--default-spacing);
+    margin: auto;
+    max-width: 100%;
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  #product article .product__thumbs {
+    grid-area: thumbs;
+    display: grid;
+    grid-gap: 1.5rem;
+    grid-template-columns: repeat(4, 1fr);
+    list-style: none;
+  }
+
+  #product article .product__thumbs li {
+    background: var(--color-grey-light);
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background 0.2s ease-out;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #product article .product__thumbs li:hover {
+    background: var(--color-divider);
+  }
+
+  #product .product__thumbs__img {
+    padding: 1rem;
+    width: 100%;
+    height: 100%;
+    max-height: 11rem;
+    object-fit: contain;
+  }
+
+  #product article .product__desc {
+    grid-area: desc;
+  }
+
+  #product article .product__title {
+    grid-area: title;
+    font-size: 4rem;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  #product article .product__desc > p {
+    /* padding: var(--default-spacing) 0; */
+  }
+
+  #product article .product__desc ul {
+    list-style: none;
+    padding-bottom: var(--default-spacing);
+  }
+
+  #product article .product__desc ul li {
+    padding-bottom: 1.5rem;
+  }
+
+  #product article .product__specs {
+    grid-area: specs;
+  }
+
+  #product article .product__specs li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+  }
+
+  #product article .product__specs li:not(:last-child) {
+    border-bottom: 1px solid var(--color-divider);
+  }
+
+  #product article .product__video {
+    grid-area: video;
+    margin-top: 5rem;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+
+  #product article .product__video iframe {
+    display: block;
+    width: 100%;
+    height: 35rem;
+  }
+
+  #product article .product__back {
+    grid-area: back;
+  }
+
+  /* MEDIA QUERIES */
+
+  /* 800px */
+  @media only screen and (max-width: 50em) {
+    #product article {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      grid-template-areas:
+        "title"
+        "desc"
+        "media"
+        "specs"
+        "back";
+    }
+  }
+</style>
+
+<script>
+  const imgElements = document.querySelectorAll("img[data-color]");
+
+  imgElements.forEach((imgElement) => {
+    imgElement.addEventListener("click", () => {
+      const colorValue = imgElement.getAttribute("data-color");
+
+      const colorElement = document.getElementById("color");
+
+      if (colorElement) {
+        colorElement.textContent = colorValue;
+      }
+    });
+  });
+
+  const current = document.querySelector(
+    "#product__thumbs--current"
+  ) as HTMLImageElement;
+  const thumbs = document.querySelectorAll(".product__thumbs img");
+
+  const thumbClick = (e: any) => {
+    current.src = e.target.src;
+  };
+
+  thumbs.forEach((thumb) => thumb.addEventListener("click", thumbClick));
+</script>

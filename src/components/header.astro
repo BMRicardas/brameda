@@ -1,0 +1,326 @@
+---
+import Container from "./ui/container.astro";
+
+const headerLinks = [
+  {
+    href: "/#products",
+    text: "Produktai",
+  },
+  {
+    href: "/#about",
+    text: "Apie mus",
+  },
+  {
+    href: "/#contacts",
+    text: "Kontaktai",
+  },
+];
+---
+
+<header class="header">
+  <Container>
+    <div class="container">
+      <a href="/" class="branding">
+        <h1>
+          Brameda<span>Pažangūs ergonominiai sprendimai jūsų verslui</span>
+        </h1>
+      </a>
+      <nav class="navigation">
+        <ul id="menu-nav" aria-labelledby="menu-button" aria-hidden={true}>
+          {
+            headerLinks.map((link) => (
+              <li>
+                <a href={link.href}>{link.text}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <button
+        type="button"
+        id="menu-button"
+        aria-label="Menu"
+        aria-haspopup="true"
+        aria-controls="menu-nav"
+        aria-expanded={false}>
+        <span></span>
+      </button>
+    </div>
+  </Container>
+</header>
+
+<style>
+  .header {
+    background-color: var(--color-white);
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 500;
+
+    box-shadow: transparent;
+    transition: var(--scroll-transition);
+
+    animation: scrolledHeader forwards;
+    animation-timeline: view();
+    animation-range-start: 100vh;
+    animation-range-end: 105vh;
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: var(--max-width);
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+
+  .branding:any-link {
+    text-decoration: none;
+    color: #000;
+  }
+
+  .branding h1 {
+    display: block;
+    margin: 0;
+    font-size: 6.9rem;
+    font-weight: 700;
+    line-height: 1;
+    transition: var(--scroll-transition);
+
+    animation: scrolledTitle forwards;
+    animation-timeline: view();
+    animation-range-start: 100vh;
+    animation-range-end: 105vh;
+  }
+
+  .branding h1 span {
+    display: block;
+    margin-top: -0.8rem;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--color-grey-dark2);
+
+    transform: translateY(0);
+    opacity: 1;
+    transition: var(--scroll-transition);
+
+    animation: scrolledSpan forwards;
+    animation-timeline: view();
+    animation-range-start: 100vh;
+    animation-range-end: 105vh;
+  }
+
+  #menu-nav {
+    display: flex;
+    list-style: none;
+    padding: 1rem;
+  }
+
+  #menu-nav li a:any-link {
+    display: block;
+    margin: 0 1.5rem;
+    padding: 0.2rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #000;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-bottom: 2px solid transparent;
+    transition: 0.2s;
+  }
+
+  #menu-nav li a:hover,
+  #menu-nav li a:active {
+    border-bottom: 2px solid #000;
+  }
+
+  #menu-button {
+    display: none;
+  }
+
+  .header.scrolled {
+    box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.15);
+  }
+
+  .header.scrolled h1 {
+    font-size: 4.5rem;
+    font-weight: 700;
+  }
+
+  .header.scrolled h1 span {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @keyframes scrolledHeader {
+    from {
+      box-shadow: transparent;
+    }
+    to {
+      box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  @keyframes scrolledTitle {
+    from {
+      font-size: 6.9rem;
+      font-weight: 700;
+    }
+    to {
+      font-size: 4.5rem;
+      font-weight: 700;
+    }
+  }
+
+  @keyframes scrolledSpan {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+  }
+
+  /* MEDIA QUERIES */
+
+  /* 800px */
+  @media only screen and (max-width: 50em) {
+    #menu-button {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: space-between;
+      position: relative;
+      z-index: 100;
+      width: 3.5rem;
+      height: 2.9rem;
+      padding: 0.5rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      outline: none;
+      transition: 0.2s all ease-out;
+    }
+
+    #menu-button span,
+    #menu-button::before,
+    #menu-button::after {
+      content: "";
+      display: block;
+      height: 3px;
+      background: var(--color-grey-dark2);
+    }
+
+    #menu-button[aria-expanded="true"] {
+      transform: rotate(90deg);
+    }
+
+    #menu-button[aria-expanded="true"]::before {
+      background: var(--color-black);
+      transform: rotate(-45deg) translate(-5px, 6px);
+    }
+
+    #menu-button[aria-expanded="true"] span {
+      opacity: 0;
+    }
+
+    #menu-button[aria-expanded="true"]::after {
+      background: var(--color-black);
+      transform: rotate(45deg) translate(-5px, -6px);
+    }
+
+    #menu-nav {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 50;
+      width: 100vi;
+      height: 100vh;
+      background-color: var(--color-white);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      transform: translateX(100%);
+      transition: 0.3s transform ease-out;
+    }
+
+    #menu-nav[aria-hidden="false"] {
+      transform: translateX(0);
+    }
+
+    #menu-nav li a:any-link {
+      color: var(--color-black);
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 1rem 3rem;
+    }
+
+    #menu-nav li a:hover,
+    #menu-nav li a:active {
+      border-bottom: 2px solid var(--color-black);
+    }
+  }
+</style>
+
+<script>
+  function toggleDrawer() {
+    const body = document.querySelector("body");
+    const menuBtn = document.getElementById("menu-button");
+    const drawer = document.getElementById("menu-nav");
+    const navLinks = document.querySelectorAll("#menu-nav li a");
+
+    let menuOpen = false;
+
+    const drawerToggle = () => {
+      menuOpen = !menuOpen;
+      menuBtn?.setAttribute("aria-expanded", menuOpen ? "true" : "false");
+      drawer?.setAttribute("aria-hidden", menuOpen ? "false" : "true");
+      body?.classList.toggle("scroll-lock", menuOpen);
+    };
+
+    const drawerClose = () => {
+      menuOpen = false;
+      body?.classList.remove("scroll-lock");
+      menuBtn?.setAttribute("aria-expanded", "false");
+      drawer?.setAttribute("aria-hidden", "true");
+    };
+
+    menuBtn?.addEventListener("click", drawerToggle);
+
+    navLinks.forEach((link) => {
+      link?.addEventListener("click", drawerClose);
+    });
+  }
+
+  if (window.scrollY > 1) {
+    document.querySelector(".header")?.classList.add("scrolled");
+  }
+
+  function navOnScroll() {
+    const navBar = document.querySelector(".header");
+    const scrolledFromTop = 1;
+
+    const adjustNavbar = () => {
+      if (window.scrollY > scrolledFromTop) {
+        navBar?.classList.add("scrolled");
+      } else {
+        navBar?.classList.remove("scrolled");
+      }
+    };
+
+    window.addEventListener("scroll", adjustNavbar);
+  }
+
+  function init() {
+    toggleDrawer();
+    // navOnScroll();
+  }
+
+  init();
+</script>

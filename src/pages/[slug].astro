@@ -1,0 +1,29 @@
+---
+import ProductPage from "@src/components/product-page.astro";
+import Layout from "@src/layouts/layout.astro";
+
+import { getAllProducts } from "@lib/contentful";
+
+export async function getStaticPaths() {
+  const items = await getAllProducts();
+
+  return items.map((item) => ({
+    params: {
+      slug: item.fields.slug,
+    },
+    props: {
+      contentTypeId: item.sys.contentType.sys.id,
+      title: item.fields.title,
+      variants: item.fields.variants,
+      description: item.fields.description,
+      specifications: item.fields.specifications as object,
+      embeddedYouTubeLink: item.fields.embeddedYouTubeLink,
+    },
+  }));
+}
+---
+
+<Layout title={Astro.props.title}>
+  <!-- @ts-expect-error -->
+  <ProductPage {...Astro.props} />
+</Layout>

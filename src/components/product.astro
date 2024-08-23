@@ -1,0 +1,128 @@
+---
+import { Image } from "astro:assets";
+import Link from "./ui/link.astro";
+import type { TypeVariantSkeleton } from "@src/types/contentful-types";
+import type { Entry } from "contentful";
+
+type Props = {
+  title: string;
+  // variants: Entry<TypeVariantSkeleton, undefined, string>[];
+  variants: any;
+  features: string[];
+  slug: string;
+};
+
+const { title, variants, features, slug: url }: Props = Astro.props;
+
+const imageSrc = "https:" + variants[0]?.fields?.image?.fields?.file.url;
+---
+
+<article>
+  <a href={url} class="image-container">
+    <Image src={imageSrc} alt={title} inferSize class="image" />
+  </a>
+
+  <div>
+    <h3>{title}</h3>
+    <ul>
+      {
+        features.map((feature, i, a) => {
+          const isLast = i === a.length - 1;
+
+          return (
+            <li>
+              <p>{`${feature}${isLast ? "." : ";"}`}</p>
+            </li>
+          );
+        })
+      }
+    </ul>
+    <Link href={url} linkType="internal"> Skaityti daugiau </Link>
+  </div>
+</article>
+
+<style>
+  article {
+    display: flex;
+    align-items: stretch;
+  }
+
+  article:not(:last-child) {
+    margin-bottom: var(--default-spacing);
+  }
+
+  .image-container {
+    flex: 1;
+    background-color: var(--color-grey-light);
+    border-radius: 15px;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & .image {
+      width: 100%;
+      height: 100%;
+      max-height: 48rem;
+      object-fit: contain;
+      padding: var(--default-spacing);
+    }
+  }
+
+  article > *:nth-child(2) {
+    flex: 1;
+    padding: var(--default-spacing);
+    padding-right: 0;
+  }
+
+  article h3 {
+    font-size: 4rem;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  article ul {
+    list-style: none;
+    padding: var(--default-spacing) 0;
+  }
+
+  article ul li {
+    padding-bottom: 1.5rem;
+  }
+
+  article p {
+    display: flex;
+  }
+
+  /* MEDIA QUERIES */
+
+  /* 800px */
+  @media only screen and (max-width: 50em) {
+    article {
+      flex-direction: column;
+    }
+
+    article div:nth-child(2) {
+      padding-right: var(--default-spacing);
+    }
+
+    article {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      grid-template-areas:
+        "title"
+        "desc"
+        "media"
+        "specs"
+        "back";
+    }
+  }
+
+  /* 448px */
+  @media only screen and (max-width: 28em) {
+    article div:nth-child(2) {
+      padding: var(--default-spacing) 1rem;
+    }
+  }
+</style>
