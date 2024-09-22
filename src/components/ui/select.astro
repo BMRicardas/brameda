@@ -1,0 +1,140 @@
+---
+import type { TypeProductVariantsSkeleton } from "@/types/contentful-types";
+import type { EntryFieldTypes } from "contentful";
+
+type Props = {
+  label?: string;
+  options: EntryFieldTypes.Array<
+    EntryFieldTypes.EntryLink<TypeProductVariantsSkeleton>
+  >;
+};
+
+const { label, options } = Astro.props;
+---
+
+<div class="form-input-select">
+  <label for="select">{label}</label>
+  <select id="select">
+    {
+      // @ts-expect-error
+      options.map((option) => {
+        const color = String(option.fields.color);
+
+        return <option value={color}>{color}</option>;
+      })
+    }
+  </select>
+</div>
+
+<style>
+  :root {
+    --border-width: 1px;
+  }
+
+  select::-ms-expand {
+    display: none;
+  }
+
+  select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    width: 50%;
+  }
+
+  .form-input-select {
+    /* color: var(--color-grey-light2); */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    /* border-radius: 0; */
+    width: 100%;
+    box-shadow: none;
+    font-size: 16px;
+    /* margin-top: 9px; */
+    /* margin-bottom: 15px; */
+    /* width: 100%; */
+    position: relative;
+  }
+
+  .form-input-select::before,
+  .form-input-select::after {
+    content: "";
+    display: block;
+    position: absolute;
+    pointer-events: none;
+    border: 1px solid transparent;
+    width: 0;
+    height: 0;
+    right: 1rem;
+  }
+
+  .form-input-select::before {
+    bottom: 55%;
+    border-width: 0 6.5px 8px 6.5px;
+    border-bottom-color: var(--color-grey-light2);
+  }
+
+  .form-input-select::after {
+    border-width: 8px 6.5px 0 6.5px;
+    border-top-color: var(--color-grey-light2);
+    top: 55%;
+  }
+
+  @-moz-document url-prefix() {
+    .form-input-select {
+      border-right: var(--border-width) solid var(--color-grey-light2);
+    }
+
+    .form-input-select:hover {
+      border-right: var(--border-width) solid var(--color-grey-light2);
+    }
+  }
+
+  .form-input-select:hover select {
+    box-shadow: 0 2px 3px rgba(0, 91, 166, 0.1) inset;
+    border-color: var(--color-grey-light2);
+  }
+
+  .form-input-select:hover select:focus {
+    outline-color: transparent;
+  }
+
+  .form-input-select:hover::before {
+    border-bottom-color: var(--color-grey-light2);
+  }
+
+  .form-input-select:hover::after {
+    border-top-color: var(--color-grey-light2);
+  }
+
+  .form-input-select select {
+    border: var(--border-width) solid var(--color-grey-light2);
+    border-radius: 0;
+    font-weight: 400;
+    color: inherit;
+    padding: 11px 15px;
+    line-height: normal;
+    transition:
+      border-color 0.2s ease,
+      outline 0.2s ease;
+  }
+
+  .form-input-select select:focus {
+    box-shadow: 0 3px 4px rgba(0, 91, 166, 0.3) inset;
+    outline: var(--border-width) solid var(--color-grey-light2);
+    outline-offset: calc(-1 * var(--border-width));
+  }
+
+  .form-input-select select[disabled],
+  .form-input-select select:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .form-input-select select:not(:focus):invalid {
+    color: var(--color-grey-light);
+  }
+</style>

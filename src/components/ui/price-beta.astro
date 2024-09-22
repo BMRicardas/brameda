@@ -1,0 +1,141 @@
+---
+function localizedPrice(price: number) {
+  return new Intl.NumberFormat("lt-LT", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 2,
+  }).format(Number(price));
+}
+
+const { key, price } = Astro.props;
+---
+
+<div class="price-container" data-price-container-id={key}>
+  <p>
+    Kaina:&nbsp;<data value={price} id={`price-${key}`}
+      >{localizedPrice(price)}</data
+    >
+  </p>
+  <div class="price-toggle">
+    <span class="toggle-text off">Be PVM</span>
+    <input type="checkbox" id={`switch-${key}`} />
+    <label for={`switch-${key}`}>Toggle</label>
+    <span class="toggle-text on">Su PVM</span>
+  </div>
+</div>
+
+<style>
+  .price-container {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin-top: 10px;
+    gap: 3rem;
+  }
+
+  .price-toggle {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+
+    &:has(input:checked) .toggle-text.off {
+      text-decoration: line-through;
+    }
+
+    &:has(input:not(:checked)) .toggle-text.on {
+      text-decoration: line-through;
+    }
+  }
+
+  .toggle-text {
+    font-size: 1.6rem;
+  }
+
+  input[type="checkbox"] {
+    height: 0;
+    width: 0;
+    visibility: hidden;
+  }
+
+  label {
+    cursor: pointer;
+    text-indent: -9999px;
+    width: 40px;
+    height: 20px;
+    background: var(--color-grey-light2);
+    display: block;
+    border-radius: 20px;
+    position: relative;
+  }
+
+  label:after {
+    content: "";
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border-radius: 18px;
+    transition: 0.3s;
+  }
+
+  input:checked + label {
+    background: var(--color-grey-light2);
+  }
+
+  input:checked + label:after {
+    left: calc(100% - 1px);
+    transform: translateX(-100%);
+  }
+
+  label:active:after {
+    width: 26px;
+  }
+</style>
+
+<script>
+  function localizedPrice(price: number) {
+    return new Intl.NumberFormat("lt-LT", {
+      style: "currency",
+      currency: "EUR",
+      minimumFractionDigits: 2,
+    }).format(Number(price));
+  }
+
+  // Wait for the DOM to be fully loaded
+  window.addEventListener(
+    "DOMContentLoaded",
+    () => {
+      // Select all price containers
+      const priceContainers = document.querySelectorAll(".price-container");
+
+      // Loop through each price container
+      priceContainers.forEach((priceContainer) => {
+        const id = priceContainer.getAttribute("data-price-container-id");
+
+        // Select the corresponding switch and price elements
+        const switchElement = document.getElementById(`switch-${id}`);
+        const priceElement = document.getElementById(
+          `price-${id}`
+        ) as HTMLDataElement;
+
+        // Get the original price value
+        const price = priceElement?.value;
+
+        // Attach event listener to the switch
+        switchElement?.addEventListener("change", (event) => {
+          const isChecked = (event.target as HTMLInputElement)?.checked;
+
+          // Calculate new price with or without PVM (VAT)
+          const newPrice = isChecked ? Number(price) * 1.21 : Number(price);
+
+          // Update the price element with the new value
+          priceElement?.setAttribute("value", newPrice.toFixed(2).toString());
+          priceElement!.textContent = localizedPrice(newPrice);
+        });
+      });
+    },
+    { once: true } // Ensure the listener runs only once
+  );
+</script>

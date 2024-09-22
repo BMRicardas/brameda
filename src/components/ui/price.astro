@@ -1,0 +1,53 @@
+---
+type Props = {
+  price?: number;
+};
+
+const VAT = 1.21;
+
+const { price }: Props = Astro.props;
+
+const priceWithoutVat = Number(price);
+const priceWithVat = priceWithoutVat * VAT;
+
+function localizedPrice(price: number) {
+  return new Intl.NumberFormat("lt-LT", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 2,
+  }).format(Number(price));
+}
+---
+
+{
+  priceWithoutVat && priceWithVat ? (
+    <div class="price-container">
+      <p class="without-vat">
+        Kaina be PVM:
+        <data value={priceWithoutVat}>{localizedPrice(priceWithoutVat)}</data>
+      </p>
+      <p class="with-vat">
+        Kaina su PVM:
+        <data value={priceWithoutVat}>{localizedPrice(priceWithVat)}</data>
+      </p>
+    </div>
+  ) : null
+}
+
+<style>
+  .price-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .without-vat {
+    & data {
+      letter-spacing: 1px;
+    }
+  }
+
+  .with-vat {
+    font-size: 1.2rem;
+  }
+</style>

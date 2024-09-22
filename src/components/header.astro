@@ -302,20 +302,20 @@ const headerLinks = [
     document.querySelector(".header")?.classList.add("scrolled");
   }
 
-  function navOnScroll() {
-    const navBar = document.querySelector(".header");
-    const scrolledFromTop = 1;
+  // function navOnScroll() {
+  //   const navBar = document.querySelector(".header");
+  //   const scrolledFromTop = 1;
 
-    const adjustNavbar = () => {
-      if (window.scrollY > scrolledFromTop) {
-        navBar?.classList.add("scrolled");
-      } else {
-        navBar?.classList.remove("scrolled");
-      }
-    };
+  //   const adjustNavbar = () => {
+  //     if (window.scrollY > scrolledFromTop) {
+  //       navBar?.classList.add("scrolled");
+  //     } else {
+  //       navBar?.classList.remove("scrolled");
+  //     }
+  //   };
 
-    window.addEventListener("scroll", adjustNavbar);
-  }
+  //   window.addEventListener("scroll", adjustNavbar);
+  // }
 
   function init() {
     toggleDrawer();

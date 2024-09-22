@@ -4,28 +4,29 @@ import { Image } from "astro:assets";
 import Link from "./ui/link.astro";
 import Container from "./ui/container.astro";
 import Section from "./ui/section.astro";
-import type { Asset } from "contentful";
-import type { TypeVariantSkeleton } from "@src/types/contentful-types";
-import Button from "./ui/button.astro";
-import ContactForm from "./contact-form.astro";
+import type { ProductResponseType } from "@/types/contentful-types";
+import Price from "./ui/price.astro";
+import Select from "./ui/select.astro";
+import { urlFactory } from "@/utils/common";
 
 type Props = {
-  title: string;
-  variants: TypeVariantSkeleton[];
-  description: string;
-  specifications: object;
-  embeddedYouTubeLink: string;
+  product: ProductResponseType["fields"];
 };
+
+const { product }: Props = Astro.props;
 
 const {
   title,
   variants,
+  displayMode,
   description,
   specifications,
   embeddedYouTubeLink,
-}: Props = Astro.props;
+} = product;
 
-const mainImageSrc = "https:" + variants[0]?.fields?.image?.fields?.file?.url;
+const mainImageSrc = urlFactory(
+  variants[0]?.fields.photos[0]?.fields.file?.url ?? ""
+);
 ---
 
 <main id="main">
@@ -46,25 +47,19 @@ const mainImageSrc = "https:" + variants[0]?.fields?.image?.fields?.file?.url;
 
             <ul class="product__thumbs">
               {
-                variants
-                  ? variants.map((variant) => {
-                      const imageSrc =
-                        "https:" + variant?.fields?.image?.fields?.file?.url;
-                      const color = variant.fields.color;
-
-                      return (
-                        <li class="product__thumbs__img-container">
-                          <Image
-                            src={imageSrc}
-                            alt="Avalynę padengiantys įrenginiai"
-                            class="product__thumbs__img"
-                            data-color={color}
-                            inferSize
-                          />
-                        </li>
-                      );
-                    })
-                  : null
+                variants.map((variant) =>
+                  variant?.fields?.photos?.map((photo) => (
+                    <li class="product__thumbs__img-container">
+                      <Image
+                        src={urlFactory(photo?.fields?.file?.url ?? "")}
+                        alt={`Avalynę padengiantys įrenginiai - ${variant.fields.color}`}
+                        class="product__thumbs__img"
+                        data-color={variant?.fields?.color}
+                        inferSize
+                      />
+                    </li>
+                  ))
+                )
               }
             </ul>
 
@@ -73,7 +68,7 @@ const mainImageSrc = "https:" + variants[0]?.fields?.image?.fields?.file?.url;
                 <div class="product__video">
                   <iframe
                     src={embeddedYouTubeLink}
-                    frameborder="0"
+                    style="border: 0;"
                     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen
                   />
@@ -83,7 +78,9 @@ const mainImageSrc = "https:" + variants[0]?.fields?.image?.fields?.file?.url;
           </div>
 
           <h3 class="product__title">{title}</h3>
-
+          <div class="price">
+            <Price price={Number(variants[0]?.fields?.priceWithoutVat)} />
+          </div>
           <div class="product__desc">
             <p>
               {description}
@@ -91,12 +88,21 @@ const mainImageSrc = "https:" + variants[0]?.fields?.image?.fields?.file?.url;
           </div>
 
           <ul class="product__specs">
-            <li>
-              <p>Spalva</p>
-              <p id="color">{variants[0]?.fields.color}</p>
-            </li>
             {
-              Object.entries(specifications).map(([key, value]) => {
+              displayMode === "all_variants" ? (
+                <li>
+                  <p>Spalva</p>
+                  <p id="color">{variants[0]?.fields.color}</p>
+                </li>
+              ) : (
+                <li class="select">
+                  <Select label="Pasirinkite spalvą" options={variants} />
+                </li>
+              )
+            }
+
+            {
+              Object.entries(specifications ?? {}).map(([key, value]) => {
                 return (
                   <li>
                     <p>{key}</p>
@@ -125,6 +131,7 @@ const mainImageSrc = "https:" + variants[0]?.fields?.image?.fields?.file?.url;
     grid-gap: 5rem;
     grid-template-areas:
       "media title"
+      "media price"
       "media desc"
       "media specs"
       "media back";
@@ -132,6 +139,10 @@ const mainImageSrc = "https:" + variants[0]?.fields?.image?.fields?.file?.url;
 
   #product article .product__media {
     grid-area: media;
+  }
+
+  .price {
+    grid-area: price;
   }
 
   #product article .product__img {
@@ -226,7 +237,10 @@ const mainImageSrc = "https:" + variants[0]?.fields?.image?.fields?.file?.url;
   #product article .product__specs li {
     display: flex;
     justify-content: space-between;
-    padding: 0.5rem 0;
+
+    &:not(:first-child) {
+      padding: 0.5rem 0;
+    }
   }
 
   #product article .product__specs li:not(:last-child) {
@@ -270,6 +284,21 @@ const mainImageSrc = "https:" + variants[0]?.fields?.image?.fields?.file?.url;
 <script>
   const imgElements = document.querySelectorAll("img[data-color]");
 
+  const selectElement = document.querySelector("select") as HTMLSelectElement;
+
+  selectElement.addEventListener("change", (event: Event) => {
+    const target = event.target as HTMLSelectElement;
+    const colorValue = target.value;
+
+    const imgElement = document.querySelector(
+      `img[data-color="${colorValue}"]`
+    ) as HTMLImageElement;
+
+    if (imgElement) {
+      imgElement.click();
+    }
+  });
+
   imgElements.forEach((imgElement) => {
     imgElement.addEventListener("click", () => {
       const colorValue = imgElement.getAttribute("data-color");
@@ -287,9 +316,11 @@ const mainImageSrc = "https:" + variants[0]?.fields?.image?.fields?.file?.url;
   ) as HTMLImageElement;
   const thumbs = document.querySelectorAll(".product__thumbs img");
 
-  const thumbClick = (e: any) => {
-    current.src = e.target.src;
+  const thumbClick = (event: Event) => {
+    current.src = (event.target as HTMLImageElement).src;
   };
 
-  thumbs.forEach((thumb) => thumb.addEventListener("click", thumbClick));
+  thumbs.forEach((thumb) =>
+    thumb.addEventListener("click", thumbClick as EventListener)
+  );
 </script>

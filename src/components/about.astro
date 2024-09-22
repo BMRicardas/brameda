@@ -1,20 +1,19 @@
 ---
-import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
-import { getAboutUs } from "@src/lib/contentful";
-import { options } from "@lib/contentful";
 import Section from "./ui/section.astro";
-
-const response = await getAboutUs();
 ---
 
 <Section sectionId="about" title="Apie mus" mode="light">
-  {
-    response && (
-      <article
-        set:html={documentToHtmlString(response.fields.content, options)}
-      />
-    )
-  }
+  <article>
+    <p>
+      1991 m. kovo mėn. 27 d. įkurta individuali A.Brazdžiaus įmonė. Įmonės
+      pagrindinė veikla – didmeninė prekyba medicininės paskirties priemonėmis.
+      Nuo 2008 m. rugsėjo mėn. 23 d. perregistruota į UAB „Brameda“.
+      <br />
+      <br />
+      Platiname pažangias avalynę padengiančias mašinas, firmos Swimsuit Dryers Company
+      maudymosi kostiumėlių džiovintuvus, modernius pėdų dezinfekatorius.
+    </p>
+  </article>
 </Section>
 
 <style>

@@ -1,27 +1,25 @@
 ---
 import { Image } from "astro:assets";
 import Link from "./ui/link.astro";
-import type { TypeVariantSkeleton } from "@src/types/contentful-types";
-import type { Entry } from "contentful";
+
+import { urlFactory } from "@/utils/common";
+import type { ProductResponseType } from "@/types/contentful-types";
 
 type Props = {
-  title: string;
-  // variants: Entry<TypeVariantSkeleton, undefined, string>[];
-  variants: any;
-  features: string[];
-  slug: string;
+  product: ProductResponseType["fields"];
 };
 
-const { title, variants, features, slug: url }: Props = Astro.props;
+const { product } = Astro.props;
 
-const imageSrc = "https:" + variants[0]?.fields?.image?.fields?.file.url;
+const { title, features, mainPhoto, slug } = product;
+
+const imageSrc = urlFactory(mainPhoto?.fields.file?.url ?? "");
 ---
 
 <article>
-  <a href={url} class="image-container">
+  <a href={slug} class="image-container">
     <Image src={imageSrc} alt={title} inferSize class="image" />
   </a>
-
   <div>
     <h3>{title}</h3>
     <ul>
@@ -37,7 +35,7 @@ const imageSrc = "https:" + variants[0]?.fields?.image?.fields?.file.url;
         })
       }
     </ul>
-    <Link href={url} linkType="internal"> Skaityti daugiau </Link>
+    <Link href={slug} linkType="internal"> Skaityti daugiau </Link>
   </div>
 </article>
 

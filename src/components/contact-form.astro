@@ -187,8 +187,8 @@ import TextInput from "./ui/text-input.astro";
         });
       });
 
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
 
         inputs.forEach(handleInput);
 
@@ -215,7 +215,7 @@ import TextInput from "./ui/text-input.astro";
 
         updateButtonState("loading");
 
-        fetch("https://api.web3forms.com/submi", {
+        fetch("https://api.web3forms.com/submit", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

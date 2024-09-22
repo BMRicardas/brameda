@@ -1,58 +1,38 @@
-import type {
-  Asset,
-  ChainModifiers,
-  Entry,
-  EntryFieldTypes,
-  LocaleCode,
-} from "contentful";
+import type { contentfulClient } from "@/lib/contentful";
+import type { ChainModifiers, Entry, EntryFieldTypes, EntrySkeletonType, FieldsType, LocaleCode } from "contentful";
 
-export type TypeProductSkeleton = {
-  contentTypeId: "product";
-  fields: {
+// type InferResponseType<T extends EntrySkeletonType<FieldsType, string>> = Awaited<ReturnType<typeof contentfulClient.getEntries<T>>>
+type WithoutUnresolvableResponse<T extends EntrySkeletonType<FieldsType, string>> = Entry<T, 'WITHOUT_UNRESOLVABLE_LINKS'>;
+
+// Product Types
+
+// export type ProductResponseType = InferResponseType<TypeProductSkeleton>;
+export type ProductResponseType = WithoutUnresolvableResponse<TypeProductSkeleton>;
+
+export interface TypeProductFields {
     slug: EntryFieldTypes.Symbol;
     title: EntryFieldTypes.Symbol;
-    variants: EntryFieldTypes.Array<
-      EntryFieldTypes.EntryResourceLink<TypeVariantSkeleton>
-    >;
+    mainPhoto: EntryFieldTypes.AssetLink;
+    displayMode: EntryFieldTypes.Symbol<"all_variants" | "color_selector">;
+    variants: EntryFieldTypes.Array<EntryFieldTypes.EntryLink<TypeProductVariantsSkeleton>>;
     features: EntryFieldTypes.Array<EntryFieldTypes.Symbol>;
     description: EntryFieldTypes.Text;
-    specifications: EntryFieldTypes.Object;
-    embeddedYouTubeLink: EntryFieldTypes.Symbol;
-    photos: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>;
-  };
-};
+    specifications?: EntryFieldTypes.Object;
+    embeddedYouTubeLink?: EntryFieldTypes.Symbol;
+    relatedProduct?: EntryFieldTypes.EntryLink<TypeProductSkeleton>;
+}
 
-// export type TypeProductSkeleton = EntrySkeletonType<Product, "product">;
-export type TypeProduct<
-  Modifiers extends ChainModifiers,
-  Locales extends LocaleCode,
-> = Entry<TypeProductSkeleton, Modifiers, Locales>;
+export type TypeProductSkeleton = EntrySkeletonType<TypeProductFields, "product">;
+export type TypeProduct<Modifiers extends ChainModifiers, Locales extends LocaleCode = LocaleCode> = Entry<TypeProductSkeleton, Modifiers, Locales>;
 
-export type TypeVariantSkeleton = {
-  contentTypeId: "productVariants";
-  fields: {
+// Product Variants Types
+export interface TypeProductVariantsFields {
     variantName: EntryFieldTypes.Symbol;
     color: EntryFieldTypes.Symbol;
-    image: Asset;
-  };
-};
+    photos: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>;
+    stock: EntryFieldTypes.Integer;
+    priceWithoutVat: EntryFieldTypes.Number;
+}
 
-// export type TypeVariantSkeleton = EntrySkeletonType<Variant, "productVariants">;
-export type TypeVariant<
-  Modifiers extends ChainModifiers,
-  Locales extends LocaleCode,
-> = Entry<TypeVariantSkeleton, Modifiers, Locales>;
-
-export type TypeAboutUsSkeleton = {
-  contentTypeId: "aboutUs";
-  fields: {
-    title: EntryFieldTypes.Symbol;
-    content: EntryFieldTypes.RichText;
-  };
-};
-
-// export type TypeAboutUsSkeleton = EntrySkeletonType<AboutUs, "aboutUs">;
-export type TypeAboutUs<
-  Modifiers extends ChainModifiers,
-  Locales extends LocaleCode,
-> = Entry<TypeAboutUsSkeleton, Modifiers, Locales>;
+export type TypeProductVariantsSkeleton = EntrySkeletonType<TypeProductVariantsFields, "productVariants">;
+export type TypeProductVariants<Modifiers extends ChainModifiers, Locales extends LocaleCode = LocaleCode> = Entry<TypeProductVariantsSkeleton, Modifiers, Locales>;

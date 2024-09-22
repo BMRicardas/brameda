@@ -3,15 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@src/*": ["src/*"],
-      "@assets/*": ["src/assets/*"],
-      "@components/*": ["src/components/*"],
-      "@i18n/*": ["src/i18n/*"],
-      "@layouts/*": ["src/layouts/*"],
-      "@lib/*": ["src/lib/*"],
-      "@pages/*": ["src/pages/*"],
-      "@scripts/*": ["src/scripts/*"],
-      "@types/*": ["src/types/*"]
+      "@/*": ["src/*"]    
     },
     "strictNullChecks": true,
     "noUncheckedIndexedAccess": true,
