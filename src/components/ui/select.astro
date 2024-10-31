@@ -1,12 +1,9 @@
 ---
-import type { TypeProductVariantsSkeleton } from "@/types/contentful-types";
-import type { EntryFieldTypes } from "contentful";
+import type { ProductResponseType } from "@/types/contentful-types";
 
 type Props = {
   label?: string;
-  options: EntryFieldTypes.Array<
-    EntryFieldTypes.EntryLink<TypeProductVariantsSkeleton>
-  >;
+  options: ProductResponseType["fields"]["variants"];
 };
 
 const { label, options } = Astro.props;
@@ -16,9 +13,8 @@ const { label, options } = Astro.props;
   <label for="select">{label}</label>
   <select id="select">
     {
-      // @ts-expect-error
       options.map((option) => {
-        const color = String(option.fields.color);
+        const color = String(option?.fields.color);
 
         return <option value={color}>{color}</option>;
       })
