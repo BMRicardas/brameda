@@ -1,8 +1,8 @@
 ---
 import { getAllProducts } from "@/lib/contentful";
 
-import Product from "@/components/product.astro";
-import Section from "./ui/section.astro";
+import Product from "@/components/product/product.astro";
+import Section from "../ui/section.astro";
 
 const products = await getAllProducts();
 ---

@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import Link from "./ui/link.astro";
+import Link from "../ui/link.astro";
 
 import { urlFactory } from "@/utils/common";
 import type { ProductResponseType } from "@/types/contentful-types";
@@ -54,7 +54,7 @@ const imageSrc = urlFactory(mainPhoto?.fields.file?.url ?? "");
     background-color: var(--color-grey-light);
     border-radius: 15px;
     width: 100%;
-    overflow: hidden;
+    overflow: clip;
     display: flex;
     justify-content: center;
     align-items: center;
