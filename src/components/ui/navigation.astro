@@ -1,0 +1,178 @@
+---
+import MenuButton from "./menu-button.astro";
+import hamburgerMenu from "public/assets/hamburger-menu.svg";
+import close from "public/assets/close.svg";
+import Image from "astro/components/Image.astro";
+
+const headerLinks = [
+  {
+    href: "/#products",
+    text: "Produktai",
+  },
+  {
+    href: "/#about",
+    text: "Apie mus",
+  },
+  {
+    href: "/#contacts",
+    text: "Kontaktai",
+  },
+];
+---
+
+<MenuButton />
+<nav class="navigation" popover id="mobile-nav">
+  <MenuButton expanded={true} />
+  <ul id="menu-nav" aria-labelledby="menu-button" aria-hidden={true}>
+    {
+      headerLinks.map((link) => (
+        <li>
+          <a href={link.href}>{link.text}</a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  #mobile-nav[popover] {
+    transition:
+      display 0.3s allow-discrete,
+      overlay 0.5s allow-discrete,
+      opacity 0.3s,
+      translate 0.3s;
+    transition-timing-function: ease-in;
+    translate: 100%;
+    margin: 0;
+    /* margin-top: 5rem; */
+    block-size: 100vb;
+    inline-size: 90vi;
+    inset-inline-start: unset;
+    inset-inline-end: 0;
+    border: none;
+    /* background-color: transparent; */
+
+    &:popover-open {
+      translate: 0;
+      transition-timing-function: ease-out;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @starting-style {
+      &:popover-open {
+        translate: 100%;
+      }
+    }
+  }
+
+  #mobile-nav {
+    z-index: 1;
+  }
+
+  #menu-nav {
+    display: flex;
+    list-style: none;
+    padding: 1rem;
+  }
+
+  #menu-nav li a:any-link {
+    display: block;
+    margin: 0 1.5rem;
+    padding: 0.2rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #000;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-bottom: 2px solid transparent;
+    transition: 0.2s;
+  }
+
+  #menu-nav li a:hover,
+  #menu-nav li a:active {
+    border-bottom: 2px solid #000;
+  }
+
+  /* MEDIA QUERIES */
+
+  /* 800px */
+  /* @media only screen and (max-width: 50em) {
+    #menu-nav {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 50;
+      width: 100vi;
+      height: 100vh;
+      background-color: var(--color-white);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      transition: 0.3s transform ease-out;
+    }
+
+    #menu-nav[aria-hidden="true"] {
+      display: none;
+      transform: translateX(100%);
+    }
+
+    #menu-nav[aria-hidden="false"] {
+      display: flex;
+      transform: translateX(0);
+    }
+
+    #menu-nav li a:any-link {
+      color: var(--color-black);
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 1rem 3rem;
+    }
+
+    #menu-nav li a:hover,
+    #menu-nav li a:active {
+      border-bottom: 2px solid var(--color-black);
+    }
+  } */
+</style>
+
+<script>
+  const body = document.querySelector("body");
+  const menuBtn = document.getElementById("menu-button");
+  const drawer = document.getElementById("menu-nav");
+  const navLinks = document.querySelectorAll("#menu-nav li a");
+
+  function toggleDrawer() {
+    let menuOpen = false;
+
+    const drawerToggle = () => {
+      menuOpen = !menuOpen;
+      menuBtn?.setAttribute("aria-expanded", menuOpen ? "true" : "false");
+      drawer?.setAttribute("aria-hidden", menuOpen ? "false" : "true");
+      body?.classList.toggle("scroll-lock", menuOpen);
+    };
+
+    const drawerClose = () => {
+      menuOpen = false;
+      body?.classList.remove("scroll-lock");
+      menuBtn?.setAttribute("aria-expanded", "false");
+      drawer?.setAttribute("aria-hidden", "true");
+    };
+
+    menuBtn?.addEventListener("click", drawerToggle);
+
+    navLinks.forEach((link) => {
+      link?.addEventListener("click", drawerClose);
+    });
+  }
+
+  function init() {
+    toggleDrawer();
+  }
+
+  init();
+</script>
