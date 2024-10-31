@@ -3,12 +3,14 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]    
+      "@/*": ["src/*"]
     },
     "strictNullChecks": true,
     "noUncheckedIndexedAccess": true,
     "allowJs": true,
     "jsx": "react-jsx",
     "jsxImportSource": "react"
-  }
+  },
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"]
 }
