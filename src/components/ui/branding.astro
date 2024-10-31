@@ -1,0 +1,70 @@
+---
+
+---
+
+<a href="/" class="branding">
+  <h1>
+    Brameda<span>Pažangūs ergonominiai sprendimai jūsų verslui</span>
+  </h1>
+</a>
+
+<style>
+  .branding:any-link {
+    text-decoration: none;
+    color: #000;
+  }
+
+  .branding h1 {
+    display: block;
+    margin: 0;
+    font-size: 6.9rem;
+    font-weight: 700;
+    line-height: 1;
+    transition: var(--scroll-transition);
+
+    animation: scrolledTitle forwards;
+    animation-timeline: view();
+    animation-range-start: 100vh;
+    animation-range-end: var(--scroll-range-end);
+  }
+
+  .branding h1 span {
+    display: block;
+    margin-top: -0.8rem;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--color-grey-dark2);
+
+    transform: translateY(0);
+    opacity: 1;
+    transition: var(--scroll-transition);
+
+    animation: scrolledSpan forwards;
+    animation-timeline: view();
+    animation-range-start: 100vh;
+    animation-range-end: var(--scroll-range-end);
+  }
+
+  @keyframes scrolledTitle {
+    from {
+      font-size: 6.9rem;
+      font-weight: 700;
+    }
+    to {
+      font-size: 4.5rem;
+      font-weight: 700;
+    }
+  }
+
+  @keyframes scrolledSpan {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+  }
+</style>
