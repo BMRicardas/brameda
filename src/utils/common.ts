@@ -1,3 +1,3 @@
-export function urlFactory (partialUrl: string) {
-    return `https:${partialUrl}`;
+export function urlFactory(partialUrl: string) {
+  return `https:${partialUrl}`;
 }
