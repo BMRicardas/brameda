@@ -304,9 +304,9 @@ const mainPhotoSrc = mainPhoto.url;
 
     imgElements.forEach((imgElement) => {
       if (imgElement.getAttribute("data-color") === colorValue) {
-        imgElement.style.display = "block";
+        (imgElement as HTMLImageElement).style.display = "block";
       } else {
-        imgElement.style.display = "none";
+        (imgElement as HTMLImageElement).style.display = "none";
       }
     });
 
@@ -354,12 +354,14 @@ const mainPhotoSrc = mainPhoto.url;
   );
 
   document.addEventListener("DOMContentLoaded", () => {
-    const initialColor = selectElement.value;
-    imgElements.forEach((imgElement) => {
-      imgElement.style.display =
-        imgElement.getAttribute("data-color") === initialColor
-          ? "block"
-          : "none";
-    });
+    if (selectElement) {
+      const initialColor = selectElement.value;
+      imgElements.forEach((imgElement) => {
+        (imgElement as HTMLImageElement).style.display =
+          imgElement.getAttribute("data-color") === initialColor
+            ? "block"
+            : "none";
+      });
+    }
   });
 </script>
