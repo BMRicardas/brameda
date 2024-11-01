@@ -28,14 +28,15 @@ const { expanded } = Astro.props;
   </svg>
 </button> -->
 <button
-  id="menu-button"
-  type="button"
-  class="button-one"
   aria-controls="primary-navigation"
   aria-expanded="false"
+  class="button-one"
+  id="menu-button"
   popovertarget="mobile-nav"
-  popovertargetaction={expanded ? "hide" : "show"}>
-  <Image src={expanded ? close : hamburgerMenu} alt="Hamburger menu" />
+  popovertargetaction={expanded ? "hide" : "show"}
+  type="button"
+>
+  <Image alt="Hamburger menu" src={expanded ? close : hamburgerMenu} />
 </button>
 
 <style>

@@ -3,7 +3,7 @@ import Section from "./ui/section.astro";
 import ContactForm from "./contact-form.astro";
 ---
 
-<Section sectionId="contacts" title="kontaktai" mode="dark">
+<Section mode="dark" sectionId="contacts" title="kontaktai">
   <article>
     <address>
       <h4>UAB „Brameda“</h4>
@@ -12,8 +12,8 @@ import ContactForm from "./contact-form.astro";
           <p>
             <a
               href="https://maps.google.com/?q=Senamiesčio g. 102-201, 35116 Panevėžys, Lietuva"
-              target="_blank"
               rel="noopener noreferrer"
+              target="_blank"
               >Senamiesčio g. 102-201,<br />35116 Panevėžys,<br />Lietuva</a
             >
           </p>
@@ -28,18 +28,6 @@ import ContactForm from "./contact-form.astro";
           </p>
         </li>
       </ul>
-      <!-- <h4>Direktorius Arvidas Brazdžius</h4>
-      <ul>
-        <li>
-          <p>Telefonas: <a href="tel:+37069936437">370 699 36437</a></p>
-        </li>
-        <li>
-          <p>
-            El.paštas:
-            <a href="mailto:arvidas@brameda.lt">arvidas@brameda.lt</a>
-          </p>
-        </li>
-      </ul> -->
     </address>
     <ContactForm />
   </article>

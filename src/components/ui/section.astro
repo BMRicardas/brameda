@@ -13,12 +13,20 @@ const { sectionId, title, mode = "light" }: Props = Astro.props;
 ---
 
 <section
+  class:list={{ section: mode === "light", "section dark": mode !== "light" }}
   id={sectionId}
-  class:list={mode === "light" ? "section" : "section dark"}>
+>
   <Container>
     {
       title && (
-        <h2 class:list={mode === "light" ? "title" : "title dark"}>{title}</h2>
+        <h2
+          class:list={{
+            title: mode === "light",
+            "title dark": mode !== "light",
+          }}
+        >
+          {title}
+        </h2>
       )
     }
     <slot />

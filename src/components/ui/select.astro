@@ -1,9 +1,9 @@
 ---
-import type { ProductResponseType } from "@/types/contentful-types";
+import type { ProductVariant } from "@/schemas/contentful";
 
 type Props = {
   label?: string;
-  options: ProductResponseType["fields"]["variants"];
+  options: ProductVariant[];
 };
 
 const { label, options } = Astro.props;
@@ -14,7 +14,7 @@ const { label, options } = Astro.props;
   <select id="select">
     {
       options.map((option) => {
-        const color = String(option?.fields.color);
+        const color = String(option?.color);
 
         return <option value={color}>{color}</option>;
       })

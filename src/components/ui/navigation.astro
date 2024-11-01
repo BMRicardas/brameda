@@ -1,8 +1,5 @@
 ---
 import MenuButton from "./menu-button.astro";
-import hamburgerMenu from "public/assets/hamburger-menu.svg";
-import close from "public/assets/close.svg";
-import Image from "astro/components/Image.astro";
 
 const headerLinks = [
   {
@@ -21,9 +18,9 @@ const headerLinks = [
 ---
 
 <MenuButton />
-<nav class="navigation" popover id="mobile-nav">
+<nav class="navigation" id="mobile-nav" popover>
   <MenuButton expanded={true} />
-  <ul id="menu-nav" aria-labelledby="menu-button" aria-hidden={true}>
+  <ul aria-hidden={true} aria-labelledby="menu-button" id="menu-nav">
     {
       headerLinks.map((link) => (
         <li>

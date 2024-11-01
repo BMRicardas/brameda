@@ -11,9 +11,9 @@ const { id, label, type, ...rest }: Props = Astro.props;
 ---
 
 <div class="form-group">
-  <label for={id} class="form-label">{label}</label>
+  <label class="form-label" for={id}>{label}</label>
   <div class="input-group">
-    <input id={id} type={type} name={id} data-invalid="false" {...rest} />
+    <input data-invalid="false" id={id} name={id} type={type} {...rest} />
     <small class="feedback-text"></small>
   </div>
 </div>

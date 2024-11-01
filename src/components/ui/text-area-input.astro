@@ -11,14 +11,14 @@ const { id, label, rows = 4, ...rest }: Props = Astro.props;
 ---
 
 <div class="form-group">
-  <label for={id} class="form-label">{label}</label>
+  <label class="form-label" for={id}>{label}</label>
   <div class="input-group">
     <textarea
+      data-invalid="false"
       id={id}
       name={id}
-      rows={rows}
       required
-      data-invalid="false"
+      rows={rows}
       {...rest}></textarea>
     <small class="feedback-text"></small>
   </div>

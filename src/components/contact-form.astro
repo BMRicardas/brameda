@@ -8,47 +8,46 @@ import TextInput from "./ui/text-input.astro";
 
 <form
   action="https://api.web3forms.com/submit"
-  method="POST"
-  id="form"
   class="form"
-  data-astro-reload
+  data-astro-reloadmethod="POST"
+  id="form"
   novalidate>
-  <input type="hidden" name="access_key" value={WEB3FORMS_PUBLIC_ACCESS_KEY} />
-  <input type="checkbox" class="hidden" style="display:none" name="botcheck" />
+  <input name="access_key" type="hidden" value={WEB3FORMS_PUBLIC_ACCESS_KEY} />
+  <input class="hidden" name="botcheck" style="display:none" type="checkbox" />
   <TextInput
+    data-invalid="false"
     id="name"
     label="Vardas"
-    type="text"
     required
-    data-invalid="false"
+    type="text"
   />
   <TextInput
+    data-invalid="false"
     id="phone"
     label="Telefonas"
-    type="tel"
-    pattern="^[\+0-9][0-9]{0,15}$"
     maxlength={17}
+    pattern="^[\+0-9][0-9]{0,15}$"
     required
-    data-invalid="false"
+    type="tel"
   />
   <TextInput
+    data-invalid="false"
     id="email"
     label="El. paštas"
-    type="email"
     required
-    data-invalid="false"
+    type="email"
   />
   <TextAreaInput
+    data-invalid="false"
     id="message"
     label="Žinutė"
-    rows={3}
-    minlength={10}
     maxlength={500}
+    minlength={10}
     required
-    data-invalid="false"
+    rows={3}
   />
   <div class="btn-container">
-    <Button type="submit" variant="dark" data-state="idle" class="btn">
+    <Button class="btn" data-state="idle" type="submit" variant="dark">
       Siųsti žinutę
       <div class="loading-text">Siunčiama<span class="dots"></span></div>
       <SubmitAnimation />

@@ -12,13 +12,13 @@ const { key, price } = Astro.props;
 
 <div class="price-container" data-price-container-id={key}>
   <p>
-    Kaina:&nbsp;<data value={price} id={`price-${key}`}
+    Kaina:&nbsp;<data id={`price-${key}`} value={price}
       >{localizedPrice(price)}</data
     >
   </p>
   <div class="price-toggle">
     <span class="toggle-text off">Be PVM</span>
-    <input type="checkbox" id={`switch-${key}`} />
+    <input id={`switch-${key}`} type="checkbox" />
     <label for={`switch-${key}`}>Toggle</label>
     <span class="toggle-text on">Su PVM</span>
   </div>
@@ -117,7 +117,7 @@ const { key, price } = Astro.props;
         // Select the corresponding switch and price elements
         const switchElement = document.getElementById(`switch-${id}`);
         const priceElement = document.getElementById(
-          `price-${id}`
+          `price-${id}`,
         ) as HTMLDataElement;
 
         // Get the original price value
@@ -136,6 +136,6 @@ const { key, price } = Astro.props;
         });
       });
     },
-    { once: true } // Ensure the listener runs only once
+    { once: true }, // Ensure the listener runs only once
   );
 </script>
