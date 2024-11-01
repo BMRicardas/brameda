@@ -1,73 +1,68 @@
 import type { Loader } from "astro/loaders";
-import type { CreateClientParams, Entry } from "contentful";
 import { contentfulClient } from "./client";
-import { CONTENT_TYPES, DEFAULT_INCLUDE_LEVEL } from "./constants";
+import { CONTENT_TYPES } from "./constants";
 import type { TypeProductSkeleton } from "@/types/contentful";
-import type { Product } from "@/schemas/contentful";
-import { createCache, generateHash, processBatch } from "./utils";
+import { processBatch } from "./utils";
 import { transformContentfulToProduct } from "./transforms";
+import type { Entry } from "contentful";
 
-console.log("HERE");
+type ContentfulEntry = Entry<TypeProductSkeleton, "WITHOUT_UNRESOLVABLE_LINKS">;
 
-const CACHE_KEY = "contentful-products";
-const loaderCache = createCache<Product[]>();
-
-export function contentfulLoader(_options: CreateClientParams): Loader {
+export function contentfulLoader(_options: Record<string, unknown>): Loader {
   return {
     name: "contentful-loader",
-    load: async ({ store, logger, meta }) => {
+    async load({ store, logger, meta }) {
       try {
         const syncToken = meta.get("syncToken");
-
         logger.info(
           syncToken
             ? `Performing incremental sync with token: ${syncToken}`
             : "Performing initial sync",
         );
 
-        const syncResult = syncToken
-          ? await contentfulClient.sync({
-              nextSyncToken: syncToken,
-              type: "Entry",
-              content_type: CONTENT_TYPES.PRODUCT,
-            })
-          : await contentfulClient.sync({
-              initial: true,
-              type: "Entry",
-              content_type: CONTENT_TYPES.PRODUCT,
-            });
+        const syncResult =
+          syncToken && !import.meta.env.DEV
+            ? await contentfulClient.sync<TypeProductSkeleton>({
+                nextSyncToken: syncToken,
+                type: "Entry",
+                content_type: CONTENT_TYPES.PRODUCT,
+              })
+            : await contentfulClient.sync<TypeProductSkeleton>({
+                initial: true,
+                type: "Entry",
+                content_type: CONTENT_TYPES.PRODUCT,
+              });
 
-        // Handle deleted entries first
+        // Clear store in dev mode or initial sync
+        if (import.meta.env.DEV || !syncToken) {
+          store.clear();
+        }
+
+        // Handle deleted entries
         if (syncResult.deletedEntries?.length) {
           logger.info(
             `Removing ${syncResult.deletedEntries.length} deleted entries`,
           );
           syncResult.deletedEntries.forEach((entry) => {
-            if (entry.sys.id) {
-              store.delete(entry.sys.id);
-            }
+            store.delete(entry.sys.id);
           });
         }
 
         // Handle updated/new entries
-        const entries = syncResult.entries;
+        const entries = syncResult.entries as ContentfulEntry[];
         if (entries.length) {
           logger.info(`Processing ${entries.length} new/updated entries`);
 
-          // Process entries in batches
           await processBatch(entries, async (entry) => {
             try {
-              // Type guard to ensure entry is a product
-              if (isProductEntry(entry)) {
-                const product = transformContentfulToProduct(entry);
-                store.set({
-                  id: product.id,
-                  data: product,
-                });
-                return product;
-              }
-              logger.warn(`Skipping non-product entry: ${entry.sys.id}`);
-              return null;
+              const product = transformContentfulToProduct(
+                entry as ContentfulEntry,
+              );
+              store.set({
+                id: product.id,
+                data: product,
+              });
+              return product;
             } catch (error) {
               logger.error(`Error processing entry ${entry.sys.id}: ${error}`);
               return null;
@@ -75,28 +70,13 @@ export function contentfulLoader(_options: CreateClientParams): Loader {
           });
         }
 
-        // Store the new sync token for next sync
-        if (syncResult.nextSyncToken) {
+        // Store sync token only in production
+        if (!import.meta.env.DEV && syncResult.nextSyncToken) {
           meta.set("syncToken", syncResult.nextSyncToken);
           logger.info(
             `Sync completed. Next sync token stored: ${syncResult.nextSyncToken}`,
           );
         }
-
-        // Update cache with current state
-        const allEntries =
-          await contentfulClient.getEntries<TypeProductSkeleton>({
-            content_type: CONTENT_TYPES.PRODUCT,
-            include: DEFAULT_INCLUDE_LEVEL,
-          });
-
-        const hash = generateHash(allEntries);
-        const allProducts = allEntries.items
-          .filter(isProductEntry)
-          .map(transformContentfulToProduct);
-
-        loaderCache.set(CACHE_KEY, allProducts, hash);
-        logger.info(`Cache updated with ${allProducts.length} total products`);
       } catch (error) {
         logger.error(`Error during sync operation: ${error}`);
         meta.delete("syncToken");
@@ -104,15 +84,4 @@ export function contentfulLoader(_options: CreateClientParams): Loader {
       }
     },
   };
-}
-
-// Type guard to ensure entry is a product
-function isProductEntry(
-  entry: Entry<any, any>,
-): entry is Entry<TypeProductSkeleton, "WITHOUT_UNRESOLVABLE_LINKS"> {
-  return (
-    entry?.sys?.contentType?.sys?.id === CONTENT_TYPES.PRODUCT &&
-    typeof entry?.fields?.slug === "string" &&
-    typeof entry?.fields?.title === "string"
-  );
 }
