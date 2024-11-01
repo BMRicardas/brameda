@@ -1,0 +1,75 @@
+name: Deploy Website
+
+on:
+  # Contentful webhook trigger
+  repository_dispatch:
+    types: [contentful-publish]
+
+  # Main branch trigger
+  push:
+    branches:
+      - main
+
+  # Manual trigger
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      repository-projects: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Set deployment message
+        id: deploy-message
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "message=🚀 Deploying from Contentful update" >> $GITHUB_OUTPUT
+          else
+            echo "message=🚀 Deploying from main branch update" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build Astro site
+        run: npm run build
+        env:
+          CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
+          CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+          CONTENTFUL_DELIVERY_TOKEN: ${{ secrets.CONTENTFUL_DELIVERY_TOKEN }}
+          WEB3FORMS_PUBLIC_ACCESS_KEY: ${{ secrets.WEB3FORMS_PUBLIC_ACCESS_KEY }}
+
+      - name: 📂 Deploy to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: dist/
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}/
+          dangerous-clean-slate: true
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/wp-config.php
+            **/.htaccess
+            **/robots.txt
+            **/sitemap.xml
+            **/uploads/**
+            **/.well-known/**
+            **/cgi-bin/**
+            **/*.env
+            **/config/*.php
+            **/protected-folder/**
