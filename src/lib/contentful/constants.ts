@@ -16,4 +16,4 @@ export const createClientParams = {
     ? CONTENTFUL_PREVIEW_TOKEN
     : CONTENTFUL_DELIVERY_TOKEN,
   host: import.meta.env.DEV ? "preview.contentful.com" : "cdn.contentful.com",
-} as const;
+};
