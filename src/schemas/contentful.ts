@@ -2,10 +2,6 @@ import { z } from "astro:content";
 
 export const imageAssetSchema = z.object({
   url: z.string(),
-  title: z.string(),
-  description: z.string(),
-  width: z.number().optional(),
-  height: z.number().optional(),
 });
 
 export const productVariantSchema = z.object({
