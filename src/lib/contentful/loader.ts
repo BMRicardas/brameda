@@ -1,92 +1,59 @@
-import type { Loader, LoaderContext } from "astro/loaders";
+import type { Loader } from "astro/loaders";
 import { contentfulClient } from "./client";
-import { transformProduct } from "./transforms";
-import type { TypeProductSkeleton } from "@/types/contentful";
 import { CONTENT_TYPES, DEFAULT_INCLUDE_LEVEL } from "./constants";
-import { createCache } from "@/utils/cache";
-import { createBatchProcessor } from "./batch-processor";
-import { generateHash } from "@/utils/hash";
-
-interface ContentfulLoaderOptions {
-  space: string;
-  accessToken: string;
-  host: string;
-}
+import type { TypeProductSkeleton } from "@/types/contentful";
+import type { Product } from "@/schemas/contentful";
+import { createCache, generateHash, processBatch } from "./utils";
+import { transformContentfulToProduct } from "./transforms";
+import type { CreateClientParams } from "contentful";
 
 const CACHE_KEY = "contentful-products";
+const loaderCache = createCache<Product[]>();
 
-const loaderCache = createCache({ ttlMinutes: 5 });
-const processBatch = createBatchProcessor(5);
-
-export function contentfulLoader(options: ContentfulLoaderOptions): Loader {
-  if (!options.space || !options.accessToken) {
-    throw new Error("Missing required Contentful configuration");
-  }
-
+export function contentfulLoader(_options: CreateClientParams): Loader {
   return {
     name: "contentful-loader",
-    load: async ({
-      store,
-      logger,
-      meta,
-      generateDigest,
-    }: LoaderContext): Promise<void> => {
+    load: async ({ store, logger }) => {
       try {
-        logger.info("Loading Contentful entries");
-
-        const lastModified = meta.get("lastModified");
-
         const response = await contentfulClient.getEntries<TypeProductSkeleton>(
           {
             content_type: CONTENT_TYPES.PRODUCT,
             include: DEFAULT_INCLUDE_LEVEL,
-            ...(lastModified
-              ? {
-                  "sys.updatedAt[gt]": lastModified,
-                }
-              : {}),
           },
         );
 
-        if (!lastModified) {
-          store.clear();
-        }
+        // Clear store before adding new entries
+        store.clear();
 
         const hash = generateHash(response);
         const cached = loaderCache.get(CACHE_KEY, hash);
 
         if (cached) {
+          // Use cached data to update store
+          cached.forEach((product) => {
+            store.set({
+              id: product.id,
+              data: product,
+            });
+          });
           return;
         }
 
-        const transformedProducts = await processBatch(
-          response.items,
-          async (entry) => {
-            const transformedData = transformProduct(entry);
+        // Process and store new entries
+        await processBatch(response.items, async (entry) => {
+          const product = transformContentfulToProduct(entry);
+          store.set({
+            id: product.id,
+            data: product,
+          });
+          return product;
+        });
 
-            const digest = generateDigest({ ...transformedData });
-
-            const existingEntry = store.get(entry.sys.id);
-            if (existingEntry?.digest === digest) {
-              logger.info(`Entry ${entry.sys.id} unchanged, skipping`);
-              return existingEntry.data;
-            }
-
-            store.set({
-              id: entry.sys.id,
-              data: { ...transformedData },
-              digest,
-            });
-
-            return transformedData;
-          },
+        // Update cache with all products
+        const allProducts = response.items.map((entry) =>
+          transformContentfulToProduct(entry),
         );
-
-        loaderCache.set(CACHE_KEY, transformedProducts, hash);
-
-        meta.set("lastModified", new Date().toISOString());
-
-        logger.info(`Loaded ${response.items.length} entries`);
+        loaderCache.set(CACHE_KEY, allProducts, hash);
       } catch (error) {
         logger.error(`Error loading entries: ${error}`);
       }
