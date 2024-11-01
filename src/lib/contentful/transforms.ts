@@ -4,69 +4,48 @@ import type {
   TypeProductVariantsSkeleton,
 } from "@/types/contentful";
 import type { ImageAsset, Product, ProductVariant } from "@/schemas/contentful";
-import { createCache } from "@/utils/cache";
-import { generateHash } from "@/utils/hash";
 
-const assetCache = createCache<ImageAsset>();
-const productCache = createCache<Product>();
-const variantCache = createCache<ProductVariant>();
-
-// Helper functions
+// Helper for transforming Contentful asset to ImageAsset
 function transformAsset(
-  asset?: Asset<"WITHOUT_UNRESOLVABLE_LINKS">,
-): ImageAsset | undefined {
-  if (!asset?.fields?.file?.url) return undefined;
+  asset: Asset<"WITHOUT_UNRESOLVABLE_LINKS">,
+): ImageAsset {
+  if (!asset?.fields?.file?.url) {
+    throw new Error(`Invalid asset: ${asset?.sys?.id}`);
+  }
 
-  const hash = generateHash(asset);
-  const cached = assetCache.get(asset.sys.id, hash);
-  if (cached) return cached;
-
-  const transformed = {
+  return {
     url: `https:${asset.fields.file.url}`,
-    title: typeof asset.fields.title === "string" ? asset.fields.title : "",
-    description:
-      typeof asset.fields.description === "string"
-        ? asset.fields.description
-        : "",
+    title: asset.fields.title || "",
+    description: asset.fields.description || "",
     width: asset.fields.file.details?.image?.width,
     height: asset.fields.file.details?.image?.height,
   };
-
-  assetCache.set(asset.sys.id, transformed, hash);
-  return transformed;
 }
 
+// Helper for transforming variants
 function transformVariant(
   variant: Entry<TypeProductVariantsSkeleton, "WITHOUT_UNRESOLVABLE_LINKS">,
 ): ProductVariant {
-  const hash = generateHash(variant);
-  const cached = variantCache.get(variant.sys.id, hash);
-  if (cached) return cached;
-
   return {
     id: variant.sys.id,
     name: variant.fields.variantName,
     color: variant.fields.color,
-    price: variant.fields.priceWithoutVat,
-    stock: variant.fields.stock,
     photos: variant.fields.photos
-      .map((photo) => transformAsset(photo))
-      .filter((photo): photo is ImageAsset => photo !== undefined),
+      .filter((photo): photo is Asset<"WITHOUT_UNRESOLVABLE_LINKS"> => !!photo)
+      .map(transformAsset),
+    stock: variant.fields.stock,
+    price: variant.fields.priceWithoutVat,
     sku: variant.fields.sku,
     displayOrder: variant.fields.displayOrder,
     isDefault: variant.fields.isDefault,
   };
 }
 
-export function transformProduct(
+// Main transform function
+export function transformContentfulToProduct(
   entry: Entry<TypeProductSkeleton, "WITHOUT_UNRESOLVABLE_LINKS">,
 ): Product {
-  const hash = generateHash(entry);
-  const cached = productCache.get(entry.sys.id, hash);
-  if (cached) return cached;
-
-  const mainPhoto = transformAsset(entry.fields.mainPhoto);
-  if (!mainPhoto) {
+  if (!entry.fields.mainPhoto) {
     throw new Error(`Product ${entry.sys.id} has no main image`);
   }
 
@@ -78,17 +57,24 @@ export function transformProduct(
     id: entry.sys.id,
     slug: entry.fields.slug,
     title: entry.fields.title,
-    mainPhoto,
+    mainPhoto: transformAsset(entry.fields.mainPhoto),
     displayMode: entry.fields.displayMode,
     variants: entry.fields.variants
-      .map((variant) => variant && transformVariant(variant))
-      .filter((variant): variant is ProductVariant => variant !== undefined),
+      .filter(
+        (
+          variant,
+        ): variant is Entry<
+          TypeProductVariantsSkeleton,
+          "WITHOUT_UNRESOLVABLE_LINKS"
+        > => !!variant,
+      )
+      .map(transformVariant),
     features: entry.fields.features,
     description: entry.fields.description,
     specifications,
     videoUrl: entry.fields.embeddedYouTubeLink,
     order: entry.fields.order,
-    isActive: entry.fields.isActive,
+    isActive: entry.fields.isActive ?? true,
     categories: entry.fields.category,
   };
 }
