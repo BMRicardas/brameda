@@ -4,13 +4,12 @@ import { Image } from "astro:assets";
 import Link from "../ui/link.astro";
 import Container from "../ui/container.astro";
 import Section from "../ui/section.astro";
-import type { ProductResponseType } from "@/types/contentful-types";
 import Price from "../ui/price.astro";
 import Select from "../ui/select.astro";
-import { urlFactory } from "@/utils/common";
+import type { Product } from "@/schemas/contentful";
 
 type Props = {
-  product: ProductResponseType["fields"];
+  product: Product;
 };
 
 const { product }: Props = Astro.props;
@@ -21,41 +20,41 @@ const {
   displayMode,
   description,
   specifications,
-  embeddedYouTubeLink,
+  videoUrl,
+  mainPhoto,
 } = product;
 
-const mainImageSrc = urlFactory(
-  variants[0]?.fields.photos[0]?.fields.file?.url ?? ""
-);
+const mainPhotoSrc = mainPhoto.url;
 ---
 
 <main id="main">
   <Container>
     <Section title="Produktai">
-      <section id="product" class="container">
+      <section class="container" id="product">
         <article>
           <div class="product__media">
             <div class="product__img">
               <Image
-                src={mainImageSrc}
-                id="product__thumbs--current"
                 alt="Avalynę padengiantys įrenginiai"
                 class="main-image"
+                data-color={variants[0]?.color}
+                id="product__thumbs--current"
                 inferSize
+                src={mainPhotoSrc}
               />
             </div>
 
             <ul class="product__thumbs">
               {
                 variants.map((variant) =>
-                  variant?.fields?.photos?.map((photo) => (
+                  variant.photos?.map((photo) => (
                     <li class="product__thumbs__img-container">
                       <Image
-                        src={urlFactory(photo?.fields?.file?.url ?? "")}
-                        alt={`Avalynę padengiantys įrenginiai - ${variant.fields.color}`}
+                        alt={`Avalynę padengiantys įrenginiai - ${variant.color}`}
                         class="product__thumbs__img"
-                        data-color={variant?.fields?.color}
+                        data-color={variant.color}
                         inferSize
+                        src={photo.url}
                       />
                     </li>
                   ))
@@ -64,13 +63,13 @@ const mainImageSrc = urlFactory(
             </ul>
 
             {
-              embeddedYouTubeLink && (
+              videoUrl && (
                 <div class="product__video">
                   <iframe
-                    src={embeddedYouTubeLink}
-                    style="border: 0;"
                     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen
+                    allowfullscreen={true}
+                    src={videoUrl}
+                    title={`Video of ${title}`}
                   />
                 </div>
               )
@@ -79,7 +78,7 @@ const mainImageSrc = urlFactory(
 
           <h3 class="product__title">{title}</h3>
           <div class="price">
-            <Price price={Number(variants[0]?.fields?.priceWithoutVat)} />
+            <Price price={Number(variants[0]?.price)} />
           </div>
           <div class="product__desc">
             <p>
@@ -92,7 +91,7 @@ const mainImageSrc = urlFactory(
               displayMode === "all_variants" ? (
                 <li>
                   <p>Spalva</p>
-                  <p id="color">{variants[0]?.fields.color}</p>
+                  <p id="color">{variants[0]?.color}</p>
                 </li>
               ) : (
                 <li class="select">
@@ -126,7 +125,7 @@ const mainImageSrc = urlFactory(
     margin-bottom: var(--default-spacing);
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto 1fr auto;
+    grid-template-rows: auto auto 1fr 1fr auto;
     align-items: start;
     grid-gap: 5rem;
     grid-template-areas:
@@ -159,6 +158,7 @@ const mainImageSrc = urlFactory(
     & .main-image {
       width: 100%;
       height: 100%;
+      min-height: 38.8rem;
       max-height: 38.8rem;
       object-fit: contain;
       padding: var(--default-spacing);
@@ -284,20 +284,53 @@ const mainImageSrc = urlFactory(
 
 <script>
   const imgElements = document.querySelectorAll("img[data-color]");
+  const selectElement = document.querySelector("select");
+  const current = document.querySelector(
+    "#product__thumbs--current"
+  ) as HTMLImageElement;
+  const thumbs = document.querySelectorAll(".product__thumbs img");
 
-  const selectElement = document.querySelector("select") as HTMLSelectElement;
-
-  selectElement.addEventListener("change", (event: Event) => {
+  selectElement?.addEventListener("change", (event: Event) => {
     const target = event.target as HTMLSelectElement;
     const colorValue = target.value;
 
-    const imgElement = document.querySelector(
+    const selectedImage = document.querySelector(
       `img[data-color="${colorValue}"]`
-    ) as HTMLImageElement;
-
-    if (imgElement) {
-      imgElement.click();
+    );
+    if (selectedImage) {
+      current.src = (selectedImage as HTMLImageElement).src;
+      current.setAttribute("data-color", colorValue);
     }
+
+    imgElements.forEach((imgElement) => {
+      if (imgElement.getAttribute("data-color") === colorValue) {
+        imgElement.style.display = "block";
+      } else {
+        imgElement.style.display = "none";
+      }
+    });
+
+    // const imgElement = document.querySelector(
+    //   `img[data-color="${colorValue}"]`
+    // ) as HTMLImageElement;
+
+    // if (imgElement) {
+    //   imgElement.click();
+    // }
+  });
+
+  imgElements.forEach((imgElement) => {
+    imgElement.addEventListener("click", () => {
+      const colorValue = imgElement.getAttribute("data-color");
+
+      const selectedColor = selectElement?.value;
+
+      if (colorValue === selectedColor) {
+        return imgElement;
+      } else {
+        return;
+      }
+    });
   });
 
   imgElements.forEach((imgElement) => {
@@ -312,11 +345,6 @@ const mainImageSrc = urlFactory(
     });
   });
 
-  const current = document.querySelector(
-    "#product__thumbs--current"
-  ) as HTMLImageElement;
-  const thumbs = document.querySelectorAll(".product__thumbs img");
-
   const thumbClick = (event: Event) => {
     current.src = (event.target as HTMLImageElement).src;
   };
@@ -324,4 +352,14 @@ const mainImageSrc = urlFactory(
   thumbs.forEach((thumb) =>
     thumb.addEventListener("click", thumbClick as EventListener)
   );
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const initialColor = selectElement.value;
+    imgElements.forEach((imgElement) => {
+      imgElement.style.display =
+        imgElement.getAttribute("data-color") === initialColor
+          ? "block"
+          : "none";
+    });
+  });
 </script>

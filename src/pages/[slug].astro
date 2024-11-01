@@ -1,23 +1,25 @@
 ---
+import { getCollection } from "astro:content";
+
 import ProductPage from "@/components/product/product-page.astro";
 import Layout from "@/layouts/Layout.astro";
 
-import { getAllProducts } from "@/lib/contentful";
-
 export async function getStaticPaths() {
-  const items = await getAllProducts();
+  const products = await getCollection("products");
 
-  return items.map((item) => ({
+  return products.map(({ data: product }) => ({
     params: {
-      slug: item.slug,
+      slug: product.slug,
     },
     props: {
-      product: item,
+      product: product,
     },
   }));
 }
+
+const { product } = Astro.props;
 ---
 
-<Layout title={Astro.props.product.title}>
-  <ProductPage product={Astro.props.product} />
+<Layout title={product.title}>
+  <ProductPage product={product} />
 </Layout>
