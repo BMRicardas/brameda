@@ -5,24 +5,16 @@ import type {
 } from "@/types/contentful";
 import type { ImageAsset, Product, ProductVariant } from "@/schemas/contentful";
 
-// Helper for transforming Contentful asset to ImageAsset
 function transformAsset(
-  asset: Asset<"WITHOUT_UNRESOLVABLE_LINKS">,
-): ImageAsset {
-  if (!asset?.fields?.file?.url) {
-    throw new Error(`Invalid asset: ${asset?.sys?.id}`);
-  }
+  asset?: Asset<"WITHOUT_UNRESOLVABLE_LINKS">,
+): ImageAsset | undefined {
+  if (!asset?.fields?.file?.url) return undefined;
 
   return {
     url: `https:${asset.fields.file.url}`,
-    title: asset.fields.title || "",
-    description: asset.fields.description || "",
-    width: asset.fields.file.details?.image?.width,
-    height: asset.fields.file.details?.image?.height,
   };
 }
 
-// Helper for transforming variants
 function transformVariant(
   variant: Entry<TypeProductVariantsSkeleton, "WITHOUT_UNRESOLVABLE_LINKS">,
 ): ProductVariant {
@@ -30,23 +22,23 @@ function transformVariant(
     id: variant.sys.id,
     name: variant.fields.variantName,
     color: variant.fields.color,
-    photos: variant.fields.photos
-      .filter((photo): photo is Asset<"WITHOUT_UNRESOLVABLE_LINKS"> => !!photo)
-      .map(transformAsset),
-    stock: variant.fields.stock,
     price: variant.fields.priceWithoutVat,
+    stock: variant.fields.stock,
+    photos: variant.fields.photos
+      .map((photo) => transformAsset(photo))
+      .filter((photo): photo is ImageAsset => photo !== undefined),
     sku: variant.fields.sku,
     displayOrder: variant.fields.displayOrder,
     isDefault: variant.fields.isDefault,
   };
 }
 
-// Main transform function
-export function transformContentfulToProduct(
+export function transformProduct(
   entry: Entry<TypeProductSkeleton, "WITHOUT_UNRESOLVABLE_LINKS">,
 ): Product {
-  if (!entry.fields.mainPhoto) {
-    throw new Error(`Product ${entry.sys.id} has no main image`);
+  const mainPhoto = transformAsset(entry.fields.mainPhoto);
+  if (!mainPhoto) {
+    throw new Error(`Product ${entry.fields.title} has no main image`);
   }
 
   const specifications = entry.fields.specifications
@@ -57,24 +49,17 @@ export function transformContentfulToProduct(
     id: entry.sys.id,
     slug: entry.fields.slug,
     title: entry.fields.title,
-    mainPhoto: transformAsset(entry.fields.mainPhoto),
+    mainPhoto,
     displayMode: entry.fields.displayMode,
     variants: entry.fields.variants
-      .filter(
-        (
-          variant,
-        ): variant is Entry<
-          TypeProductVariantsSkeleton,
-          "WITHOUT_UNRESOLVABLE_LINKS"
-        > => !!variant,
-      )
-      .map(transformVariant),
+      .map((variant) => variant && transformVariant(variant))
+      .filter((variant): variant is ProductVariant => variant !== undefined),
     features: entry.fields.features,
     description: entry.fields.description,
     specifications,
     videoUrl: entry.fields.embeddedYouTubeLink,
     order: entry.fields.order,
-    isActive: entry.fields.isActive ?? true,
+    isActive: entry.fields.isActive,
     categories: entry.fields.category,
   };
 }
