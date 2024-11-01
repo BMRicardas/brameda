@@ -25,21 +25,12 @@ export default defineConfig({
     },
   },
   image: {
-    domains: ["images.ctfassets.net"],
-    remotePatterns: [
-      {
-        protocol: "https",
-      },
-    ],
+    remotePatterns: [{ protocol: "http" }, { protocol: "https" }],
   },
   integrations: [
     robotsTxt({
-      policy: [
-        {
-          userAgent: "*",
-          crawlDelay: 10,
-        },
-      ],
+      policy: [{ userAgent: "*", allow: "/" }],
+      sitemap: "/sitemap-index.xml",
     }),
   ],
 });
