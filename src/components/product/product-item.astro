@@ -2,23 +2,22 @@
 import { Image } from "astro:assets";
 import Link from "../ui/link.astro";
 
-import { urlFactory } from "@/utils/common";
-import type { ProductResponseType } from "@/types/contentful-types";
+import type { Product } from "@/schemas/contentful";
 
 type Props = {
-  product: ProductResponseType["fields"];
+  product: Product;
 };
 
 const { product } = Astro.props;
 
 const { title, features, mainPhoto, slug } = product;
 
-const imageSrc = urlFactory(mainPhoto?.fields.file?.url ?? "");
+const imageSrc = mainPhoto.url;
 ---
 
 <article>
-  <a href={slug} class="image-container">
-    <Image src={imageSrc} alt={title} inferSize class="image" />
+  <a class="image-container" href={slug}>
+    <Image alt={title} class="image" inferSize src={imageSrc} />
   </a>
   <div>
     <h3>{title}</h3>
