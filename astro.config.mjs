@@ -27,7 +27,7 @@ export default defineConfig({
   image: {
     remotePatterns: [{ protocol: "http" }, { protocol: "https" }],
   },
-  site: ["http://www.brameda.lt", "https://www.brameda.lt"],
+  site: "http://www.brameda.lt",
   integrations: [
     sitemap({
       xslURL: "/sitemap.xsl",
