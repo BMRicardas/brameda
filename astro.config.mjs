@@ -1,6 +1,6 @@
 import { defineConfig, envField } from "astro/config";
 
-import robotsTxt from "astro-robots-txt";
+import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
@@ -27,10 +27,10 @@ export default defineConfig({
   image: {
     remotePatterns: [{ protocol: "http" }, { protocol: "https" }],
   },
+  site: ["http://www.brameda.lt", "https://www.brameda.lt"],
   integrations: [
-    robotsTxt({
-      policy: [{ userAgent: "*", allow: "/" }],
-      sitemap: "/sitemap-index.xml",
+    sitemap({
+      xslURL: "/sitemap.xsl",
     }),
   ],
 });
