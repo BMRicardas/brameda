@@ -35,7 +35,7 @@ const mainPhotoSrc = mainPhoto.url;
           <div class="product__media">
             <div class="product__img">
               <Image
-                alt="Avalynę padengiantys įrenginiai"
+                alt={title}
                 class="main-image"
                 data-color={variants[0]?.color}
                 id="product__thumbs--current"
@@ -50,7 +50,7 @@ const mainPhotoSrc = mainPhoto.url;
                   variant.photos?.map((photo) => (
                     <li class="product__thumbs__img-container">
                       <Image
-                        alt={`Avalynę padengiantys įrenginiai - ${variant.color}`}
+                        alt={`${title} - ${variant.color}`}
                         class="product__thumbs__img"
                         data-color={variant.color}
                         inferSize
