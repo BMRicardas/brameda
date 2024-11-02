@@ -1,10 +1,10 @@
 import type { Loader, LoaderContext } from "astro/loaders";
 import { contentfulClient } from "./client";
 import { transformProduct } from "./transforms";
-import type { TypeProductSkeleton } from "@/types/contentful";
+import type { TypeProductSkeleton } from "@/types/contentful.types";
 import { CONTENT_TYPES, DEFAULT_INCLUDE_LEVEL } from "./constants";
 import type { CreateClientParams } from "contentful";
-import { productSchema } from "@/schemas/contentful";
+import { productSchema } from "@/schemas/contentful-transformed.types";
 
 export function contentfulLoader(options: CreateClientParams): Loader {
   if (!options.space || !options.accessToken) {

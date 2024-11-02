@@ -2,8 +2,12 @@ import type { Asset, Entry } from "contentful";
 import type {
   TypeProductSkeleton,
   TypeProductVariantsSkeleton,
-} from "@/types/contentful";
-import type { ImageAsset, Product, ProductVariant } from "@/schemas/contentful";
+} from "@/types/contentful.types";
+import type {
+  ImageAsset,
+  Product,
+  ProductVariant,
+} from "@/schemas/contentful-transformed.types";
 
 function transformAsset(
   asset?: Asset<"WITHOUT_UNRESOLVABLE_LINKS">,

@@ -1,5 +1,5 @@
 import { defineCollection } from "astro:content";
-import { productSchema } from "@/schemas/contentful";
+import { productSchema } from "@/schemas/contentful-transformed.types";
 import { contentfulLoader } from "@/lib/contentful/loader";
 import { contentfulConfig } from "@/lib/contentful/constants";
 
