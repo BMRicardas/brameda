@@ -40,7 +40,4 @@ export default defineConfig({
       xslURL: "/sitemap.xsl",
     }),
   ],
-  build: {
-    format: "file",
-  },
 });
