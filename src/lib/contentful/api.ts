@@ -22,24 +22,24 @@ export async function getAllProducts() {
 }
 
 // Get single product by slug
-// export async function getProductBySlug(slug: string) {
-//   try {
-//     const response = await contentfulClient.getEntries<TypeProductSkeleton>({
-//       content_type: CONTENT_TYPES.PRODUCT,
-//       "fields.slug": slug,
-//       include: DEFAULT_INCLUDE_LEVEL,
-//     });
+export async function getProductBySlug(slug: string) {
+  try {
+    const response = await contentfulClient.getEntries<TypeProductSkeleton>({
+      content_type: CONTENT_TYPES.PRODUCT,
+      "fields.slug": slug,
+      include: DEFAULT_INCLUDE_LEVEL,
+    });
 
-//     const item = response.items[0];
+    const item = response.items[0];
 
-//     if (!item) {
-//       throw new Error(`Product with slug ${slug} not found`);
-//     }
-//     const convertedResponse = transformProduct(item);
+    if (!item) {
+      throw new Error(`Product with slug ${slug} not found`);
+    }
+    const convertedResponse = transformProduct(item);
 
-//     return convertedResponse;
-//   } catch (error) {
-//     console.error("Error fetching product by slug:", error);
-//     throw error;
-//   }
-// }
+    return convertedResponse;
+  } catch (error) {
+    console.error("Error fetching product by slug:", error);
+    throw error;
+  }
+}

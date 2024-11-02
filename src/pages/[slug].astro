@@ -13,14 +13,15 @@ export async function getStaticPaths() {
       slug: product.slug,
     },
     props: {
-      product: product,
+      slug: product.slug,
+      title: product.title,
     },
   }));
 }
 
-const { product } = Astro.props;
+const { slug, title } = Astro.props;
 ---
 
-<Layout title={product.title}>
-  <ProductPage product={product} />
+<Layout title={title}>
+  <ProductPage slug={slug} />
 </Layout>

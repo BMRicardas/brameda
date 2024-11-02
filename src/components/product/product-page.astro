@@ -1,18 +1,22 @@
 ---
 import { Image } from "astro:assets";
 
+import { getProductBySlug } from "@/lib/contentful/api";
+
 import Link from "../ui/link.astro";
 import Container from "../ui/container.astro";
 import Section from "../ui/section.astro";
 import Price from "../ui/price.astro";
 import Select from "../ui/select.astro";
-import type { Product } from "@/schemas/contentful-transformed.types";
+// import type { Product } from "@/schemas/contentful-transformed.types";
 
 type Props = {
-  product: Product;
+  slug: string;
 };
 
-const { product }: Props = Astro.props;
+const { slug }: Props = Astro.props;
+
+const product = await getProductBySlug(slug);
 
 const {
   title,
