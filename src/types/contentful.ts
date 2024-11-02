@@ -6,7 +6,7 @@ import type {
   LocaleCode,
 } from "contentful";
 
-// Product variant
+// Product variant types
 
 export interface TypeProductVariantsFields {
   variantName: EntryFieldTypes.Symbol;
@@ -57,7 +57,7 @@ export type TypeProductVariantsWithAllLocalesAndWithoutUnresolvableLinksResponse
   Locales
 >;
 
-// Product
+// Product types
 
 export interface TypeProductFields {
   slug: EntryFieldTypes.Symbol;
