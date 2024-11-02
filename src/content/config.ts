@@ -5,7 +5,6 @@ import { contentfulConfig } from "@/lib/contentful/constants";
 
 const products = defineCollection({
   loader: contentfulLoader(contentfulConfig),
-  // type: "data",
   schema: productSchema,
 });
 
