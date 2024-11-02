@@ -1,13 +1,14 @@
 ---
-import { getCollection } from "astro:content";
+// import { getCollection } from "astro:content";
 
 import ProductPage from "@/components/product/product-page.astro";
 import Layout from "@/layouts/Layout.astro";
+import { getAllProducts } from "@/lib/contentful/api";
 
 export async function getStaticPaths() {
-  const products = await getCollection("products");
+  const products = await getAllProducts();
 
-  return products.map(({ data: product }) => ({
+  return products.map((product) => ({
     params: {
       slug: product.slug,
     },
