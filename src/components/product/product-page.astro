@@ -1,22 +1,26 @@
 ---
 import { Image } from "astro:assets";
 
-import { getProductBySlug } from "@/lib/contentful/api";
+// import { getProductBySlug } from "@/lib/contentful/api";
 
 import Link from "../ui/link.astro";
 import Container from "../ui/container.astro";
 import Section from "../ui/section.astro";
 import Price from "../ui/price.astro";
 import Select from "../ui/select.astro";
+import { getEntry } from "astro:content";
+import type { Product } from "@/schemas/contentful-transformed.types";
 // import type { Product } from "@/schemas/contentful-transformed.types";
 
 type Props = {
-  slug: string;
+  id: string;
 };
 
-const { slug }: Props = Astro.props;
+const { id }: Props = Astro.props;
 
-const product = await getProductBySlug(slug);
+const { data: product } = await getEntry("products", id);
+
+console.log({ product });
 
 const {
   title,
@@ -136,7 +140,7 @@ const allVariantPhotos = variants.flatMap(
     margin-bottom: var(--default-spacing);
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto 1fr 1fr auto;
+    grid-template-rows: auto auto auto 1fr auto;
     align-items: start;
     grid-gap: 5rem;
     grid-template-areas:
