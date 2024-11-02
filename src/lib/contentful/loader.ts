@@ -4,6 +4,7 @@ import { transformProduct } from "./transforms";
 import type { TypeProductSkeleton } from "@/types/contentful";
 import { CONTENT_TYPES, DEFAULT_INCLUDE_LEVEL } from "./constants";
 import type { CreateClientParams } from "contentful";
+import { productSchema } from "@/schemas/contentful";
 
 export function contentfulLoader(options: CreateClientParams): Loader {
   if (!options.space || !options.accessToken) {
@@ -65,5 +66,6 @@ export function contentfulLoader(options: CreateClientParams): Loader {
         logger.error(`Error loading entries: ${error}`);
       }
     },
+    schema: productSchema,
   };
 }
