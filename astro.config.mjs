@@ -26,6 +26,10 @@ export default defineConfig({
   },
   image: {
     remotePatterns: [{ protocol: "http" }, { protocol: "https" }],
+    service: {
+      entrypoint: "astro/assets/services/sharp",
+    },
+    domains: ["images.ctfassets.net"],
   },
   site: "http://www.brameda.lt",
   integrations: [
