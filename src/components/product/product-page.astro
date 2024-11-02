@@ -58,11 +58,10 @@ const allVariantPhotos = variants.flatMap(
               {
                 allVariantPhotos.map((photo) => (
                   <li class="product__thumbs__img-container">
-                    <Image
+                    <img
                       alt={photo.alt}
                       class="product__thumbs__img"
                       data-color={photo.color}
-                      inferSize
                       src={photo.url}
                     />
                   </li>
