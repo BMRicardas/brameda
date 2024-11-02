@@ -25,7 +25,10 @@ export default defineConfig({
     },
   },
   image: {
-    remotePatterns: [{ protocol: "http" }, { protocol: "https" }],
+    remotePatterns: [
+      { protocol: "http", hostname: "**.ctfassets.net" },
+      { protocol: "https", hostname: "**.ctfassets.net" },
+    ],
     service: {
       entrypoint: "astro/assets/services/sharp",
     },
