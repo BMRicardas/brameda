@@ -4,9 +4,17 @@ import { defineConfig, envField } from "astro/config";
 // https://astro.build/config
 export default defineConfig({
   build: {
-    inlineStylesheets: "always",
+    assets: true,
+    inlineStylesheets: "auto",
   },
   output: "static",
+  vite: {
+    css: {
+      postcss: {
+        plugins: [require("postcss-nesting"), require("autoprefixer")],
+      },
+    },
+  },
   env: {
     schema: {
       CONTENTFUL_SPACE_ID: envField.string({
