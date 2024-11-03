@@ -6,8 +6,12 @@ export default [
   ...eslintPluginAstro.configs["flat/jsx-a11y-strict"],
   {
     rules: {
-      // override/add rules settings here, such as:
-      // "astro/no-set-html-directive": "error"
+      "sort-imports": [
+        "error",
+        {
+          allowSeparatedGroups: true,
+        },
+      ],
     },
   },
 ];
