@@ -1,14 +1,15 @@
 ---
-import Section from "./ui/section.astro";
 import ContactForm from "./contact-form.astro";
+import BlockTitle from "./ui/block-title.astro";
 ---
 
-<Section mode="dark" sectionId="contacts" title="kontaktai">
-  <article>
-    <address>
-      <h4>UAB „Brameda“</h4>
-      <ul>
-        <li>
+<address id="contacts" class="contacts">
+  <BlockTitle title="Kontaktai" appearanceMode="dark" />
+  <div class="contactsContainer">
+    <div>
+      <h4 class="title">UAB „Brameda“</h4>
+      <ul class="contacts-list">
+        <li class="contacts-list-item">
           <p>
             <a
               href="https://maps.google.com/?q=Senamiesčio g. 102-201, 35116 Panevėžys, Lietuva"
@@ -18,70 +19,65 @@ import ContactForm from "./contact-form.astro";
             >
           </p>
         </li>
-        <li>
+        <li class="contacts-list-item">
           <p>Telefonas: <a href="tel:+37069936437">370 699 36437</a></p>
         </li>
-        <li>
+        <li class="contacts-list-item">
           <p>
             El.paštas:
             <a href="mailto:info@brameda.lt">info@brameda.lt</a>
           </p>
         </li>
       </ul>
-    </address>
+    </div>
     <ContactForm />
-  </article>
-</Section>
+  </div>
+</address>
 
 <style>
-  article {
+  .contacts {
+    background-color: var(--color-grey-dark2);
+    color: var(--color-grey-light);
+    padding: var(--default-spacing);
+  }
+  .contactsContainer {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--default-spacing);
   }
 
-  article address h4 {
+  .title {
     font-size: 1.7rem;
     font-weight: 500;
-    color: var(--color-grey-light2);
+    color: var(--color-grey-light);
   }
 
-  article address ul {
-    list-style: none;
+  .contacts-list {
     padding: 2.5rem 0;
   }
 
-  article address ul li {
+  .contacts-list-item a:any-link {
+    color: var(--color-grey-light);
+    text-decoration: none;
     padding: 0.25rem;
   }
 
-  article address ul li a:link,
-  article address ul li a:visited {
-    color: var(--color-grey-light2);
-    text-decoration: none;
-  }
-
-  article address ul li a:hover,
-  article div ul li a:active {
+  .contacts-list-item a:hover,
+  .contacts-list-item a:active {
     text-decoration: underline;
   }
 
-  article address ul li p {
-    color: var(--color-grey-light2);
+  .contacts-list-item p {
+    color: var(--color-grey-light);
   }
 
   @media only screen and (max-width: 50em) {
-    article {
+    .contactsContainer {
       grid-template-columns: auto;
-
-      /* TODO is this a hack? */
-      & :first-child {
-        order: 2;
-      }
-
-      & > address {
-        text-align: center;
-      }
+    }
+    .contactsContainer :first-child {
+      order: 2;
+      text-align: center;
     }
   }
 </style>

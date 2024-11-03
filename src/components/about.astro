@@ -1,57 +1,26 @@
 ---
-import Section from "./ui/section.astro";
+import Article from "./ui/article.astro";
 ---
 
-<Section mode="light" sectionId="about" title="Apie mus">
-  <article>
-    <p>
-      1991 m. kovo mėn. 27 d. įkurta individuali A.Brazdžiaus įmonė. Įmonės
-      pagrindinė veikla – didmeninė prekyba medicininės paskirties priemonėmis.
-      Nuo 2008 m. rugsėjo mėn. 23 d. perregistruota į UAB „Brameda“.
-      <br />
-      <br />
-      Platiname pažangias avalynę padengiančias mašinas, firmos Swimsuit Dryers Company
-      maudymosi kostiumėlių džiovintuvus, modernius pėdų dezinfekatorius.
-    </p>
-  </article>
-</Section>
+<Article appearanceMode="dark" articleId="about" title="Apie mus">
+  <p class="about-paragraph">
+    1991 m. kovo mėn. 27 d. įkurta individuali A.Brazdžiaus įmonė. Įmonės
+    pagrindinė veikla &ndash; didmeninė prekyba medicininės paskirties
+    priemonėmis. Nuo 2008 m. rugsėjo mėn. 23 d. perregistruota į UAB „Brameda“.
+    <br />
+    <br />
+    Platiname pažangias avalynę padengiančias mašinas, firmos Swimsuit Dryers Company
+    maudymosi kostiumėlių džiovintuvus, modernius pėdų dezinfekatorius.
+  </p>
+</Article>
 
 <style>
-  #about {
-    padding-bottom: var(--default-spacing);
-  }
-
-  #about article {
-    display: flex;
-  }
-
-  #about article > * {
-    flex: 1;
-  }
-
   /* MEDIA QUERIES */
-
-  /* 800px */
-  @media only screen and (max-width: 50em) {
-    #about article {
-      flex-direction: column;
-    }
-
-    #about article div {
-      padding-top: var(--default-spacing);
-      border-top: 1px solid var(--color-divider);
-      margin-top: var(--default-spacing);
-    }
-  }
 
   /* 448px */
   @media only screen and (max-width: 28em) {
-    article div:nth-child(2) {
-      padding: var(--default-spacing) 1rem;
-    }
-
-    #about article div p {
-      padding: 1rem 3rem;
+    .about-paragraph {
+      padding: 0.5rem 1rem;
     }
   }
 </style>
