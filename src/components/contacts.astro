@@ -1,37 +1,40 @@
 ---
-import ContactForm from "./contact-form.astro";
 import BlockTitle from "./ui/block-title.astro";
+import ContactForm from "./contact-form.astro";
+import Container from "./ui/container.astro";
 ---
 
-<address id="contacts" class="contacts">
-  <BlockTitle title="Kontaktai" appearanceMode="dark" />
-  <div class="contactsContainer">
-    <div>
-      <h4 class="title">UAB „Brameda“</h4>
-      <ul class="contacts-list">
-        <li class="contacts-list-item">
-          <p>
-            <a
-              href="https://maps.google.com/?q=Senamiesčio g. 102-201, 35116 Panevėžys, Lietuva"
-              rel="noopener noreferrer"
-              target="_blank"
-              >Senamiesčio g. 102-201,<br />35116 Panevėžys,<br />Lietuva</a
-            >
-          </p>
-        </li>
-        <li class="contacts-list-item">
-          <p>Telefonas: <a href="tel:+37069936437">370 699 36437</a></p>
-        </li>
-        <li class="contacts-list-item">
-          <p>
-            El.paštas:
-            <a href="mailto:info@brameda.lt">info@brameda.lt</a>
-          </p>
-        </li>
-      </ul>
+<address class="contacts" id="contacts">
+  <Container>
+    <BlockTitle appearanceMode="dark" title="Kontaktai" />
+    <div class="contactsContainer">
+      <div>
+        <h4 class="title">UAB „Brameda“</h4>
+        <ul class="contacts-list">
+          <li class="contacts-list-item">
+            <p>
+              <a
+                href="https://maps.google.com/?q=Senamiesčio g. 102-201, 35116 Panevėžys, Lietuva"
+                rel="noopener noreferrer"
+                target="_blank"
+                >Senamiesčio g. 102-201,<br />35116 Panevėžys,<br />Lietuva</a
+              >
+            </p>
+          </li>
+          <li class="contacts-list-item">
+            <p>Telefonas: <a href="tel:+37069936437">370 699 36437</a></p>
+          </li>
+          <li class="contacts-list-item">
+            <p>
+              El.paštas:
+              <a href="mailto:info@brameda.lt">info@brameda.lt</a>
+            </p>
+          </li>
+        </ul>
+      </div>
+      <ContactForm />
     </div>
-    <ContactForm />
-  </div>
+  </Container>
 </address>
 
 <style>
