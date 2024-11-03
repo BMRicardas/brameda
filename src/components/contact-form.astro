@@ -1,9 +1,9 @@
 ---
-import { WEB3FORMS_PUBLIC_ACCESS_KEY } from "astro:env/server";
 import Button from "./ui/button.astro";
 import SubmitAnimation from "./ui/submit-animation.astro";
 import TextAreaInput from "./ui/text-area-input.astro";
 import TextInput from "./ui/text-input.astro";
+import { WEB3FORMS_PUBLIC_ACCESS_KEY } from "astro:env/server";
 ---
 
 <form
@@ -11,7 +11,8 @@ import TextInput from "./ui/text-input.astro";
   class="form"
   data-astro-reloadmethod="POST"
   id="form"
-  novalidate>
+  novalidate
+>
   <input name="access_key" type="hidden" value={WEB3FORMS_PUBLIC_ACCESS_KEY} />
   <input class="hidden" name="botcheck" style="display:none" type="checkbox" />
   <TextInput
@@ -38,7 +39,7 @@ import TextInput from "./ui/text-input.astro";
     type="email"
   />
   <TextAreaInput
-    data-invalid="false"
+    data-invalid={false}
     id="message"
     label="Žinutė"
     maxlength={500}
@@ -114,7 +115,7 @@ import TextInput from "./ui/text-input.astro";
     .btn-container {
       display: block;
 
-      button {
+      & .btn {
         width: 100%;
       }
     }
@@ -204,10 +205,10 @@ import TextInput from "./ui/text-input.astro";
           body: json,
         })
           .then((response) =>
-            response.json().then((json) => ({ ok: response.ok, json }))
+            response.json().then((json) => ({ ok: response.ok, json })),
           )
           .then(({ ok, json }) =>
-            ok ? handleSuccess() : handleError(json.message)
+            ok ? handleSuccess() : handleError(json.message),
           )
           .catch((error) => handleError(error.message))
           .finally(resetForm);
@@ -311,6 +312,6 @@ import TextInput from "./ui/text-input.astro";
         }, 3000);
       }
     },
-    { once: true }
+    { once: true },
   );
 </script>
