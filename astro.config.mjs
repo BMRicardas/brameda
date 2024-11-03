@@ -4,7 +4,7 @@ import { defineConfig, envField } from "astro/config";
 // https://astro.build/config
 export default defineConfig({
   build: {
-    inlineStylesheets: "never",
+    inlineStylesheets: "always",
   },
   output: "static",
   env: {
