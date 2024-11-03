@@ -1,8 +1,8 @@
 ---
 import { Image } from "astro:assets";
-import Link from "../ui/link.astro";
 
 import type { Product } from "@/schemas/contentful-transformed.types";
+import InternalLink from "../ui/internal-link.astro";
 
 type Props = {
   product: Product;
@@ -15,33 +15,40 @@ const { title, features, mainPhoto, slug } = product;
 const imageSrc = mainPhoto.url;
 ---
 
-<article>
+<article class="product-item">
   <a class="image-container" href={slug}>
     <Image alt={title} class="image" inferSize src={imageSrc} />
   </a>
   <div>
-    <h3>{title}</h3>
+    <h3 class="title">{title}</h3>
     <ul>
       {
         features.map((feature, i, a) => {
           const isLast = i === a.length - 1;
 
           return (
-            <li>
-              <p>{`${feature}${isLast ? "." : ";"}`}</p>
+            <li class="features-list">
+              <p class="feature">{`${feature}${isLast ? "." : ";"}`}</p>
             </li>
           );
         })
       }
     </ul>
-    <Link href={slug} linkType="internal"> Skaityti daugiau </Link>
+    <InternalLink href={slug}> Skaityti daugiau </InternalLink>
   </div>
 </article>
 
 <style>
-  article {
+  .product-item {
     display: flex;
     align-items: stretch;
+  }
+
+  .title {
+    font-size: 4rem;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: var(--default-spacing);
   }
 
   article:not(:last-child) {
@@ -67,44 +74,29 @@ const imageSrc = mainPhoto.url;
     }
   }
 
-  article > *:nth-child(2) {
+  .product-item > *:nth-child(2) {
     flex: 1;
     padding: var(--default-spacing);
     padding-right: 0;
   }
 
-  article h3 {
-    font-size: 4rem;
-    font-weight: 500;
-    line-height: 1.2;
-  }
-
-  article ul {
-    list-style: none;
-    padding: var(--default-spacing) 0;
-  }
-
-  article ul li {
-    padding-bottom: 1.5rem;
-  }
-
-  article p {
-    display: flex;
+  .features-list:last-child() {
+    margin-block-end: var(--default-spacing);
   }
 
   /* MEDIA QUERIES */
 
   /* 800px */
   @media only screen and (max-width: 50em) {
-    article {
+    .product-item {
       flex-direction: column;
     }
 
-    article div:nth-child(2) {
+    .product-item div:nth-child(2) {
       padding-right: var(--default-spacing);
     }
 
-    article {
+    .product-item {
       grid-template-columns: 1fr;
       grid-template-rows: auto;
       grid-template-areas:
@@ -118,7 +110,7 @@ const imageSrc = mainPhoto.url;
 
   /* 448px */
   @media only screen and (max-width: 28em) {
-    article div:nth-child(2) {
+    .product-item div:nth-child(2) {
       padding: var(--default-spacing) 1rem;
     }
   }

@@ -1,12 +1,11 @@
 ---
 import { Image } from "astro:assets";
 
-import Link from "@/components/ui/link.astro";
-import Container from "@/components/ui/container.astro";
-import Section from "@/components/ui/section.astro";
 import Price from "@/components/ui/price.astro";
 import Select from "@/components/ui/select.astro";
 import type { Product } from "@/schemas/contentful-transformed.types";
+import Container from "../ui/container.astro";
+import InternalLink from "../ui/internal-link.astro";
 
 type Props = {
   product: Product;
@@ -27,101 +26,95 @@ const {
 const mainPhotoSrc = mainPhoto.url;
 ---
 
-<main id="main">
-  <Container>
-    <Section title="Produktai">
-      <section class="container" id="product">
-        <article>
-          <div class="product__media">
-            <div class="product__img">
-              <Image
-                alt={title}
-                class="main-image"
-                data-color={variants[0]?.color}
-                id="product__thumbs--current"
-                inferSize
-                src={mainPhotoSrc}
-              />
-            </div>
+<Container>
+  <article>
+    <div class="product__media">
+      <div class="product__img">
+        <Image
+          alt={title}
+          class="main-image"
+          data-color={variants[0]?.color}
+          id="product__thumbs--current"
+          inferSize
+          src={mainPhotoSrc}
+        />
+      </div>
 
-            <ul class="product__thumbs">
-              {
-                variants.map((variant) =>
-                  variant.photos?.map((photo) => (
-                    <li class="product__thumbs__img-container">
-                      <Image
-                        alt={`${title} - ${variant.color}`}
-                        class="product__thumbs__img"
-                        data-color={variant.color}
-                        inferSize
-                        src={photo.url}
-                      />
-                    </li>
-                  ))
-                )
-              }
-            </ul>
+      <ul class="product__thumbs">
+        {
+          variants.map((variant) =>
+            variant.photos?.map((photo) => (
+              <li class="product__thumbs__img-container">
+                <Image
+                  alt={`${title} - ${variant.color}`}
+                  class="product__thumbs__img"
+                  data-color={variant.color}
+                  inferSize
+                  src={photo.url}
+                />
+              </li>
+            ))
+          )
+        }
+      </ul>
 
-            {
-              videoUrl && (
-                <div class="product__video">
-                  <iframe
-                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen={true}
-                    src={videoUrl}
-                    title={`Video of ${title}`}
-                  />
-                </div>
-              )
-            }
+      {
+        videoUrl && (
+          <div class="product__video">
+            <iframe
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen={true}
+              src={videoUrl}
+              title={`Video of ${title}`}
+            />
           </div>
+        )
+      }
+    </div>
 
-          <h3 class="product__title">{title}</h3>
-          <div class="price">
-            <Price price={Number(variants[0]?.price)} />
-          </div>
-          <div class="product__desc">
-            <p>
-              {description}
-            </p>
-          </div>
+    <h3 class="product__title">{title}</h3>
+    <div class="price">
+      <Price price={Number(variants[0]?.price)} />
+    </div>
+    <div class="product__desc">
+      <p>
+        {description}
+      </p>
+    </div>
 
-          <ul class="product__specs">
-            {
-              displayMode === "all_variants" ? (
-                <li>
-                  <p>Spalva</p>
-                  <p id="color">{variants[0]?.color}</p>
-                </li>
-              ) : (
-                <li class="select">
-                  <Select label="Pasirinkite spalvą" options={variants} />
-                </li>
-              )
-            }
+    <ul class="product__specs">
+      {
+        displayMode === "all_variants" ? (
+          <li>
+            <p>Spalva</p>
+            <p id="color">{variants[0]?.color}</p>
+          </li>
+        ) : (
+          <li class="select">
+            <Select label="Pasirinkite spalvą" options={variants} />
+          </li>
+        )
+      }
 
-            {
-              Object.entries(specifications ?? {}).map(([key, value]) => {
-                return (
-                  <li>
-                    <p>{key}</p>
-                    <p>{value}</p>
-                  </li>
-                );
-              })
-            }
-          </ul>
-          <div class="product__back">
-            <Link href="/" linkType="internal">Atgal</Link>
-          </div>
-        </article>
-      </section>
-    </Section>
-  </Container>
-</main>
+      {
+        Object.entries(specifications ?? {}).map(([key, value]) => {
+          return (
+            <li>
+              <p>{key}</p>
+              <p>{value}</p>
+            </li>
+          );
+        })
+      }
+    </ul>
+    <div class="product__back">
+      <InternalLink href="/">Atgal</InternalLink>
+    </div>
+  </article>
+</Container>
 
 <style>
-  #product article {
+  article {
     margin-bottom: var(--default-spacing);
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -136,7 +129,7 @@ const mainPhotoSrc = mainPhoto.url;
       "media back";
   }
 
-  #product article .product__media {
+  .product__media {
     grid-area: media;
   }
 
@@ -144,7 +137,7 @@ const mainPhotoSrc = mainPhoto.url;
     grid-area: price;
   }
 
-  #product article .product__img {
+  .product__img {
     grid-area: img;
     background: var(--color-grey-light);
     border-radius: 15px;
@@ -165,7 +158,7 @@ const mainPhotoSrc = mainPhoto.url;
     }
   }
 
-  #product article .product__img #product__thumbs--current {
+  #product__thumbs--current {
     padding: 0.5rem var(--default-spacing);
     margin: auto;
     max-width: 100%;
@@ -174,7 +167,7 @@ const mainPhotoSrc = mainPhoto.url;
     height: auto;
   }
 
-  #product article .product__thumbs {
+  .product__thumbs {
     grid-area: thumbs;
     display: grid;
     grid-gap: 1.5rem;
@@ -182,7 +175,7 @@ const mainPhotoSrc = mainPhoto.url;
     list-style: none;
   }
 
-  #product article .product__thumbs li {
+  .product__thumbs li {
     background: var(--color-grey-light);
     border-radius: 15px;
     cursor: pointer;
@@ -194,11 +187,11 @@ const mainPhotoSrc = mainPhoto.url;
     align-items: center;
   }
 
-  #product article .product__thumbs li:hover {
+  .product__thumbs li:hover {
     background: var(--color-divider);
   }
 
-  #product .product__thumbs__img {
+  .product__thumbs__img {
     padding: 1rem;
     width: 100%;
     height: 100%;
@@ -206,35 +199,22 @@ const mainPhotoSrc = mainPhoto.url;
     object-fit: contain;
   }
 
-  #product article .product__desc {
+  .product__desc {
     grid-area: desc;
   }
 
-  #product article .product__title {
+  .product__title {
     grid-area: title;
     font-size: 4rem;
     font-weight: 500;
     line-height: 1.2;
   }
 
-  #product article .product__desc > p {
-    /* padding: var(--default-spacing) 0; */
-  }
-
-  #product article .product__desc ul {
-    list-style: none;
-    padding-bottom: var(--default-spacing);
-  }
-
-  #product article .product__desc ul li {
-    padding-bottom: 1.5rem;
-  }
-
-  #product article .product__specs {
+  .product__specs {
     grid-area: specs;
   }
 
-  #product article .product__specs li {
+  .product__specs li {
     display: flex;
     justify-content: space-between;
 
@@ -243,24 +223,24 @@ const mainPhotoSrc = mainPhoto.url;
     }
   }
 
-  #product article .product__specs li:not(:last-child) {
+  .product__specs li:not(:last-child) {
     border-bottom: 1px solid var(--color-divider);
   }
 
-  #product article .product__video {
+  .product__video {
     grid-area: video;
     margin-top: 5rem;
     border-radius: 15px;
     overflow: clip;
   }
 
-  #product article .product__video iframe {
+  .product__video iframe {
     display: block;
     width: 100%;
     height: 35rem;
   }
 
-  #product article .product__back {
+  .product__back {
     grid-area: back;
   }
 
@@ -268,7 +248,7 @@ const mainPhotoSrc = mainPhoto.url;
 
   /* 800px */
   @media only screen and (max-width: 50em) {
-    #product article {
+    article {
       grid-template-columns: 1fr;
       grid-template-rows: auto;
       grid-template-areas:

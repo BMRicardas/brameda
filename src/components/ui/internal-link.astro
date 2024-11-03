@@ -1,24 +1,15 @@
 ---
-type LinkType = "internal" | "external";
 type Variant = "light" | "dark";
 
 type Props = {
-  linkType: LinkType;
   variant?: Variant;
   href: string;
 };
 
-const { linkType, variant = "light", href }: Props = Astro.props;
-
-const isExternal = linkType === "external";
+const { variant = "light", href }: Props = Astro.props;
 ---
 
-<a
-  class:list={["btn", { "btn-dark": variant === "dark" }]}
-  href={href}
-  rel={isExternal ? "noopener noreferrer" : ""}
-  target={isExternal ? "_blank" : ""}
->
+<a class:list={["btn", { "btn-dark": variant === "dark" }]} href={href}>
   <slot />
 </a>
 
