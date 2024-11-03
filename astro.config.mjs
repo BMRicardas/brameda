@@ -7,13 +7,13 @@ import postcssNesting from "postcss-nesting";
 // https://astro.build/config
 export default defineConfig({
   build: {
-    inlineStylesheets: "always",
+    inlineStylesheets: "never",
   },
   output: "static",
   vite: {
     build: {
       cssMinify: true,
-      cssCodeSplit: true,
+      cssCodeSplit: false,
     },
     css: {
       postcss: {
