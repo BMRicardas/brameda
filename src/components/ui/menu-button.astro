@@ -25,8 +25,7 @@ const { expanded } = Astro.props;
   id="menu-button"
   popovertarget="mobile-menu"
   popovertargetaction={expanded ? "hide" : "show"}
-  type="button"
->
+  type="button">
   <Image
     alt={expanded ? "Close menu icon" : "Menu icon"}
     class="menu-icon"
@@ -63,9 +62,6 @@ const { expanded } = Astro.props;
       animation-timeline: var(--animation-timeline);
       animation-range-start: var(--animation-range-start);
       animation-range-end: var(--animation-range-end);
-      #mobile-menu: has(: popover-open) {
-        right: 5rem;
-      }
     }
 
     .menu-toggle[aria-expanded="true"] {
