@@ -1,14 +1,16 @@
 ---
 import { getCollection } from "astro:content";
 
-// import { getAllProducts } from "@/lib/contentful/api";
 import ProductItem from "@/components/product/product-item.astro";
 import Section from "../ui/section.astro";
-import type { Product } from "@/schemas/contentful-transformed.types";
 
 const products = await getCollection("products");
 ---
 
 <Section mode="light" sectionId="products" title="Produktai">
-  {products.map(({ data: product }) => <ProductItem product={product} />)}
+  {
+    products.map(({ data }) => {
+      return <ProductItem product={data} />;
+    })
+  }
 </Section>

@@ -1,26 +1,18 @@
 ---
 import { Image } from "astro:assets";
 
-// import { getProductBySlug } from "@/lib/contentful/api";
-
 import Link from "../ui/link.astro";
 import Container from "../ui/container.astro";
 import Section from "../ui/section.astro";
 import Price from "../ui/price.astro";
 import Select from "../ui/select.astro";
-import { getEntry } from "astro:content";
 import type { Product } from "@/schemas/contentful-transformed.types";
-// import type { Product } from "@/schemas/contentful-transformed.types";
 
 type Props = {
-  id: string;
+  product: Product;
 };
 
-const { id }: Props = Astro.props;
-
-const { data: product } = await getEntry("products", id);
-
-console.log({ product });
+const { product }: Props = Astro.props;
 
 const {
   title,
@@ -33,16 +25,6 @@ const {
 } = product;
 
 const mainPhotoSrc = mainPhoto.url;
-
-// At the top of your component script
-const allVariantPhotos = variants.flatMap(
-  (variant) =>
-    variant.photos?.map((photo) => ({
-      url: photo.url,
-      alt: `${title} - ${variant.color}`,
-      color: variant.color,
-    })) ?? []
-);
 ---
 
 <main id="main">
@@ -64,16 +46,19 @@ const allVariantPhotos = variants.flatMap(
 
             <ul class="product__thumbs">
               {
-                allVariantPhotos.map((photo) => (
-                  <li class="product__thumbs__img-container">
-                    <img
-                      alt={photo.alt}
-                      class="product__thumbs__img"
-                      data-color={photo.color}
-                      src={photo.url}
-                    />
-                  </li>
-                ))
+                variants.map((variant) =>
+                  variant.photos?.map((photo) => (
+                    <li class="product__thumbs__img-container">
+                      <Image
+                        alt={`${title} - ${variant.color}`}
+                        class="product__thumbs__img"
+                        data-color={variant.color}
+                        inferSize
+                        src={photo.url}
+                      />
+                    </li>
+                  ))
+                )
               }
             </ul>
 
@@ -140,7 +125,7 @@ const allVariantPhotos = variants.flatMap(
     margin-bottom: var(--default-spacing);
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto auto 1fr auto;
+    grid-template-rows: auto auto 1fr 1fr auto;
     align-items: start;
     grid-gap: 5rem;
     grid-template-areas:

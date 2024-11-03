@@ -3,25 +3,23 @@ import { getCollection } from "astro:content";
 
 import ProductPage from "@/components/product/product-page.astro";
 import Layout from "@/layouts/Layout.astro";
-import type { Product } from "@/schemas/contentful-transformed.types";
 
 export async function getStaticPaths() {
   const products = await getCollection("products");
 
-  return products.map((product) => ({
+  return products.map(({ data: product }) => ({
     params: {
-      slug: product.data.slug,
+      slug: product.slug,
     },
     props: {
-      title: product.data.title,
-      id: product.data.id,
+      product: product,
     },
   }));
 }
 
-const { title, id } = Astro.props;
+const { product } = Astro.props;
 ---
 
-<Layout title={title}>
-  <ProductPage id={id} />
+<Layout title={product.title}>
+  <ProductPage product={product} />
 </Layout>
