@@ -1,5 +1,8 @@
 import sitemap from "@astrojs/sitemap";
 import { defineConfig, envField } from "astro/config";
+import autoprefixer from "autoprefixer";
+import postcss from "postcss";
+import postcssNesting from "postcss-nesting";
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,7 +14,7 @@ export default defineConfig({
   vite: {
     css: {
       postcss: {
-        plugins: [require("postcss-nesting"), require("autoprefixer")],
+        plugins: [autoprefixer(), postcssNesting(), postcss()],
       },
     },
   },
