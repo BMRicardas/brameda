@@ -1,5 +1,4 @@
 import sitemap from "@astrojs/sitemap";
-import stylify from "@stylify/astro";
 import { defineConfig, envField } from "astro/config";
 
 // https://astro.build/config
@@ -67,6 +66,5 @@ export default defineConfig({
     sitemap({
       xslURL: "/sitemap.xsl",
     }),
-    stylify(),
   ],
 });
