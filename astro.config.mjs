@@ -1,9 +1,11 @@
-import { defineConfig, envField } from "astro/config";
-
 import sitemap from "@astrojs/sitemap";
+import { defineConfig, envField } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
+  build: {
+    inlineStylesheets: "never",
+  },
   output: "static",
   env: {
     schema: {
