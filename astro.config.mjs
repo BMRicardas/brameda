@@ -1,8 +1,6 @@
 import sitemap from "@astrojs/sitemap";
+import stylify from "@stylify/astro";
 import { defineConfig, envField } from "astro/config";
-import autoprefixer from "autoprefixer";
-import postcss from "postcss";
-import postcssNesting from "postcss-nesting";
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,13 +9,7 @@ export default defineConfig({
     inlineStylesheets: "auto",
   },
   output: "static",
-  vite: {
-    css: {
-      postcss: {
-        plugins: [autoprefixer(), postcssNesting(), postcss()],
-      },
-    },
-  },
+
   env: {
     schema: {
       CONTENTFUL_SPACE_ID: envField.string({
@@ -50,5 +42,6 @@ export default defineConfig({
     sitemap({
       xslURL: "/sitemap.xsl",
     }),
+    stylify(),
   ],
 });
