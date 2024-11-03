@@ -1,11 +1,10 @@
 ---
+import Article from "../ui/article.astro";
 import { Image } from "astro:assets";
-
-import Price from "@/components/ui/price.astro";
-import Select from "@/components/ui/select.astro";
-import type { Product } from "@/schemas/contentful-transformed.types";
-import Container from "../ui/container.astro";
 import InternalLink from "../ui/internal-link.astro";
+import Price from "@/components/ui/price.astro";
+import type { Product } from "@/schemas/contentful-transformed.types";
+import Select from "@/components/ui/select.astro";
 
 type Props = {
   product: Product;
@@ -26,8 +25,8 @@ const {
 const mainPhotoSrc = mainPhoto.url;
 ---
 
-<Container>
-  <article>
+<Article>
+  <div class="product-page-container">
     <div class="product__media">
       <div class="product__img">
         <Image
@@ -53,7 +52,7 @@ const mainPhotoSrc = mainPhoto.url;
                   src={photo.url}
                 />
               </li>
-            ))
+            )),
           )
         }
       </ul>
@@ -110,12 +109,12 @@ const mainPhotoSrc = mainPhoto.url;
     <div class="product__back">
       <InternalLink href="/">Atgal</InternalLink>
     </div>
-  </article>
-</Container>
+  </div>
+</Article>
 
 <style>
-  article {
-    margin-bottom: var(--default-spacing);
+  .product-page-container {
+    margin-block: var(--default-spacing);
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto auto 1fr auto;
@@ -158,15 +157,6 @@ const mainPhotoSrc = mainPhoto.url;
     }
   }
 
-  #product__thumbs--current {
-    padding: 0.5rem var(--default-spacing);
-    margin: auto;
-    max-width: 100%;
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
   .product__thumbs {
     grid-area: thumbs;
     display: grid;
@@ -191,6 +181,7 @@ const mainPhotoSrc = mainPhoto.url;
     background: var(--color-divider);
   }
 
+  // eslint-disable-next-line astro/no-unused-css-selector
   .product__thumbs__img {
     padding: 1rem;
     width: 100%;
@@ -248,7 +239,7 @@ const mainPhotoSrc = mainPhoto.url;
 
   /* 800px */
   @media only screen and (max-width: 50em) {
-    article {
+    .product-page-container {
       grid-template-columns: 1fr;
       grid-template-rows: auto;
       grid-template-areas:
@@ -266,7 +257,7 @@ const mainPhotoSrc = mainPhoto.url;
   const imgElements = document.querySelectorAll("img[data-color]");
   const selectElement = document.querySelector("select");
   const current = document.querySelector(
-    "#product__thumbs--current"
+    "#product__thumbs--current",
   ) as HTMLImageElement;
   const thumbs = document.querySelectorAll(".product__thumbs img");
 
@@ -275,7 +266,7 @@ const mainPhotoSrc = mainPhoto.url;
     const colorValue = target.value;
 
     const selectedImage = document.querySelector(
-      `img[data-color="${colorValue}"]`
+      `img[data-color="${colorValue}"]`,
     );
     if (selectedImage) {
       current.src = (selectedImage as HTMLImageElement).src;
@@ -289,14 +280,6 @@ const mainPhotoSrc = mainPhoto.url;
         (imgElement as HTMLImageElement).style.display = "none";
       }
     });
-
-    // const imgElement = document.querySelector(
-    //   `img[data-color="${colorValue}"]`
-    // ) as HTMLImageElement;
-
-    // if (imgElement) {
-    //   imgElement.click();
-    // }
   });
 
   imgElements.forEach((imgElement) => {
@@ -330,7 +313,7 @@ const mainPhotoSrc = mainPhoto.url;
   };
 
   thumbs.forEach((thumb) =>
-    thumb.addEventListener("click", thumbClick as EventListener)
+    thumb.addEventListener("click", thumbClick as EventListener),
   );
 
   document.addEventListener("DOMContentLoaded", () => {

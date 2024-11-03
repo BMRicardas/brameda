@@ -5,6 +5,7 @@ type Props = HTMLAttributes<"textarea"> & {
   id: string;
   label: string;
   rows?: number;
+  "data-invalid"?: boolean;
 };
 
 const { id, label, rows = 4, ...rest }: Props = Astro.props;
@@ -14,7 +15,8 @@ const { id, label, rows = 4, ...rest }: Props = Astro.props;
   <label class="form-label" for={id}>{label}</label>
   <div class="input-group">
     <textarea
-      data-invalid="false"
+      class="textarea"
+      data-invalid={rest["data-invalid"]}
       id={id}
       name={id}
       required
@@ -50,7 +52,7 @@ const { id, label, rows = 4, ...rest }: Props = Astro.props;
       }
     }
 
-    & textarea {
+    & .textarea {
       appearance: none;
       padding: 1rem;
       color: var(--color-grey-light);
@@ -68,17 +70,17 @@ const { id, label, rows = 4, ...rest }: Props = Astro.props;
     }
 
     @supports (field-sizing: content) {
-      & textarea {
+      & .textarea {
         field-sizing: content;
       }
     }
 
-    & textarea {
+    & .textarea {
       resize: vertical;
     }
   }
 
-  .form-group .input-group textarea[data-invalid="true"] {
+  .textarea[data-invalid="true"] {
     border: 1px solid var(--color-danger);
     box-shadow: 0 0 3px var(--color-danger);
 

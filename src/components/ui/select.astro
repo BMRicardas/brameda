@@ -124,12 +124,6 @@ const { label, options } = Astro.props;
     outline-offset: calc(-1 * var(--border-width));
   }
 
-  .form-input-select select[disabled],
-  .form-input-select select:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
   .form-input-select select:not(:focus):invalid {
     color: var(--color-grey-light);
   }

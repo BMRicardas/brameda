@@ -110,28 +110,6 @@
     animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.9s forwards;
   }
 
-  .progress {
-    transform: rotate(-90deg);
-    stroke: black;
-  }
-
-  .progress circle {
-    stroke-dasharray: 130;
-    stroke-dashoffset: 130;
-    animation: dash 1.5s infinite;
-  }
-
-  .progress {
-    position: absolute;
-    top: 5%;
-    left: 5%;
-  }
-
-  .progress.progress--thin {
-    left: auto;
-    right: 5%;
-  }
-
   @keyframes dash {
     50% {
       stroke-dashoffset: 0;
