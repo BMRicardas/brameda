@@ -1,5 +1,8 @@
 import sitemap from "@astrojs/sitemap";
 import { defineConfig, envField } from "astro/config";
+import autoprefixer from "autoprefixer";
+import cssnano from "cssnano";
+import postcssNesting from "postcss-nesting";
 
 // https://astro.build/config
 export default defineConfig({
@@ -15,11 +18,11 @@ export default defineConfig({
     css: {
       postcss: {
         plugins: [
-          require("postcss-nesting"),
-          require("autoprefixer")({
+          postcssNesting(),
+          autoprefixer({
             overrideBrowserslist: ["last 2 versions", "> 1%"],
           }),
-          require("cssnano")({
+          cssnano({
             preset: [
               "default",
               {
