@@ -5,10 +5,36 @@ import { defineConfig, envField } from "astro/config";
 // https://astro.build/config
 export default defineConfig({
   build: {
-    inlineStylesheets: "auto",
+    inlineStylesheets: "always",
   },
   output: "static",
-
+  vite: {
+    build: {
+      cssMinify: true,
+      cssCodeSplit: true,
+    },
+    css: {
+      postcss: {
+        plugins: [
+          require("postcss-nesting"),
+          require("autoprefixer")({
+            overrideBrowserslist: ["last 2 versions", "> 1%"],
+          }),
+          require("cssnano")({
+            preset: [
+              "default",
+              {
+                discardComments: {
+                  removeAll: true,
+                },
+                normalizeWhitespace: true,
+              },
+            ],
+          }),
+        ],
+      },
+    },
+  },
   env: {
     schema: {
       CONTENTFUL_SPACE_ID: envField.string({
