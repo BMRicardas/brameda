@@ -1,39 +1,18 @@
 import sitemap from "@astrojs/sitemap";
 import { defineConfig, envField } from "astro/config";
-import autoprefixer from "autoprefixer";
-import cssnano from "cssnano";
-import postcssNesting from "postcss-nesting";
 
 // https://astro.build/config
 export default defineConfig({
   build: {
     inlineStylesheets: "never",
   },
-  output: "static",
   vite: {
     build: {
-      cssMinify: true,
       cssCodeSplit: false,
-    },
-    css: {
-      postcss: {
-        plugins: [
-          postcssNesting(),
-          autoprefixer({
-            overrideBrowserslist: ["last 2 versions", "> 1%"],
-          }),
-          cssnano({
-            preset: [
-              "default",
-              {
-                discardComments: {
-                  removeAll: true,
-                },
-                normalizeWhitespace: true,
-              },
-            ],
-          }),
-        ],
+      rollupOptions: {
+        output: {
+          assetFileNames: "styles/style[extname]",
+        },
       },
     },
   },
@@ -65,6 +44,7 @@ export default defineConfig({
     },
   },
   site: "http://www.brameda.lt",
+  trailingSlash: "always",
   integrations: [
     sitemap({
       xslURL: "/sitemap.xsl",
