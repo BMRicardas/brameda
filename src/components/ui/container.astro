@@ -1,9 +1,19 @@
 ---
+interface Props {
+  innerContentClassList?:
+    | string[]
+    | string
+    | Record<string, boolean>
+    | undefined;
+}
 
+const { innerContentClassList } = Astro.props;
 ---
 
 <div class="container">
-  <slot />
+  <div class:list={[innerContentClassList]}>
+    <slot />
+  </div>
 </div>
 
 <style>
