@@ -1,72 +1,39 @@
 ---
+import { Fragment } from "astro/jsx-runtime";
 import Container from "./container.astro";
-
-type Mode = "light" | "dark";
+import type { Theme } from "@/types/common";
+import BlockTitle from "./block-title.astro";
 
 type Props = {
   sectionId?: string;
+  appearanceMode?: Theme;
   title?: string;
-  mode?: Mode;
 };
 
-const { sectionId, title, mode = "light" }: Props = Astro.props;
+const { sectionId, appearanceMode = "light", title } = Astro.props;
 ---
 
 <section
-  class:list={{ section: mode === "light", "section dark": mode !== "light" }}
-  id={sectionId}
->
-  <Container>
+  class:list={[
+    "section",
     {
-      title && (
-        <h2
-          class:list={{
-            title: mode === "light",
-            "title dark": mode !== "light",
-          }}
-        >
-          {title}
-        </h2>
-      )
-    }
+      dark: appearanceMode !== "light",
+    },
+  ]}
+  id={sectionId}>
+  <Container>
+    <BlockTitle appearanceMode={appearanceMode} title={title} />
     <slot />
   </Container>
 </section>
 
 <style>
   .section {
-    background-color: var(--color-white);
-    color: var(--color-grey-dark2);
-    padding-bottom: var(--default-spacing);
-
-    &.dark {
-      background-color: var(--color-grey-dark2);
-      color: var(--color-grey-light2);
-    }
+    padding: var(--default-spacing);
   }
 
-  .title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    padding: var(--default-spacing) 0;
-    display: flex;
-    align-items: center;
-
-    &::after {
-      content: "";
-      flex: 1;
-      margin-left: 1.5rem;
-      height: 1px;
-      background-color: var(--color-divider);
-    }
-
-    &.dark {
-      color: var(--color-grey-light2);
-
-      &::after {
-        background-color: var(--color-grey-light);
-      }
-    }
+  .section.dark {
+    background-color: var(--color-grey-dark2);
+    color: var(--color-grey-light);
   }
 </style>

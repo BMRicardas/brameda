@@ -1,0 +1,51 @@
+---
+import type { Theme } from "@/types/common";
+
+type Props = {
+  title?: string;
+  appearanceMode?: Theme;
+};
+
+const { title, appearanceMode = "light" }: Props = Astro.props;
+---
+
+{
+  title && (
+    <h2
+      class:list={[
+        "title",
+        {
+          dark: appearanceMode !== "light",
+        },
+      ]}>
+      {title}
+    </h2>
+  )
+}
+
+<style>
+  .title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding-block-end: var(--default-spacing);
+    display: flex;
+    align-items: center;
+  }
+
+  .title::after {
+    content: "";
+    flex: 1;
+    margin-left: 1.5rem;
+    height: 1px;
+    background-color: var(--color-grey-dark2);
+  }
+
+  .title.dark {
+    color: var(--color-grey-light);
+  }
+
+  .title.dark::after {
+    background-color: var(--color-grey-light);
+  }
+</style>
