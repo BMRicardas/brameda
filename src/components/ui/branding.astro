@@ -1,10 +1,18 @@
 ---
+type Props = {
+  title?: string;
+  subtitle?: string;
+};
 
+const {
+  title = "Brameda",
+  subtitle = "Pažangūs ergonominiai sprendimai jūsų verslui",
+}: Props = Astro.props;
 ---
 
 <a class="branding" href="/">
   <h1>
-    Brameda<span>Pažangūs ergonominiai sprendimai jūsų verslui</span>
+    {title}<span>{subtitle}</span>
   </h1>
 </a>
 
@@ -14,46 +22,42 @@
     color: #000;
   }
 
+  .branding h1 span,
   .branding h1 {
     display: block;
+    transition-duration: var(--transition-duration);
+    animation-fill-mode: var(--animation-fill-mode);
+    animation-timeline: var(--animation-timeline);
+    animation-range-start: var(--animation-range-start);
+    animation-range-end: var(--animation-range-end);
+  }
+
+  .branding h1 {
     margin: 0;
     font-size: 6.9rem;
     font-weight: 700;
-    line-height: 1;
-    transition: var(--scroll-transition);
-
-    animation: scrolledTitle forwards;
-    animation-timeline: view();
-    animation-range-start: 100vh;
-    animation-range-end: var(--scroll-range-end);
+    animation-name: scrolledTitle;
   }
 
   .branding h1 span {
-    display: block;
     margin-top: -0.8rem;
     text-align: center;
     font-size: 1.3rem;
     font-weight: 400;
     color: var(--color-grey-dark2);
-
     transform: translateY(0);
     opacity: 1;
-    transition: var(--scroll-transition);
-
-    animation: scrolledSpan forwards;
-    animation-timeline: view();
-    animation-range-start: 100vh;
-    animation-range-end: var(--scroll-range-end);
+    animation-name: scrolledSpan;
   }
 
   @keyframes scrolledTitle {
     from {
       font-size: 6.9rem;
-      font-weight: 700;
+      line-height: 1;
     }
     to {
       font-size: 4.5rem;
-      font-weight: 700;
+      line-height: 1.25;
     }
   }
 

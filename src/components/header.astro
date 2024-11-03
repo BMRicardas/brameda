@@ -1,15 +1,28 @@
 ---
-import Container from "./ui/container.astro";
 import Branding from "./ui/branding.astro";
 import Navigation from "./ui/navigation.astro";
+import Container from "./ui/container.astro";
+
+const headerLinks = [
+  {
+    href: "/#products",
+    text: "Produktai",
+  },
+  {
+    href: "#about",
+    text: "Apie mus",
+  },
+  {
+    href: "#contacts",
+    text: "Kontaktai",
+  },
+];
 ---
 
 <header class="header">
-  <Container>
-    <div class="container">
-      <Branding />
-      <Navigation />
-    </div>
+  <Container innerContentClassList="headerContainer">
+    <Branding />
+    <Navigation links={headerLinks} />
   </Container>
 </header>
 
@@ -22,36 +35,23 @@ import Navigation from "./ui/navigation.astro";
     z-index: 500;
 
     box-shadow: transparent;
-    transition: var(--scroll-transition);
 
-    animation: scrolledHeader forwards;
-    animation-timeline: view();
-    animation-range-start: 100vh;
-    animation-range-end: var(--scroll-range-end);
+    animation-name: scrolledHeader;
+
+    transition-duration: var(--transition-duration);
+    animation-fill-mode: var(--animation-fill-mode);
+    animation-timeline: var(--animation-timeline);
+    animation-range-start: var(--animation-range-start);
+    animation-range-end: var(--animation-range-end);
   }
 
-  .container {
+  :global(.headerContainer) {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: var(--max-width);
     max-width: 100%;
     padding: 0 1rem;
-  }
-
-  .header.scrolled {
-    box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.15);
-  }
-
-  .header.scrolled h1 {
-    font-size: 4.5rem;
-    font-weight: 700;
-  }
-
-  .header.scrolled h1 span {
-    transform: translateY(-100%);
-    opacity: 0;
-    pointer-events: none;
   }
 
   @keyframes scrolledHeader {
@@ -63,27 +63,3 @@ import Navigation from "./ui/navigation.astro";
     }
   }
 </style>
-
-<script>
-  const navBar = document.querySelector(".header");
-
-  const scrolledFromTop = 5;
-
-  function navOnScroll() {
-    const adjustNavbar = () => {
-      if (window.scrollY > scrolledFromTop) {
-        navBar?.classList.add("scrolled");
-      } else {
-        navBar?.classList.remove("scrolled");
-      }
-    };
-
-    window.addEventListener("scroll", adjustNavbar);
-  }
-
-  function init() {
-    navOnScroll();
-  }
-
-  init();
-</script>
