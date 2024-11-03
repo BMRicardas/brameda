@@ -4,89 +4,80 @@ import Image from "astro/components/Image.astro";
 import close from "public/assets/close.svg";
 import hamburgerMenu from "public/assets/hamburger-menu.svg";
 
+type Props = {
+  expanded?: boolean;
+};
+
+const MENU_BUTTON_SIZE = 50;
+const ARIA_LABELS = {
+  open: "Open navigation menu",
+  close: "Close navigation menu",
+} as const;
+
 const { expanded } = Astro.props;
 ---
 
-<!-- <button
-  id="menu-button"
-  type="button"
-  class="button-one"
-  aria-controls="primary-navigation"
-  aria-expanded="false"
-  popovertarget="mobile-nav"
-  popovertargetaction="toggle">
-  <svg
-    fill="var(--button-color)"
-    class="hamburger"
-    viewBox="0 0 100 100"
-    width="35">
-    <rect class="line top" width="80" height="10" x="10" y="25" rx="5"></rect>
-    <rect class="line middle" width="80" height="10" x="10" y="45" rx="5"
-    ></rect>
-    <rect class="line bottom" width="80" height="10" x="10" y="65" rx="5"
-    ></rect>
-  </svg>
-</button> -->
 <button
-  aria-controls="primary-navigation"
-  aria-expanded="false"
-  class="button-one"
+  aria-controls="mobile-menu"
+  aria-expanded={expanded ? "true" : "false"}
+  aria-label={expanded ? ARIA_LABELS.close : ARIA_LABELS.open}
+  class="menu-toggle"
   id="menu-button"
-  popovertarget="mobile-nav"
+  popovertarget="mobile-menu"
   popovertargetaction={expanded ? "hide" : "show"}
-  type="button"
->
-  <Image alt="Hamburger menu" src={expanded ? close : hamburgerMenu} />
+  type="button">
+  <Image
+    alt={expanded ? "Close menu icon" : "Menu icon"}
+    class="menu-icon"
+    height={MENU_BUTTON_SIZE}
+    loading="eager"
+    src={expanded ? close : hamburgerMenu}
+    width={MENU_BUTTON_SIZE}
+  />
 </button>
 
 <style>
-  #menu-button {
+  .menu-toggle {
     display: none;
   }
 
   @media only screen and (max-width: 50em) {
-    #menu-button {
-      display: flex;
+    .menu-toggle {
+      display: block;
+      position: fixed;
+      top: calc((74 / 10) * 1px);
+      right: 1rem;
       background: transparent;
       border: none;
       cursor: pointer;
+      color: currentColor;
       padding: 0;
-      z-index: 10000000 !important;
+      z-index: 100;
+      transition: transform var(--transition-duration);
+
+      animation-name: scrolledMenuButton;
+
+      transition-duration: var(--transition-duration);
+      animation-fill-mode: var(--animation-fill-mode);
+      animation-timeline: var(--animation-timeline);
+      animation-range-start: var(--animation-range-start);
+      animation-range-end: var(--animation-range-end);
+      #mobile-menu: has(: popover-open) {
+        right: 5rem;
+      }
     }
 
-    #menu-button {
-      --button-color: #333;
+    .menu-toggle[aria-expanded="true"] {
+      transform: rotate(90deg);
     }
+  }
 
-    #menu-button .line {
-      transition:
-        y 100ms ease-in 100ms,
-        rotate 100ms ease-in,
-        opacity 0ms 100ms;
-      transform-origin: center;
+  @keyframes scrolledMenuButton {
+    from {
+      top: calc((74 / 10) * 1px);
     }
-
-    #menu-button[aria-expanded="true"] .line {
-      transition:
-        y 100ms ease-in,
-        rotate 100ms ease-in 100ms,
-        opacity 0ms 100ms;
-    }
-
-    #menu-button[aria-expanded="true"] :is(.top, .bottom) {
-      y: 45;
-    }
-
-    #menu-button[aria-expanded="true"] .top {
-      rotate: 45deg;
-    }
-
-    #menu-button[aria-expanded="true"] .middle {
-      opacity: 0;
-    }
-
-    #menu-button[aria-expanded="true"] .bottom {
-      rotate: -45deg;
+    to {
+      top: calc((65 / 10) * 1px);
     }
   }
 </style>
