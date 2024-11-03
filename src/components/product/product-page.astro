@@ -1,11 +1,12 @@
 ---
+import type { Product } from "@/schemas/contentful-transformed.types";
+
+import Price from "@/components/ui/price.astro";
+import Select from "@/components/ui/select.astro";
 import { Image } from "astro:assets";
 
 import Article from "../ui/article.astro";
 import InternalLink from "../ui/internal-link.astro";
-import Price from "@/components/ui/price.astro";
-import type { Product } from "@/schemas/contentful-transformed.types";
-import Select from "@/components/ui/select.astro";
 
 type Props = {
   product: Product;

@@ -1,14 +1,15 @@
 ---
-import { type DataEntry, getCollection } from "astro:content";
-
-import Layout from "@/layouts/Layout.astro";
 import type { Product } from "@/schemas/contentful-transformed.types";
+
 import ProductPage from "@/components/product/product-page.astro";
+import Layout from "@/layouts/Layout.astro";
+import { type CollectionEntry, getCollection } from "astro:content";
 
 type Props = { product: Product };
 
 export async function getStaticPaths() {
-  const products: DataEntry[] = await getCollection("products");
+  const products: CollectionEntry<"products">[] =
+    await getCollection("products");
 
   return products.map(({ data: product }) => ({
     params: {

@@ -1,10 +1,12 @@
 ---
-import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 
 import ProductItem from "@/components/product/product-item.astro";
+import { getCollection } from "astro:content";
+
 import Section from "../ui/section.astro";
 
-const products = await getCollection("products");
+const products: CollectionEntry<"products">[] = await getCollection("products");
 ---
 
 <Section appearanceMode="light" sectionId="products" title="Mūsų produktai">

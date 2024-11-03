@@ -1,8 +1,8 @@
 ---
+import type { Theme } from "@/types/common";
+
 import BlockTitle from "./block-title.astro";
 import Container from "./container.astro";
-import { Fragment } from "astro/jsx-runtime";
-import type { Theme } from "@/types/common";
 
 type Props = {
   sectionId?: string;
@@ -20,8 +20,7 @@ const { sectionId, appearanceMode = "light", title } = Astro.props;
       dark: appearanceMode !== "light",
     },
   ]}
-  id={sectionId}
->
+  id={sectionId}>
   <Container>
     <BlockTitle appearanceMode={appearanceMode} title={title} />
     <slot />
