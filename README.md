@@ -172,6 +172,7 @@ To set up deployment:
 1. Add the following secrets to your GitHub repository:
 
 ```
+GH_PAT
 FTP_SERVER
 FTP_USERNAME
 FTP_PASSWORD
