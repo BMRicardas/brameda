@@ -164,7 +164,7 @@ The project uses GitHub Actions for automated FTP deployment:
 
 - Triggers:
   - Push to main branch
-  - Contentful content updates
+  - Contentful content updates (with webhook verification)
   - Manual workflow dispatch
 
 To set up deployment:
@@ -180,10 +180,17 @@ FTP_PUBLIC_DIR
 CONTENTFUL_SPACE_ID
 CONTENTFUL_DELIVERY_TOKEN
 CONTENTFUL_PREVIEW_TOKEN
+CONTENTFUL_WEBHOOK_SECRET
 WEB3FORMS_PUBLIC_ACCESS_KEY
 ```
 
-2. Configure Contentful webhook to trigger GitHub Actions workflow
+2. Configure Contentful webhook:
+   - Set up webhook with request verification enabled
+   - Add required headers:
+     - Accept: application/vnd.github.v3+json
+     - Authorization: Bearer [GitHub PAT]
+     - Content-Type: application/json
+     - User-Agent: Contentful-Webhook
 
 ## 🔄 Content Updates
 
