@@ -1,5 +1,3 @@
-<base target="_blank">
-
 # Brameda Website
 
 A high-performance business website showcasing clean code, modern development practices, and optimal user experience.
