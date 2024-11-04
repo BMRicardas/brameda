@@ -3,7 +3,7 @@ name: Deploy Website
 on:
   # Contentful webhook trigger
   repository_dispatch:
-    types: [contentful_update]
+    types: [contentful-publish]
 
   # Main branch trigger
   push:
