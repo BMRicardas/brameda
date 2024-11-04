@@ -3,7 +3,7 @@ name: Deploy Website
 on:
   # Contentful webhook trigger
   repository_dispatch:
-    types: [contentful-publish]
+    types: [contentful_update]
 
   # Main branch trigger
   push:
@@ -50,38 +50,14 @@ jobs:
           CONTENTFUL_PREVIEW_TOKEN: ${{ secrets.CONTENTFUL_PREVIEW_TOKEN }}
           WEB3FORMS_PUBLIC_ACCESS_KEY: ${{ secrets.WEB3FORMS_PUBLIC_ACCESS_KEY }}
 
-      - name: 📂 Deploy to FTP public_html dir
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      - name: 📂 Deploy to FTP public_html Directory
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: dist/
-          server-dir: ${{ secrets.FTP_SERVER_PUBLIC_DIR }}/
-          dangerous-clean-slate: true
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-          #   **/wp-config.php
-          #   **/.htaccess
-          #   **/robots.txt
-          #   **/sitemap.xml
-          #   **/uploads/**
-          #   **/.well-known/**
-          #   **/cgi-bin/**
-          #   **/*.env
-          #   **/config/*.php
-          #   **/protected-folder/**
-
-      - name: 📂 Deploy to FTP private_html dir
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: dist/
-          server-dir: ${{ secrets.FTP_SERVER_PRIVATE_DIR }}/
+          server-dir: ${{ secrets.FTP_PUBLIC_DIR }}/
           dangerous-clean-slate: true
           exclude: |
             **/.git*
