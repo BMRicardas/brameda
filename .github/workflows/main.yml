@@ -14,6 +14,20 @@ on:
   workflow_dispatch:
 
 jobs:
+  verify-webhook:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'repository_dispatch' }}
+    steps:
+      - name: Verify Contentful webhook
+        env:
+          WEBHOOK_SECRET: ${{ secrets.CONTENTFUL_WEBHOOK_SECRET }}
+          SIGNATURE: ${{ github.event.headers['X-Contentful-Webhook-Signature'] }}
+        run: |
+          if [ "$SIGNATURE" != "$WEBHOOK_SECRET" ]; then
+            echo "Invalid webhook signature"
+            exit 1
+          fi
+
   build-and-deploy:
     runs-on: ubuntu-latest
 
