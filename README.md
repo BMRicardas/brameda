@@ -1,14 +1,14 @@
 # Brameda Website
 
-A high-performance business website showcasing clean code, modern development practices, and optimal user experience. Built with [Astro](https://astro.build/).
+A high-performance business website showcasing clean code, modern development practices, and optimal user experience.
 
-[![Powered by Astro](https://astro.badg.es/v2/built-with-astro/small.svg)](https://astro.build)
+[![Powered by Astro](https://astro.badg.es/v2/built-with-astro/small.svg)](https://astro.build){:target="\_blank"}
 
 > ⭐ **99+ Lighthouse Score** | 🚀 **Sub-second Load Times** | 📱 **100% Responsive**
 
 ## Quick Links
 
-[Technical Details](#-key-technical-highlights) | [Setup Guide](#-quick-start) | [Live Demo](http://www.brameda.lt)
+[Technical Details](#-key-technical-highlights) | [Setup Guide](#-quick-start) | [Live Demo](http://www.brameda.lt){:target="\_blank"}
 
 ## 🎯 Key Technical Highlights
 
