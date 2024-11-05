@@ -140,12 +140,13 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
+            **/wp/**
+            **/.well-known/**
           #   **/wp-config.php
           #   **/.htaccess
           #   **/robots.txt
           #   **/sitemap.xml
           #   **/uploads/**
-          #   **/.well-known/**
           #   **/cgi-bin/**
           #   **/*.env
           #   **/config/*.php
