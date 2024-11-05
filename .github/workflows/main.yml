@@ -41,9 +41,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install git-ftp
-        run: sudo apt-get update && sudo apt-get install -y git-ftp
-
       - name: Set deployment message and timestamp
         id: vars
         run: |
@@ -62,27 +59,42 @@ jobs:
           CONTENTFUL_PREVIEW_TOKEN: ${{ secrets.CONTENTFUL_PREVIEW_TOKEN }}
           WEB3FORMS_PUBLIC_ACCESS_KEY: ${{ secrets.WEB3FORMS_PUBLIC_ACCESS_KEY }}
 
-      # List and remove old backups (keep last 5)
+      # List and analyze backups
+      - name: 🔍 List backups
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_PUBLIC_DIR }}_backups/
+          local-dir: ./
+          dry-run: true
+          log-level: verbose
+          state-name: ".ftp-list-state.json"
+
+      # Create directory for cleaning
+      - name: Create empty directory
+        run: mkdir -p empty-dir
+
+      # Clean old backups using FTP-Deploy-Action's features
       - name: 🧹 Clean old backups
-        run: |
-          echo "Cleaning old backups..."
-          git config git-ftp.url "ftp://${{ secrets.FTP_SERVER }}"
-          git config git-ftp.user "${{ secrets.FTP_USERNAME }}"
-          git config git-ftp.password "${{ secrets.FTP_PASSWORD }}"
-
-          BACKUPS=$(git ftp ls "${{ secrets.FTP_PUBLIC_DIR }}_backups/" | grep "^backup_" | sort -r)
-
-          COUNT=0
-          echo "$BACKUPS" | while read -r backup; do
-            COUNT=$((COUNT + 1))
-            if [ $COUNT -gt 5 ]; then
-              echo "Removing old backup: $backup"
-              git ftp rmdir "${{ secrets.FTP_PUBLIC_DIR }}_backups/$backup"
-            fi
-          done
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        if: ${{ success() }}
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_PUBLIC_DIR }}_backups/
+          local-dir: ./empty-dir/
+          dangerous-clean-slate: true
+          exclude: |
+            backup_${{ steps.vars.outputs.timestamp }}/**
+            backup_*[0-4]/**  # Keep last 5 backups based on timestamp sort
+          state-name: ".ftp-clean-state.json"
 
       # Backup current deployment
       - name: 📦 Backup current deployment
+        if: ${{ success() }}
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
