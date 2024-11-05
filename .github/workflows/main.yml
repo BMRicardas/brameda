@@ -41,6 +41,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install git-ftp
+        run: sudo apt-get update && sudo apt-get install -y git-ftp
+
       - name: Set deployment message and timestamp
         id: vars
         run: |
@@ -59,43 +62,46 @@ jobs:
           CONTENTFUL_PREVIEW_TOKEN: ${{ secrets.CONTENTFUL_PREVIEW_TOKEN }}
           WEB3FORMS_PUBLIC_ACCESS_KEY: ${{ secrets.WEB3FORMS_PUBLIC_ACCESS_KEY }}
 
-      # Create backup of current deployment
+      # List and remove old backups (keep last 5)
+      - name: 🧹 Clean old backups
+        run: |
+          echo "Cleaning old backups..."
+          git config git-ftp.url "ftp://${{ secrets.FTP_SERVER }}"
+          git config git-ftp.user "${{ secrets.FTP_USERNAME }}"
+          git config git-ftp.password "${{ secrets.FTP_PASSWORD }}"
+
+          BACKUPS=$(git ftp ls "${{ secrets.FTP_PUBLIC_DIR }}_backups/" | grep "^backup_" | sort -r)
+
+          COUNT=0
+          echo "$BACKUPS" | while read -r backup; do
+            COUNT=$((COUNT + 1))
+            if [ $COUNT -gt 5 ]; then
+              echo "Removing old backup: $backup"
+              git ftp rmdir "${{ secrets.FTP_PUBLIC_DIR }}_backups/$backup"
+            fi
+          done
+
+      # Backup current deployment
       - name: 📦 Backup current deployment
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./
           server-dir: ${{ secrets.FTP_PUBLIC_DIR }}_backups/backup_${{ steps.vars.outputs.timestamp }}/
+          local-dir: dist/
           dangerous-clean-slate: false
           state-name: ".ftp-deploy-sync-state-backup.json"
-          log-level: verbose
-
-      # Install lftp
-      - name: Install lftp
-        run: sudo apt-get install -y lftp
-
-      # Clean old backups (keep only last 5)
-      - name: 🧹 Clean old backups
-
-        run: |
-          echo "Cleaning old backups..."
-          lftp -c "set ssl:verify-certificate no; \
-          open -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_SERVER }}; \
-          cd ${{ secrets.FTP_PUBLIC_DIR }}_backups; \
-          ls -t | tail -n +6 | while read dir; do rm -rf \"\$dir\"; done; \
-          bye"
 
       # Deploy new version
-      - name: 📂 Deploy new version to FTP public_html Directory
+      - name: 📂 Deploy new version
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: dist/
           server-dir: ${{ secrets.FTP_PUBLIC_DIR }}/
+          local-dir: dist/
           dangerous-clean-slate: true
           exclude: |
             **/.git*
