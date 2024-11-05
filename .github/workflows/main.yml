@@ -18,10 +18,15 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'repository_dispatch' }}
     steps:
-      - name: Skip webhook verification
+      - name: Verify Contentful webhook
+        env:
+          WEBHOOK_SECRET: ${{ secrets.CONTENTFUL_WEBHOOK_SECRET }}
+          HEADER_SIGNATURE: ${{ github.event.headers['X-Contentful-Webhook-Signature'] }}
         run: |
-          echo "Skipping webhook verification"
-          exit 0
+          if [ "$HEADER_SIGNATURE" != "$WEBHOOK_SECRET" ]; then
+            echo "Invalid webhook signature"
+            exit 1
+          fi
 
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -50,6 +55,7 @@ jobs:
             echo "message=🚀 Deploying from main branch update" >> $GITHUB_OUTPUT
           fi
           echo "timestamp=$(date +%Y%m%d_%H%M%S)" >> $GITHUB_OUTPUT
+          echo "backup_dir=$(dirname ${{ secrets.FTP_PUBLIC_DIR }})/backups" >> $GITHUB_OUTPUT
 
       - name: Build Astro site
         run: npm run build
@@ -66,7 +72,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_PUBLIC_DIR }}_backups/
+          server-dir: ${{ steps.vars.outputs.backup_dir }}/
           local-dir: ./
           dry-run: true
           log-level: verbose
@@ -84,7 +90,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_PUBLIC_DIR }}_backups/
+          server-dir: ${{ steps.vars.outputs.backup_dir }}/
           local-dir: ./empty-dir/
           dangerous-clean-slate: true
           exclude: |
@@ -101,7 +107,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_PUBLIC_DIR }}_backups/
+          server-dir: ${{ steps.vars.outputs.backup_dir }}/
           local-dir: ./
           dry-run: true
           log-level: verbose
@@ -115,7 +121,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_PUBLIC_DIR }}_backups/backup_${{ steps.vars.outputs.timestamp }}/
+          server-dir: ${{ steps.vars.outputs.backup_dir }}/backup_${{ steps.vars.outputs.timestamp }}/
           local-dir: dist/
           dangerous-clean-slate: false
           state-name: ".ftp-deploy-sync-state-backup.json"
