@@ -8,7 +8,7 @@ A high-performance business website showcasing clean code, modern development pr
 
 ## Quick Links
 
-[Technical Details](#-key-technical-highlights) | [Setup Guide](#-quick-start) | [Live Demo](http://www.brameda.lt)
+[Technical Details](#-key-technical-highlights) | [Setup Guide](#-quick-start) | [Live Demo](https://brameda.lt)
 
 ## 🎯 Key Technical Highlights
 
