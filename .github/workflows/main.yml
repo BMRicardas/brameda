@@ -59,7 +59,7 @@ jobs:
           CONTENTFUL_PREVIEW_TOKEN: ${{ secrets.CONTENTFUL_PREVIEW_TOKEN }}
           WEB3FORMS_PUBLIC_ACCESS_KEY: ${{ secrets.WEB3FORMS_PUBLIC_ACCESS_KEY }}
 
-      # List and analyze backups
+      # List and analyze backups before cleanup
       - name: 🔍 List backups
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -91,6 +91,21 @@ jobs:
             backup_${{ steps.vars.outputs.timestamp }}/**
             backup_*[0-4]/**  # Keep last 5 backups based on timestamp sort
           state-name: ".ftp-clean-state.json"
+          log-level: verbose
+
+      # Verify backup cleanup results
+      - name: 🔍 Verify backups after cleanup
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        if: ${{ success() }}
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_PUBLIC_DIR }}_backups/
+          local-dir: ./
+          dry-run: true
+          log-level: verbose
+          state-name: ".ftp-verify-state.json"
 
       # Backup current deployment
       - name: 📦 Backup current deployment
