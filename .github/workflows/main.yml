@@ -21,12 +21,19 @@ jobs:
       - name: Verify Contentful webhook
         env:
           WEBHOOK_SECRET: ${{ secrets.CONTENTFUL_WEBHOOK_SECRET }}
-          HEADER_SIGNATURE: ${{ github.event.headers['X-Contentful-Webhook-Signature'] }}
+          SIGNATURE: ${{ github.event.client_payload.headers['X-Contentful-Webhook-Signature'] }}
         run: |
-          if [ "$HEADER_SIGNATURE" != "$WEBHOOK_SECRET" ]; then
-            echo "Invalid webhook signature"
+          if [ -z "$SIGNATURE" ]; then
+            echo "Error: No webhook signature found"
             exit 1
           fi
+
+          if [ "$SIGNATURE" != "$WEBHOOK_SECRET" ]; then
+            echo "Error: Invalid webhook signature"
+            exit 1
+          fi
+
+          echo "✅ Webhook signature verified successfully"
 
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -135,19 +142,11 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: ${{ secrets.FTP_PUBLIC_DIR }}/
           local-dir: dist/
-          dangerous-clean-slate: true
+          dangerous-clean-slate: false
           exclude: |
             **/.git*
             **/.git*/**
             **/node_modules/**
             **/wp/**
             **/.well-known/**
-          #   **/wp-config.php
-          #   **/.htaccess
-          #   **/robots.txt
-          #   **/sitemap.xml
-          #   **/uploads/**
-          #   **/cgi-bin/**
-          #   **/*.env
-          #   **/config/*.php
-          #   **/protected-folder/**
+          state-name: ".ftp-deploy-state.json"
