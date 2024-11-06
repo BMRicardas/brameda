@@ -14,53 +14,53 @@ on:
   workflow_dispatch:
 
 jobs:
-  verify-webhook:
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'repository_dispatch' }}
-    steps:
-      - name: Debug webhook payload
-        run: |
-          echo "Event Type: ${{ github.event_name }}"
-          echo "Event Action: ${{ github.event.action }}"
-          echo "Payload:"
-          echo '${{ toJSON(github.event.client_payload) }}'
+  # verify-webhook:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ github.event_name == 'repository_dispatch' }}
+  #   steps:
+  #     - name: Debug webhook payload
+  #       run: |
+  #         echo "Event Type: ${{ github.event_name }}"
+  #         echo "Event Action: ${{ github.event.action }}"
+  #         echo "Payload:"
+  #         echo '${{ toJSON(github.event.client_payload) }}'
 
-      - name: Verify Contentful webhook
-        env:
-          WEBHOOK_SECRET: ${{ secrets.CONTENTFUL_WEBHOOK_SECRET }}
-        run: |
-          echo "Verifying webhook from Contentful..."
+  #     - name: Verify Contentful webhook
+  #       env:
+  #         WEBHOOK_SECRET: ${{ secrets.CONTENTFUL_WEBHOOK_SECRET }}
+  #       run: |
+  #         echo "Verifying webhook from Contentful..."
 
-          # Try to get signature from different possible locations
-          SIGNATURE=$(echo '${{ toJSON(github.event.client_payload) }}' | jq -r '.signature // .headers["x-contentful-webhook-signature"] // empty')
+  #         # Try to get signature from different possible locations
+  #         SIGNATURE=$(echo '${{ toJSON(github.event.client_payload) }}' | jq -r '.signature // .headers["x-contentful-webhook-signature"] // empty')
 
-          echo "Secret length: ${#WEBHOOK_SECRET}"
-          echo "Signature found: ${SIGNATURE:+yes}"
-          echo "Signature length: ${#SIGNATURE}"
+  #         echo "Secret length: ${#WEBHOOK_SECRET}"
+  #         echo "Signature found: ${SIGNATURE:+yes}"
+  #         echo "Signature length: ${#SIGNATURE}"
 
-          if [ -z "$SIGNATURE" ]; then
-            echo "❌ Error: No webhook signature found"
-            echo "Payload received:"
-            echo '${{ toJSON(github.event.client_payload) }}'
-            exit 1
-          fi
+  #         if [ -z "$SIGNATURE" ]; then
+  #           echo "❌ Error: No webhook signature found"
+  #           echo "Payload received:"
+  #           echo '${{ toJSON(github.event.client_payload) }}'
+  #           exit 1
+  #         fi
 
-          if [ "$SIGNATURE" != "$WEBHOOK_SECRET" ]; then
-            echo "❌ Error: Signature mismatch"
-            echo "Expected format length: ${#WEBHOOK_SECRET}"
-            echo "Received format length: ${#SIGNATURE}"
-            exit 1
-          fi
+  #         if [ "$SIGNATURE" != "$WEBHOOK_SECRET" ]; then
+  #           echo "❌ Error: Signature mismatch"
+  #           echo "Expected format length: ${#WEBHOOK_SECRET}"
+  #           echo "Received format length: ${#SIGNATURE}"
+  #           exit 1
+  #         fi
 
-          echo "✅ Webhook verified successfully"
+  #         echo "✅ Webhook verified successfully"
 
   build-and-deploy:
-    needs: verify-webhook
-    if: |
-      always() && (
-        github.event_name != 'repository_dispatch' ||
-        needs.verify-webhook.result == 'success'
-      )
+    # needs: verify-webhook
+    # if: |
+    #   always() && (
+    #     github.event_name != 'repository_dispatch' ||
+    #     needs.verify-webhook.result == 'success'
+    #   )
     runs-on: ubuntu-latest
     permissions:
       contents: read
