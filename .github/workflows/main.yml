@@ -18,34 +18,43 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'repository_dispatch' }}
     steps:
+      - name: Debug webhook payload
+        run: |
+          echo "Event Type: ${{ github.event_name }}"
+          echo "Event Action: ${{ github.event.action }}"
+          echo "Full event payload:"
+          echo '${{ toJSON(github.event) }}'
+
       - name: Verify Contentful webhook
         env:
           WEBHOOK_SECRET: ${{ secrets.CONTENTFUL_WEBHOOK_SECRET }}
+          HEADER_SIGNATURE: ${{ github.event.client_payload.headers['X-Contentful-Webhook-Signature'] }}
         run: |
           echo "Verifying webhook from Contentful..."
+          echo "Secret length: ${#WEBHOOK_SECRET}"
+          echo "Received signature length: ${#HEADER_SIGNATURE}"
 
-          # Get the webhook headers from the event payload
-          SIGNATURE_HEADER=$(echo '${{ toJSON(github.event.client_payload.headers) }}' | jq -r '.["x-contentful-webhook-signature"]')
-
-          if [ -z "$SIGNATURE_HEADER" ]; then
-            echo "Error: No Contentful signature header found"
+          if [ -z "$HEADER_SIGNATURE" ]; then
+            echo "❌ Error: No webhook signature found in headers"
             exit 1
           fi
 
-          if [ "$SIGNATURE_HEADER" != "$WEBHOOK_SECRET" ]; then
-            echo "Error: Invalid webhook signature"
+          if [ "$HEADER_SIGNATURE" != "$WEBHOOK_SECRET" ]; then
+            echo "❌ Error: Signature mismatch"
+            echo "Expected format: [hidden for security]"
+            echo "Received format: ${HEADER_SIGNATURE:0:5}... (truncated)"
             exit 1
           fi
-
-          # Check the idempotency key to prevent duplicate processing
-          IDEMPOTENCY_KEY=$(echo '${{ toJSON(github.event.client_payload.headers) }}' | jq -r '.["x-contentful-idempotency-key"]')
-          echo "Webhook idempotency key: $IDEMPOTENCY_KEY"
 
           echo "✅ Webhook verified successfully"
 
   build-and-deploy:
     needs: verify-webhook
-    if: ${{ always() && (github.event_name != 'repository_dispatch' || success()) }}
+    if: |
+      always() && (
+        github.event_name != 'repository_dispatch' ||
+        needs.verify-webhook.result == 'success'
+      )
     runs-on: ubuntu-latest
     permissions:
       contents: read
