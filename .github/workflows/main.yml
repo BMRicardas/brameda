@@ -22,27 +22,33 @@ jobs:
         run: |
           echo "Event Type: ${{ github.event_name }}"
           echo "Event Action: ${{ github.event.action }}"
-          echo "Full event payload:"
-          echo '${{ toJSON(github.event) }}'
+          echo "Payload:"
+          echo '${{ toJSON(github.event.client_payload) }}'
 
       - name: Verify Contentful webhook
         env:
           WEBHOOK_SECRET: ${{ secrets.CONTENTFUL_WEBHOOK_SECRET }}
-          HEADER_SIGNATURE: ${{ github.event.client_payload.headers['X-Contentful-Webhook-Signature'] }}
         run: |
           echo "Verifying webhook from Contentful..."
-          echo "Secret length: ${#WEBHOOK_SECRET}"
-          echo "Received signature length: ${#HEADER_SIGNATURE}"
 
-          if [ -z "$HEADER_SIGNATURE" ]; then
-            echo "❌ Error: No webhook signature found in headers"
+          # Try to get signature from different possible locations
+          SIGNATURE=$(echo '${{ toJSON(github.event.client_payload) }}' | jq -r '.signature // .headers["x-contentful-webhook-signature"] // empty')
+
+          echo "Secret length: ${#WEBHOOK_SECRET}"
+          echo "Signature found: ${SIGNATURE:+yes}"
+          echo "Signature length: ${#SIGNATURE}"
+
+          if [ -z "$SIGNATURE" ]; then
+            echo "❌ Error: No webhook signature found"
+            echo "Payload received:"
+            echo '${{ toJSON(github.event.client_payload) }}'
             exit 1
           fi
 
-          if [ "$HEADER_SIGNATURE" != "$WEBHOOK_SECRET" ]; then
+          if [ "$SIGNATURE" != "$WEBHOOK_SECRET" ]; then
             echo "❌ Error: Signature mismatch"
-            echo "Expected format: [hidden for security]"
-            echo "Received format: ${HEADER_SIGNATURE:0:5}... (truncated)"
+            echo "Expected format length: ${#WEBHOOK_SECRET}"
+            echo "Received format length: ${#SIGNATURE}"
             exit 1
           fi
 
