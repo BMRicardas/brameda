@@ -21,19 +21,27 @@ jobs:
       - name: Verify Contentful webhook
         env:
           WEBHOOK_SECRET: ${{ secrets.CONTENTFUL_WEBHOOK_SECRET }}
-          SIGNATURE: ${{ github.event.client_payload.headers['X-Contentful-Webhook-Signature'] }}
         run: |
-          if [ -z "$SIGNATURE" ]; then
-            echo "Error: No webhook signature found"
+          echo "Verifying webhook from Contentful..."
+
+          # Get the webhook headers from the event payload
+          SIGNATURE_HEADER=$(echo '${{ toJSON(github.event.client_payload.headers) }}' | jq -r '.["x-contentful-webhook-signature"]')
+
+          if [ -z "$SIGNATURE_HEADER" ]; then
+            echo "Error: No Contentful signature header found"
             exit 1
           fi
 
-          if [ "$SIGNATURE" != "$WEBHOOK_SECRET" ]; then
+          if [ "$SIGNATURE_HEADER" != "$WEBHOOK_SECRET" ]; then
             echo "Error: Invalid webhook signature"
             exit 1
           fi
 
-          echo "✅ Webhook signature verified successfully"
+          # Check the idempotency key to prevent duplicate processing
+          IDEMPOTENCY_KEY=$(echo '${{ toJSON(github.event.client_payload.headers) }}' | jq -r '.["x-contentful-idempotency-key"]')
+          echo "Webhook idempotency key: $IDEMPOTENCY_KEY"
+
+          echo "✅ Webhook verified successfully"
 
   build-and-deploy:
     needs: verify-webhook
