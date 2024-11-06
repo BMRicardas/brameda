@@ -36,6 +36,8 @@ jobs:
           echo "✅ Webhook signature verified successfully"
 
   build-and-deploy:
+    needs: verify-webhook
+    if: ${{ always() && (github.event_name != 'repository_dispatch' || success()) }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
