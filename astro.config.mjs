@@ -44,7 +44,6 @@ export default defineConfig({
     },
   },
   site: "https://brameda.lt",
-  trailingSlash: "always",
   integrations: [
     sitemap({
       xslURL: "/sitemap.xsl",
