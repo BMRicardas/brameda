@@ -121,7 +121,7 @@ const { key, price } = Astro.props;
         // Select the corresponding switch and price elements
         const switchElement = document.getElementById(`switch-${id}`);
         const priceElement = document.getElementById(
-          `price-${id}`
+          `price-${id}`,
         ) as HTMLDataElement;
 
         // Get the original price value
@@ -142,6 +142,6 @@ const { key, price } = Astro.props;
         });
       });
     },
-    { once: true } // Ensure the listener runs only once
+    { once: true }, // Ensure the listener runs only once
   );
 </script>

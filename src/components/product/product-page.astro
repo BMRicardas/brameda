@@ -54,7 +54,7 @@ const mainPhotoSrc = mainPhoto.url;
                   src={photo.url}
                 />
               </li>
-            ))
+            )),
           )
         }
       </ul>
@@ -258,7 +258,7 @@ const mainPhotoSrc = mainPhoto.url;
   const imgElements = document.querySelectorAll("img[data-color]");
   const selectElement = document.querySelector("select");
   const current = document.querySelector(
-    "#product__thumbs--current"
+    "#product__thumbs--current",
   ) as HTMLImageElement;
   const thumbs = document.querySelectorAll(".product__thumbs img");
 
@@ -267,7 +267,7 @@ const mainPhotoSrc = mainPhoto.url;
     const colorValue = target.value;
 
     const selectedImage = document.querySelector(
-      `img[data-color="${colorValue}"]`
+      `img[data-color="${colorValue}"]`,
     );
     if (selectedImage) {
       current.src = (selectedImage as HTMLImageElement).src;
@@ -314,7 +314,7 @@ const mainPhotoSrc = mainPhoto.url;
   };
 
   thumbs.forEach((thumb) =>
-    thumb.addEventListener("click", thumbClick as EventListener)
+    thumb.addEventListener("click", thumbClick as EventListener),
   );
 
   document.addEventListener("DOMContentLoaded", () => {

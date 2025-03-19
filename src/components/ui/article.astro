@@ -20,7 +20,8 @@ const { articleId, appearanceMode = "light", title } = Astro.props;
       dark: appearanceMode !== "light",
     },
   ]}
-  id={articleId}>
+  id={articleId}
+>
   <Container>
     <BlockTitle appearanceMode={appearanceMode} title={title} />
     <slot />
