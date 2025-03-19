@@ -39,7 +39,7 @@ export default defineConfig({
   },
   image: {
     remotePatterns: [{ protocol: "https", hostname: "**.ctfassets.net" }],
-    domains: ["images.ctfassets.net"],
+    domains: ["images.ctfassets.net", "res.cloudinary.com"],
     service: {
       entrypoint: "astro/assets/services/sharp",
     },
