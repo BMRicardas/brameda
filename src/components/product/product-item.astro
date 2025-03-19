@@ -21,7 +21,9 @@ const imageSrc = mainPhoto.url;
     <Image alt={title} class="image" inferSize src={imageSrc} />
   </a>
   <div>
-    <h3 class="title">{title}</h3>
+    <a href={slug}>
+      <h3 class="title">{title}</h3>
+    </a>
     <ul>
       {
         features.map((feature, i, a) => {
@@ -81,6 +83,10 @@ const imageSrc = mainPhoto.url;
     padding-right: 0;
   }
 
+  .features-list:not(:last-child) {
+    padding-block-end: 1.5rem;
+  }
+
   .features-list:last-child() {
     margin-block-end: var(--default-spacing);
   }
@@ -93,8 +99,10 @@ const imageSrc = mainPhoto.url;
       flex-direction: column;
     }
 
-    .product-item div:nth-child(2) {
-      padding-right: var(--default-spacing);
+    .product-item > *:nth-child(2) {
+      padding: 0;
+      padding-block: var(--default-spacing);
+      /* padding-right: var(--default-spacing); */
     }
 
     .product-item {

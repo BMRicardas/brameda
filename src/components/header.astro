@@ -32,9 +32,9 @@ const headerLinks = [
     position: sticky;
     top: 0;
     left: 0;
-    z-index: 500;
-
     box-shadow: transparent;
+    anchor-name: --header;
+    z-index: 100;
 
     animation-name: scrolledHeader;
 
@@ -49,9 +49,7 @@ const headerLinks = [
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: var(--max-width);
     max-width: 100%;
-    padding: 0 1rem;
   }
 
   @keyframes scrolledHeader {

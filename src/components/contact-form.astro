@@ -12,8 +12,7 @@ import TextInput from "./ui/text-input.astro";
   class="form"
   data-astro-reloadmethod="POST"
   id="form"
-  novalidate
->
+  novalidate>
   <input name="access_key" type="hidden" value={WEB3FORMS_PUBLIC_ACCESS_KEY} />
   <input class="hidden" name="botcheck" style="display:none" type="checkbox" />
   <TextInput
@@ -206,10 +205,10 @@ import TextInput from "./ui/text-input.astro";
           body: json,
         })
           .then((response) =>
-            response.json().then((json) => ({ ok: response.ok, json })),
+            response.json().then((json) => ({ ok: response.ok, json }))
           )
           .then(({ ok, json }) =>
-            ok ? handleSuccess() : handleError(json.message),
+            ok ? handleSuccess() : handleError(json.message)
           )
           .catch((error) => handleError(error.message))
           .finally(resetForm);
@@ -313,6 +312,6 @@ import TextInput from "./ui/text-input.astro";
         }, 3000);
       }
     },
-    { once: true },
+    { once: true }
   );
 </script>

@@ -1,42 +1,47 @@
----
+<!-- ---
 import Image from "astro/components/Image.astro";
 import close from "public/assets/close.svg";
 import hamburgerMenu from "public/assets/hamburger-menu.svg";
 
-type Props = {
-  expanded?: boolean;
-};
-
 const MENU_BUTTON_SIZE = 50;
-const ARIA_LABELS = {
-  open: "Open navigation menu",
-  close: "Close navigation menu",
-} as const;
-
-const { expanded } = Astro.props;
 ---
 
 <button
   aria-controls="mobile-menu"
-  aria-expanded={expanded ? "true" : "false"}
-  aria-label={expanded ? ARIA_LABELS.close : ARIA_LABELS.open}
   class="menu-toggle"
+  data-expanded="false"
   id="menu-button"
   popovertarget="mobile-menu"
-  popovertargetaction={expanded ? "hide" : "show"}
   type="button">
   <Image
-    alt={expanded ? "Close menu icon" : "Menu icon"}
-    class="menu-icon"
+    alt="Menu icon"
     height={MENU_BUTTON_SIZE}
+    id="open-menu-image"
     loading="eager"
-    src={expanded ? close : hamburgerMenu}
+    src={hamburgerMenu}
+    width={MENU_BUTTON_SIZE}
+  />
+  <Image
+    alt="Menu icon"
+    height={MENU_BUTTON_SIZE}
+    id="close-menu-image"
+    loading="eager"
+    src={close}
     width={MENU_BUTTON_SIZE}
   />
 </button>
 
 <style>
   .menu-toggle {
+    display: none;
+    margin-inline-end: var(--scrollbar-width);
+  }
+
+  #open-menu-image {
+    display: block;
+  }
+
+  #close-menu-image {
     display: none;
   }
 
@@ -63,9 +68,9 @@ const { expanded } = Astro.props;
       animation-range-end: var(--animation-range-end);
     }
 
-    .menu-toggle[aria-expanded="true"] {
+    /* .menu-toggle[aria-expanded="true"] {
       transform: rotate(90deg);
-    }
+    } */
   }
 
   @keyframes scrolledMenuButton {
@@ -77,3 +82,36 @@ const { expanded } = Astro.props;
     }
   }
 </style>
+
+<script>
+  const menuButton = document.getElementById(
+    "menu-button"
+  ) as HTMLButtonElement;
+  const mobileMenu = document.getElementById("mobile-menu") as HTMLElement;
+  const openMenuImage = document.getElementById(
+    "open-menu-image"
+  ) as HTMLImageElement;
+  const closeMenuImage = document.getElementById(
+    "close-menu-image"
+  ) as HTMLImageElement;
+
+  menuButton.addEventListener("click", () => {
+    const expanded = menuButton.dataset.expanded === "true";
+
+    console.log({ expanded });
+
+    menuButton.dataset.expanded = expanded ? "false" : "true";
+
+    menuButton.setAttribute("aria-expanded", expanded ? "false" : "true");
+    mobileMenu.setAttribute(
+      "aria-label",
+      expanded ? "Open navigation menu" : "Close navigation menu"
+    );
+    mobileMenu.setAttribute(
+      "popover-target-action",
+      expanded ? "hide" : "show"
+    );
+    openMenuImage.style.display = expanded ? "block" : "none";
+    closeMenuImage.style.display = expanded ? "none" : "block";
+  });
+</script> -->

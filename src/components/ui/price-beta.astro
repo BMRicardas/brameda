@@ -1,4 +1,4 @@
-<!-- ---
+---
 function localizedPrice(price: number) {
   return new Intl.NumberFormat("lt-LT", {
     style: "currency",
@@ -17,6 +17,7 @@ const { key, price } = Astro.props;
     >
   </p>
   <div class="price-toggle">
+    <!-- TODO put labels inside switch or make radio buttons -->
     <span class="toggle-text off">Be PVM</span>
     <input id={`switch-${key}`} type="checkbox" />
     <label for={`switch-${key}`}>Toggle</label>
@@ -27,10 +28,11 @@ const { key, price } = Astro.props;
 <style>
   .price-container {
     display: flex;
-    align-items: center;
-    justify-content: start;
-    margin-top: 10px;
-    gap: 3rem;
+    flex-direction: column;
+    /* align-items: center; */
+    /* justify-content: start; */
+    /* margin-top: 10px; */
+    /* gap: 3rem; */
   }
 
   .price-toggle {
@@ -103,6 +105,8 @@ const { key, price } = Astro.props;
     }).format(Number(price));
   }
 
+  const VAT_RATE = 0.21;
+
   // Wait for the DOM to be fully loaded
   window.addEventListener(
     "DOMContentLoaded",
@@ -117,7 +121,7 @@ const { key, price } = Astro.props;
         // Select the corresponding switch and price elements
         const switchElement = document.getElementById(`switch-${id}`);
         const priceElement = document.getElementById(
-          `price-${id}`,
+          `price-${id}`
         ) as HTMLDataElement;
 
         // Get the original price value
@@ -127,15 +131,17 @@ const { key, price } = Astro.props;
         switchElement?.addEventListener("change", (event) => {
           const isChecked = (event.target as HTMLInputElement)?.checked;
 
-          // Calculate new price with or without PVM (VAT)
-          const newPrice = isChecked ? Number(price) * 1.21 : Number(price);
+          // Calculate new price with or without VAT
+          const newPrice = isChecked
+            ? Number(price) + Number(price) * VAT_RATE
+            : Number(price);
 
           // Update the price element with the new value
           priceElement?.setAttribute("value", newPrice.toFixed(2).toString());
-          priceElement!.textContent = localizedPrice(newPrice);
+          priceElement.textContent = localizedPrice(newPrice);
         });
       });
     },
-    { once: true }, // Ensure the listener runs only once
+    { once: true } // Ensure the listener runs only once
   );
-</script> -->
+</script>

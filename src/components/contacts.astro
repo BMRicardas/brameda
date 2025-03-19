@@ -1,5 +1,8 @@
 ---
+import { WEB3FORMS_PUBLIC_ACCESS_KEY } from "astro:env/server";
+
 import ContactForm from "./contact-form.astro";
+import { ContactFormReact } from "./react/contact-form/contact-form-react.jsx";
 import BlockTitle from "./ui/block-title.astro";
 import Container from "./ui/container.astro";
 ---
@@ -32,7 +35,11 @@ import Container from "./ui/container.astro";
           </li>
         </ul>
       </div>
-      <ContactForm />
+      <!-- <ContactForm /> -->
+      <ContactFormReact
+        client:idle
+        web3formsPublicAccessKey={WEB3FORMS_PUBLIC_ACCESS_KEY}
+      />
     </div>
   </Container>
 </address>
@@ -41,12 +48,11 @@ import Container from "./ui/container.astro";
   .contacts {
     background-color: var(--color-grey-dark2);
     color: var(--color-grey-light);
-    padding: var(--default-spacing);
+    padding-block: var(--default-spacing);
   }
   .contactsContainer {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--default-spacing);
   }
 
   .title {
@@ -59,10 +65,13 @@ import Container from "./ui/container.astro";
     padding: 2.5rem 0;
   }
 
+  .contacts-list-item:not(:last-child) {
+    padding-block-end: 1.5rem;
+  }
+
   .contacts-list-item a:any-link {
     color: var(--color-grey-light);
     text-decoration: none;
-    padding: 0.25rem;
   }
 
   .contacts-list-item a:hover,
@@ -77,6 +86,7 @@ import Container from "./ui/container.astro";
   @media only screen and (max-width: 50em) {
     .contactsContainer {
       grid-template-columns: auto;
+      gap: var(--default-spacing);
     }
     .contactsContainer :first-child {
       order: 2;

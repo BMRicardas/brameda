@@ -11,8 +11,12 @@ const products: CollectionEntry<"products">[] = await getCollection("products");
 
 <Section appearanceMode="light" sectionId="products" title="Mūsų produktai">
   {
-    products.map(({ data }) => {
-      return <ProductItem product={data} />;
-    })
+    products.length === 0 ? (
+      <p>Produktų nėra</p>
+    ) : (
+      products.map(({ data }) => {
+        return <ProductItem product={data} />;
+      })
+    )
   }
 </Section>

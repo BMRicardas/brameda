@@ -1,5 +1,5 @@
 ---
-import MenuButton from "./menu-button.astro";
+import MenuButtonR from "../react/menu-button/menu-button.tsx";
 import NavLink from "./nav-link.astro";
 
 type Link = {
@@ -32,11 +32,9 @@ const { links = headerLinks } = Astro.props;
     }
   </ul>
   <!-- Mobile Menu -->
-  <MenuButton expanded={false} />
+  <MenuButtonR client:load />
   <div class="mobile-menu" id="mobile-menu" popover>
     <div class="nav-content">
-      <MenuButton expanded={true} />
-
       <ul class="mobile-nav">
         {
           links.map(({ href, text }) => (
@@ -59,19 +57,21 @@ const { links = headerLinks } = Astro.props;
   .desktop-menu {
     display: flex;
     list-style: none;
-    padding: 1rem;
+    padding-block: 1rem;
     margin: 0;
   }
 
   .mobile-menu[popover] {
+    position: absolute;
+    position-anchor: --header;
     left: unset;
     right: 0;
-    top: 0;
+    top: anchor(bottom);
     border: none;
     padding: 0;
     margin: 0;
     width: 100%;
-    height: 100vh;
+    height: 100dvh;
     background: var(--color-grey-light);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -135,7 +135,7 @@ const { links = headerLinks } = Astro.props;
         window.innerWidth - document.documentElement.clientWidth;
       document.documentElement.style.setProperty(
         "--scrollbar-width",
-        `${scrollBarWidth}px`,
+        `${scrollBarWidth}px`
       );
     }
 
