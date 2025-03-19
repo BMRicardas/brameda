@@ -1,3 +1,4 @@
+import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import { defineConfig, envField } from "astro/config";
 
@@ -48,5 +49,6 @@ export default defineConfig({
     sitemap({
       xslURL: "/sitemap.xsl",
     }),
+    react(),
   ],
 });
