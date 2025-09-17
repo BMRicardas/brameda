@@ -10,7 +10,7 @@ type Props = {
 
 export function RelatedProductCard({ product }: Props) {
   const { slug, title, mainPhoto } = product;
-  console.log({ mainPhoto });
+
   return (
     <a href={`/products/${slug}`} className="card">
       <div className="image-container">
