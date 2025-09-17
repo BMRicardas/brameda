@@ -7,85 +7,80 @@ on:
 
   # Main branch trigger
   push:
-    branches:
-      - main
+    branches: [main]
 
   # Manual trigger
   workflow_dispatch:
 
+env:
+  NODE_VERSION: 20
+  MAX_BACKUPS: 5
+
 jobs:
   verify-webhook:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'repository_dispatch' }}
+    if: github.event_name == 'repository_dispatch'
+    outputs:
+      webhook-verified: ${{ steps.verify.outputs.verified }}
     steps:
-      - name: Debug webhook payload
-        run: |
-          echo "Event Type: ${{ github.event_name }}"
-          echo "Event Action: ${{ github.event.action }}"
-          echo "Payload:"
-          echo '${{ toJSON(github.event.client_payload) }}'
-
       - name: Verify Contentful webhook
+        id: verify
         env:
           WEBHOOK_SECRET: ${{ secrets.CONTENTFUL_WEBHOOK_SECRET }}
         run: |
-          echo "Verifying webhook from Contentful..."
+          PAYLOAD='${{ toJSON(github.event.client_payload) }}'
+          [ -z "$PAYLOAD" ] || [ "$PAYLOAD" = "null" ] && PAYLOAD='{}'
 
-          #Capture payload once for reuse
-          PAYLOAD='${{ toJSON(github.event.client_payload) }}' [ -z "$PAYLOAD" ] && PAYLOAD='{}'
+          # Extract signature from multiple possible locations
+          SIGNATURE=$(echo "$PAYLOAD" | jq -r '
+            .signature // 
+            .secret // 
+            .headers["x-contentful-webhook-signature"] // 
+            .headers["X-Contentful-Webhook-Signature"] // 
+            empty
+          ')
 
-          # Try to get signature from different possible locations
-          SIGNATURE=$(echo "$PAYLOAD" | jq -r ' .signature // .secret // .headers["x-contentful-webhook-signature"] // .headers["X-Contentful-Webhook-Signature"] // .headers["x-contentful-signature"] // .headers["X-Contentful-Signature"] // empty ')
-
+          # Mask sensitive values
           echo "::add-mask::$WEBHOOK_SECRET"
-          if [ -n "$SIGNATURE" ]; then
-            echo "::add-mask::$SIGNATURE"
-          fi
+          [ -n "$SIGNATURE" ] && echo "::add-mask::$SIGNATURE"
 
-          echo "Secret length: ${#WEBHOOK_SECRET}"
-          echo "Signature found: ${SIGNATURE:+yes}"
-          echo "Signature length: ${#SIGNATURE}"
-
+          # Validate signature
           if [ -z "$SIGNATURE" ]; then
-            echo "❌ Error: No webhook signature/secret found in client_payload"
-            echo "Payload keys: $(echo "$PAYLOAD" | jq -r 'keys | join(", ")')"
+            echo "❌ No webhook signature found"
+            echo "Available keys: $(echo "$PAYLOAD" | jq -r 'keys | join(", ")')"
             exit 1
           fi
 
           if [ "$SIGNATURE" != "$WEBHOOK_SECRET" ]; then
-            echo "❌ Error: Signature/secret mismatch"
-            echo "Expected format length: ${#WEBHOOK_SECRET}"
-            echo "Received format length: ${#SIGNATURE}"
+            echo "❌ Webhook signature verification failed"
             exit 1
           fi
 
           echo "✅ Webhook verified successfully"
+          echo "verified=true" >> $GITHUB_OUTPUT
 
-  build-and-deploy:
-    needs: verify-webhook
-    if: |
-      always() && (
-        github.event_name != 'repository_dispatch' ||
-        needs.verify-webhook.result == 'success'
-      )
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      repository-projects: write
-
+    needs: [verify-webhook]
+    if: always() && (github.event_name != 'repository_dispatch' || needs.verify-webhook.outputs.webhook-verified == 'true')
+    outputs:
+      deployment-message: ${{ steps.vars.outputs.message }}
+      timestamp: ${{ steps.vars.outputs.timestamp }}
+      backup-dir: ${{ steps.vars.outputs.backup_dir }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: "npm"
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Set deployment message and timestamp
+      - name: Set deployment variables
         id: vars
         run: |
           if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
@@ -104,81 +99,122 @@ jobs:
           CONTENTFUL_PREVIEW_TOKEN: ${{ secrets.CONTENTFUL_PREVIEW_TOKEN }}
           WEB3FORMS_PUBLIC_ACCESS_KEY: ${{ secrets.WEB3FORMS_PUBLIC_ACCESS_KEY }}
 
-      # List and analyze backups before cleanup
-      - name: 🔍 List backups
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ steps.vars.outputs.backup_dir }}/
-          local-dir: ./
-          dry-run: true
-          log-level: verbose
-          state-name: ".ftp-list-state.json"
+          name: dist-${{ steps.vars.outputs.timestamp }}
+          path: dist/
+          retention-days: 7
 
-      # Create directory for cleaning
-      - name: Create empty directory
-        run: mkdir -p empty-dir
-
-      # Clean old backups using FTP-Deploy-Action's features
-      - name: 🧹 Clean old backups
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        if: ${{ success() }}
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build]
+    # Uncomment the line below if you want manual approval for deployments
+    # environment: production
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ steps.vars.outputs.backup_dir }}/
-          local-dir: ./empty-dir/
-          dangerous-clean-slate: true
-          exclude: |
-            backup_${{ steps.vars.outputs.timestamp }}/**
-            backup_*[0-4]/**  # Keep last 5 backups based on timestamp sort
-          state-name: ".ftp-clean-state.json"
-          log-level: verbose
+          name: dist-${{ needs.build.outputs.timestamp }}
+          path: dist/
 
-      # Verify backup cleanup results
-      - name: 🔍 Verify backups after cleanup
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        if: ${{ success() }}
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ steps.vars.outputs.backup_dir }}/
-          local-dir: ./
-          dry-run: true
-          log-level: verbose
-          state-name: ".ftp-verify-state.json"
+      - name: Manage backups and deploy
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_PUBLIC_DIR: ${{ secrets.FTP_PUBLIC_DIR }}
+          BACKUP_DIR: ${{ needs.build.outputs.backup-dir }}
+          TIMESTAMP: ${{ needs.build.outputs.timestamp }}
+        run: |
+          # Install lftp for advanced FTP operations
+          sudo apt-get update && sudo apt-get install -y lftp
 
-      # Backup current deployment
-      - name: 📦 Backup current deployment
-        if: ${{ success() }}
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ steps.vars.outputs.backup_dir }}/backup_${{ steps.vars.outputs.timestamp }}/
-          local-dir: dist/
-          dangerous-clean-slate: false
-          state-name: ".ftp-deploy-sync-state-backup.json"
+          # Create backup management script
+          cat > backup_and_deploy.sh << 'EOF'
+          #!/bin/bash
+          set -e
 
-      # Deploy new version
-      - name: 📂 Deploy new version
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_PUBLIC_DIR }}/
-          local-dir: dist/
-          dangerous-clean-slate: false
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/wp/**
-            **/.well-known/**
-          state-name: ".ftp-deploy-state.json"
+          echo "🔧 Connecting to FTP server..."
+
+          lftp -c "
+            set ssl:verify-certificate false
+            set ftp:ssl-allow false
+            open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER
+            
+            echo '📋 Listing existing backups...'
+            mkdir -p $BACKUP_DIR
+            cd $BACKUP_DIR
+            
+            # Get list of backup directories, sorted by name (which includes timestamp)
+            cls -1 backup_* | sort > /tmp/backups.txt || echo 'No existing backups found'
+            
+            # Count existing backups
+            BACKUP_COUNT=\$(wc -l < /tmp/backups.txt 2>/dev/null || echo 0)
+            echo \"Found \$BACKUP_COUNT existing backups\"
+            
+            # Remove old backups if we have more than MAX_BACKUPS-1 (to make room for new one)
+            if [ \$BACKUP_COUNT -ge $MAX_BACKUPS ]; then
+              BACKUPS_TO_DELETE=\$((BACKUP_COUNT - $MAX_BACKUPS + 1))
+              echo \"🗑️ Removing \$BACKUPS_TO_DELETE old backup(s)...\"
+              head -n \$BACKUPS_TO_DELETE /tmp/backups.txt | while read backup; do
+                echo \"Removing: \$backup\"
+                rm -rf \$backup
+              done
+            fi
+            
+            echo '📦 Creating backup of current deployment...'
+            mkdir -p backup_$TIMESTAMP
+            mirror -R $FTP_PUBLIC_DIR backup_$TIMESTAMP
+            
+            echo '🚀 Deploying new version...'
+            mirror -eRv dist/ $FTP_PUBLIC_DIR --ignore-time --exclude .git --exclude node_modules --exclude wp --exclude .well-known
+            
+            echo '✅ Deployment completed successfully'
+            
+            quit
+          "
+          EOF
+
+          chmod +x backup_and_deploy.sh
+          ./backup_and_deploy.sh
+
+      - name: Verify deployment
+        env:
+          DEPLOYMENT_URL: ${{ secrets.DEPLOYMENT_URL }}
+        run: |
+          if [ -n "${DEPLOYMENT_URL:-}" ]; then
+            echo "🔍 Verifying deployment at $DEPLOYMENT_URL"
+            # Simple HTTP check
+            if curl -f -s -o /dev/null "$DEPLOYMENT_URL"; then
+              echo "✅ Deployment verification successful"
+            else
+              echo "❌ Deployment verification failed"
+              exit 1
+            fi
+          else
+            echo "ℹ️ No DEPLOYMENT_URL configured, skipping verification"
+          fi
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          echo "❌ Deployment failed"
+          echo "💡 Consider implementing a rollback strategy:"
+          echo "   1. Keep previous build artifacts"
+          echo "   2. Use FTP snapshots if available"
+          echo "   3. Implement database backups if needed"
+          echo "   4. Set up monitoring and alerts"
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [build, deploy]
+    if: always()
+    steps:
+      - name: Notify deployment status
+        run: |
+          if [ "${{ needs.deploy.result }}" = "success" ]; then
+            echo "🎉 ${{ needs.build.outputs.deployment-message }} - SUCCESS"
+          else
+            echo "💥 Deployment failed - check logs for details"
+          fi
