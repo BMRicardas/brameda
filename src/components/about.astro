@@ -1,8 +1,8 @@
 ---
-import Article from "./ui/article.astro";
+import ContentBlock from "./ui/content-block.astro";
 ---
 
-<Article appearanceMode="dark" articleId="about" title="Apie mus">
+<ContentBlock appearanceMode="dark" as="article" id="about" title="Apie mus">
   <p class="about-paragraph">
     Platiname pažangias avalynę padengiančias mašinas, firmos Swimsuit Dryers
     Company maudymosi kostiumėlių džiovintuvus, modernius pėdų dezinfekatorius.
@@ -13,4 +13,4 @@ import Article from "./ui/article.astro";
     kostiumėlių džiovintuvus, „Quen“ pažangius avalynę padengiančius aparatus, Vokietijos
     gamintojo „Ophardt“ modernius pėdų dezinfekatorius.
   </p>
-</Article>
+</ContentBlock>

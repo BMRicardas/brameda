@@ -1,41 +1,17 @@
 ---
 import { WEB3FORMS_PUBLIC_ACCESS_KEY } from "astro:env/server";
 
-import ContactForm from "./contact-form.astro";
 import { ContactFormReact } from "./react/contact-form/contact-form-react.jsx";
 import BlockTitle from "./ui/block-title.astro";
+import ContactDetails from "./ui/contact-details.astro";
 import Container from "./ui/container.astro";
 ---
 
 <address class="contacts" id="contacts">
   <Container>
     <BlockTitle appearanceMode="dark" title="Kontaktai" />
-    <div class="contactsContainer">
-      <div>
-        <h4 class="title">UAB „Brameda“</h4>
-        <ul class="contacts-list">
-          <li class="contacts-list-item">
-            <p>
-              <a
-                href="https://maps.google.com/?q=Senamiesčio g. 102-201, 35116 Panevėžys, Lietuva"
-                rel="noopener noreferrer"
-                target="_blank"
-                >Senamiesčio g. 102-201,<br />35116 Panevėžys,<br />Lietuva</a
-              >
-            </p>
-          </li>
-          <li class="contacts-list-item">
-            <p>Telefonas: <a href="tel:+37069936437">370 699 36437</a></p>
-          </li>
-          <li class="contacts-list-item">
-            <p>
-              El.paštas:
-              <a href="mailto:info@brameda.lt">info@brameda.lt</a>
-            </p>
-          </li>
-        </ul>
-      </div>
-      <!-- <ContactForm /> -->
+    <div class="contacts-container">
+      <ContactDetails />
       <ContactFormReact
         client:idle
         web3formsPublicAccessKey={WEB3FORMS_PUBLIC_ACCESS_KEY}
@@ -50,45 +26,20 @@ import Container from "./ui/container.astro";
     color: var(--color-grey-light);
     padding-block: var(--default-spacing);
   }
-  .contactsContainer {
+
+  .contacts-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .title {
-    font-size: 1.7rem;
-    font-weight: 500;
-    color: var(--color-grey-light);
-  }
-
-  .contacts-list {
-    padding: 2.5rem 0;
-  }
-
-  .contacts-list-item:not(:last-child) {
-    padding-block-end: 1.5rem;
-  }
-
-  .contacts-list-item a:any-link {
-    color: var(--color-grey-light);
-    text-decoration: none;
-  }
-
-  .contacts-list-item a:hover,
-  .contacts-list-item a:active {
-    text-decoration: underline;
-  }
-
-  .contacts-list-item p {
-    color: var(--color-grey-light);
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--default-spacing) * 2);
+    align-items: start;
   }
 
   @media only screen and (max-width: 50em) {
-    .contactsContainer {
+    .contacts-container {
       grid-template-columns: auto;
       gap: var(--default-spacing);
     }
-    .contactsContainer :first-child {
+    .contacts-container > :first-child {
       order: 2;
       text-align: center;
     }

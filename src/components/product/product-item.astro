@@ -1,9 +1,9 @@
 ---
-import type { Product } from "@/schemas/contentful-transformed.types";
-
 import { Image } from "astro:assets";
 
-import InternalLink from "../ui/internal-link.astro";
+import type { Product } from "@/schemas/contentful-transformed.types";
+
+import LinkButton from "../ui/link-button.astro";
 
 type Props = {
   product: Product;
@@ -13,15 +13,22 @@ const { product } = Astro.props;
 
 const { title, features, mainPhoto, slug } = product;
 
-const imageSrc = mainPhoto.url;
+const imageSrc = "https:" + mainPhoto?.url;
 ---
 
 <article class="product-item">
-  <a class="image-container" href={slug}>
-    <Image alt={title} class="image" inferSize src={imageSrc} />
+  <a class="image-container" href={`products/${slug}`}>
+    <Image
+      alt={title}
+      class="image"
+      decoding="async"
+      inferSize
+      loading="lazy"
+      src={imageSrc}
+    />
   </a>
   <div>
-    <a href={slug}>
+    <a href={`products/${slug}`}>
       <h3 class="title">{title}</h3>
     </a>
     <ul>
@@ -37,7 +44,7 @@ const imageSrc = mainPhoto.url;
         })
       }
     </ul>
-    <InternalLink href={slug}> Skaityti daugiau </InternalLink>
+    <LinkButton href={`products/${slug}`}>Skaityti daugiau</LinkButton>
   </div>
 </article>
 
@@ -63,10 +70,12 @@ const imageSrc = mainPhoto.url;
     background-color: var(--color-grey-light);
     border-radius: 15px;
     width: 100%;
+    max-height: 50rem;
     overflow: clip;
     display: flex;
     justify-content: center;
     align-items: center;
+    aspect-ratio: 1 / 1;
 
     & .image {
       width: 100%;
@@ -87,7 +96,7 @@ const imageSrc = mainPhoto.url;
     padding-block-end: 1.5rem;
   }
 
-  .features-list:last-child() {
+  .features-list:last-child {
     margin-block-end: var(--default-spacing);
   }
 

@@ -5,7 +5,7 @@ import { defineConfig, envField } from "astro/config";
 // https://astro.build/config
 export default defineConfig({
   build: {
-    inlineStylesheets: "never",
+    inlineStylesheets: "always",
   },
   vite: {
     build: {
@@ -39,7 +39,7 @@ export default defineConfig({
   },
   image: {
     remotePatterns: [{ protocol: "https", hostname: "**.ctfassets.net" }],
-    domains: ["images.ctfassets.net", "res.cloudinary.com"],
+    domains: ["images.ctfassets.net"],
     service: {
       entrypoint: "astro/assets/services/sharp",
     },

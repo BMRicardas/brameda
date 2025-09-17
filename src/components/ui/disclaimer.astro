@@ -1,0 +1,40 @@
+---
+type Props = {};
+---
+
+<div class="disclaimer">
+  <slot />
+</div>
+
+<style>
+  .disclaimer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 40%;
+    left: 1px;
+    width: 150px;
+    height: 150px;
+    border-radius: 25%;
+    background-color: var(--color-grey-dark);
+    color: var(--color-grey-light);
+    text-align: center;
+    padding: 3px;
+    font-size: 1.5rem;
+    opacity: 0.9;
+    transition: opacity 0.3s ease-out;
+
+    &:hover {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+    @media only screen and (max-width: 28em) {
+      width: 100px;
+      height: 100px;
+      padding: 0.5rem;
+      font-size: 1.2rem;
+    }
+  }
+</style>

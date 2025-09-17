@@ -2,6 +2,15 @@ import { z } from "astro:content";
 
 export const imageAssetSchema = z.object({
   url: z.string(),
+  details: z.object({
+    size: z.number(),
+    image: z.object({
+      width: z.number(),
+      height: z.number(),
+    }),
+  }),
+  fileName: z.string(),
+  contentType: z.string(),
 });
 
 export const productVariantSchema = z.object({
@@ -9,27 +18,33 @@ export const productVariantSchema = z.object({
   name: z.string(),
   color: z.string(),
   photos: z.array(imageAssetSchema),
-  stock: z.number().optional(),
   price: z.number().optional(),
-  sku: z.string().optional(),
-  displayOrder: z.number().optional(),
-  isDefault: z.boolean().optional(),
+  inStock: z.boolean(),
+  shippingDuration: z.string().optional(),
 });
 
-export const productSchema = z.object({
+const baseProductSchema = z.object({
   id: z.string(),
   slug: z.string(),
   title: z.string(),
+  order: z.number(),
+  inStock: z.boolean(),
   mainPhoto: imageAssetSchema,
-  displayMode: z.enum(["all_variants", "color_selector"]),
-  variants: z.array(productVariantSchema),
   features: z.array(z.string()),
   description: z.string(),
   specifications: z.record(z.unknown()).optional(),
+  priceWithoutVat: z.number().optional(),
   videoUrl: z.string().optional(),
-  order: z.number().optional(),
-  isActive: z.boolean().optional(),
-  categories: z.array(z.string()).optional(),
+  variants: z.array(productVariantSchema),
+  displayMode: z.enum(["all_variants", "color_selector"]),
+});
+
+type BaseProduct = z.infer<typeof baseProductSchema> & {
+  relatedProducts?: BaseProduct[];
+};
+
+export const productSchema: z.ZodType<BaseProduct> = baseProductSchema.extend({
+  relatedProducts: z.lazy(() => productSchema.array()).optional(),
 });
 
 export type ImageAsset = z.infer<typeof imageAssetSchema>;

@@ -1,6 +1,7 @@
 ---
 import type { Product } from "@/schemas/contentful-transformed.types";
 
+import Contacts from "@/components/contacts.astro";
 import ProductPage from "@/components/product/product-page.astro";
 import Layout from "@/layouts/Layout.astro";
 import { type CollectionEntry, getCollection } from "astro:content";
@@ -24,6 +25,7 @@ export async function getStaticPaths() {
 const { product } = Astro.props;
 ---
 
-<Layout title={product.title}>
+<Layout description={product.description} title={product.title}>
   <ProductPage product={product} />
+  <Contacts />
 </Layout>

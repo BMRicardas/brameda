@@ -1,11 +1,11 @@
 ---
-interface Props {
+type Props = {
   innerContentClassList?:
     | string[]
     | string
     | Record<string, boolean>
     | undefined;
-}
+};
 
 const { innerContentClassList } = Astro.props;
 ---

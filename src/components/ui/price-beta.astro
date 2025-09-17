@@ -10,9 +10,9 @@ function localizedPrice(price: number) {
 const { key, price } = Astro.props;
 ---
 
-<div class="price-container" data-price-container-id={key}>
+<div class="price-container" data-price-component data-price-container-id={key}>
   <p>
-    Kaina:&nbsp;<data id={`price-${key}`} value={price}
+    Kaina:&nbsp;<data data-price id={`price-${key}`} value={price}
       >{localizedPrice(price)}</data
     >
   </p>
@@ -29,10 +29,6 @@ const { key, price } = Astro.props;
   .price-container {
     display: flex;
     flex-direction: column;
-    /* align-items: center; */
-    /* justify-content: start; */
-    /* margin-top: 10px; */
-    /* gap: 3rem; */
   }
 
   .price-toggle {
@@ -102,46 +98,32 @@ const { key, price } = Astro.props;
       style: "currency",
       currency: "EUR",
       minimumFractionDigits: 2,
-    }).format(Number(price));
+    }).format(price);
   }
 
   const VAT_RATE = 0.21;
 
-  // Wait for the DOM to be fully loaded
-  window.addEventListener(
-    "DOMContentLoaded",
-    () => {
-      // Select all price containers
-      const priceContainers = document.querySelectorAll(".price-container");
-
-      // Loop through each price container
-      priceContainers.forEach((priceContainer) => {
-        const id = priceContainer.getAttribute("data-price-container-id");
-
-        // Select the corresponding switch and price elements
-        const switchElement = document.getElementById(`switch-${id}`);
-        const priceElement = document.getElementById(
-          `price-${id}`,
-        ) as HTMLDataElement;
-
-        // Get the original price value
-        const price = priceElement?.value;
-
-        // Attach event listener to the switch
-        switchElement?.addEventListener("change", (event) => {
-          const isChecked = (event.target as HTMLInputElement)?.checked;
-
-          // Calculate new price with or without VAT
-          const newPrice = isChecked
-            ? Number(price) + Number(price) * VAT_RATE
-            : Number(price);
-
-          // Update the price element with the new value
-          priceElement?.setAttribute("value", newPrice.toFixed(2).toString());
-          priceElement.textContent = localizedPrice(newPrice);
-        });
-      });
-    },
-    { once: true }, // Ensure the listener runs only once
+  const priceComponents = document.querySelectorAll<HTMLElement>(
+    "[data-price-component]"
   );
+
+  priceComponents.forEach((component) => {
+    const switchElement = component.querySelector<HTMLInputElement>(
+      'input[type="checkbox"]'
+    );
+    const priceElement =
+      component.querySelector<HTMLDataElement>("[data-price]");
+    const priceWithoutVat = parseFloat(priceElement?.value || "0");
+
+    if (!switchElement || !priceElement || isNaN(priceWithoutVat)) return;
+
+    switchElement.addEventListener("change", (event) => {
+      const isChecked = (event.target as HTMLInputElement)?.checked;
+      const newPrice = isChecked
+        ? priceWithoutVat * (1 + VAT_RATE)
+        : priceWithoutVat;
+
+      priceElement.textContent = localizedPrice(newPrice);
+    });
+  });
 </script>

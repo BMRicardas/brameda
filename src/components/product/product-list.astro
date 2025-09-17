@@ -4,19 +4,28 @@ import type { CollectionEntry } from "astro:content";
 import ProductItem from "@/components/product/product-item.astro";
 import { getCollection } from "astro:content";
 
-import Section from "../ui/section.astro";
+import ContentBlock from "../ui/content-block.astro";
 
 const products: CollectionEntry<"products">[] = await getCollection("products");
+
+function sortByOrder(
+  a: CollectionEntry<"products">["data"],
+  b: CollectionEntry<"products">["data"]
+) {
+  return a.order - b.order;
+}
+
+const sortedProducts = products.map((p) => p.data).sort(sortByOrder);
 ---
 
-<Section appearanceMode="light" sectionId="products" title="Mūsų produktai">
+<ContentBlock appearanceMode="light" id="products" title="Mūsų produktai">
   {
     products.length === 0 ? (
       <p>Produktų nėra</p>
     ) : (
-      products.map(({ data }) => {
-        return <ProductItem product={data} />;
+      sortedProducts.map((product) => {
+        return <ProductItem product={product} />;
       })
     )
   }
-</Section>
+</ContentBlock>

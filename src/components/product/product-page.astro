@@ -1,12 +1,11 @@
 ---
 import type { Product } from "@/schemas/contentful-transformed.types";
 
-import Price from "@/components/ui/price.astro";
-import Select from "@/components/ui/select.astro";
-import { Image } from "astro:assets";
-
-import Article from "../ui/article.astro";
-import InternalLink from "../ui/internal-link.astro";
+import { RelatedProductCarousel } from "../react/related-product/related-product-carousel";
+import ContentBlock from "../ui/content-block.astro";
+import LinkButton from "../ui/link-button.astro";
+import ProductInfo from "./product-info.astro";
+import ProductMedia from "./product-media.astro";
 
 type Props = {
   product: Product;
@@ -14,105 +13,23 @@ type Props = {
 
 const { product }: Props = Astro.props;
 
-const {
-  title,
-  variants,
-  displayMode,
-  description,
-  specifications,
-  videoUrl,
-  mainPhoto,
-} = product;
-
-const mainPhotoSrc = mainPhoto.url;
+const { relatedProducts } = product;
 ---
 
-<Article>
+<ContentBlock as="article">
   <div class="product-page-container">
-    <div class="product__media">
-      <div class="product__img">
-        <Image
-          alt={title}
-          class="main-image"
-          data-color={variants[0]?.color}
-          id="product__thumbs--current"
-          inferSize
-          src={mainPhotoSrc}
-        />
-      </div>
-
-      <ul class="product__thumbs">
-        {
-          variants.map((variant) =>
-            variant.photos?.map((photo) => (
-              <li class="product__thumbs__img-container">
-                <Image
-                  alt={`${title} - ${variant.color}`}
-                  class="product__thumbs__img"
-                  data-color={variant.color}
-                  inferSize
-                  src={photo.url}
-                />
-              </li>
-            )),
-          )
-        }
-      </ul>
-
-      {
-        videoUrl && (
-          <div class="product__video">
-            <iframe
-              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen={true}
-              src={videoUrl}
-              title={`Video of ${title}`}
-            />
-          </div>
-        )
-      }
-    </div>
-
-    <h3 class="product__title">{title}</h3>
-    <div class="price">
-      <Price price={Number(variants[0]?.price)} />
-    </div>
-    <div class="product__desc">
-      <p>
-        {description}
-      </p>
-    </div>
-
-    <ul class="product__specs">
-      {
-        displayMode === "all_variants" ? (
-          <li>
-            <p>Spalva</p>
-            <p id="color">{variants[0]?.color}</p>
-          </li>
-        ) : (
-          <li class="select">
-            <Select label="Pasirinkite spalvą" options={variants} />
-          </li>
-        )
-      }
-
-      {
-        Object.entries(specifications ?? {}).map(([key, value]) => {
-          return (
-            <li>
-              <p>{key}</p>
-              <p>{value}</p>
-            </li>
-          );
-        })
-      }
-    </ul>
+    <ProductMedia product={product} />
+    <ProductInfo product={product} />
+    {
+      relatedProducts && relatedProducts.length > 0 && (
+        <RelatedProductCarousel client:visible products={relatedProducts} />
+      )
+    }
     <div class="product__back">
-      <InternalLink href="/">Atgal</InternalLink>
+      <LinkButton href="/">Atgal</LinkButton>
     </div>
   </div>
-</Article>
+</ContentBlock>
 
 <style>
   .product-page-container {
@@ -127,113 +44,14 @@ const mainPhotoSrc = mainPhoto.url;
       "media price"
       "media desc"
       "media specs"
-      "media back";
-  }
-
-  .product__media {
-    grid-area: media;
-  }
-
-  .price {
-    grid-area: price;
-  }
-
-  .product__img {
-    grid-area: img;
-    background: var(--color-grey-light);
-    border-radius: 15px;
-    margin-bottom: 1.5rem;
-    width: 100%; /* Adjust as needed */
-    overflow: clip; /* Hides any overflow content */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    & .main-image {
-      width: 100%;
-      height: 100%;
-      min-height: 38.8rem;
-      max-height: 38.8rem;
-      object-fit: contain;
-      padding: var(--default-spacing);
-    }
-  }
-
-  .product__thumbs {
-    grid-area: thumbs;
-    display: grid;
-    grid-gap: 1.5rem;
-    grid-template-columns: repeat(4, 1fr);
-    list-style: none;
-
-    & .product__thumbs__img {
-      padding: 1rem;
-      width: 100%;
-      height: 100%;
-      max-height: 11rem;
-      object-fit: contain;
-    }
-  }
-
-  .product__thumbs li {
-    background: var(--color-grey-light);
-    border-radius: 15px;
-    cursor: pointer;
-    transition: background 0.2s ease-out;
-    width: 100%;
-    overflow: clip;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .product__thumbs li:hover {
-    background: var(--color-divider);
-  }
-
-  .product__desc {
-    grid-area: desc;
-  }
-
-  .product__title {
-    grid-area: title;
-    font-size: 4rem;
-    font-weight: 500;
-    line-height: 1.2;
-  }
-
-  .product__specs {
-    grid-area: specs;
-  }
-
-  .product__specs li {
-    display: flex;
-    justify-content: space-between;
-
-    &:not(:first-child) {
-      padding: 0.5rem 0;
-    }
-  }
-
-  .product__specs li:not(:last-child) {
-    border-bottom: 1px solid var(--color-divider);
-  }
-
-  .product__video {
-    grid-area: video;
-    margin-top: 5rem;
-    border-radius: 15px;
-    overflow: clip;
-  }
-
-  .product__video iframe {
-    display: block;
-    width: 100%;
-    height: 35rem;
+      "related related"
+      "back back";
   }
 
   .product__back {
     grid-area: back;
+    display: flex;
+    justify-content: center;
   }
 
   /* MEDIA QUERIES */
@@ -249,83 +67,8 @@ const mainPhotoSrc = mainPhoto.url;
         "desc"
         "media"
         "specs"
+        "related"
         "back";
     }
   }
 </style>
-
-<script>
-  const imgElements = document.querySelectorAll("img[data-color]");
-  const selectElement = document.querySelector("select");
-  const current = document.querySelector(
-    "#product__thumbs--current",
-  ) as HTMLImageElement;
-  const thumbs = document.querySelectorAll(".product__thumbs img");
-
-  selectElement?.addEventListener("change", (event: Event) => {
-    const target = event.target as HTMLSelectElement;
-    const colorValue = target.value;
-
-    const selectedImage = document.querySelector(
-      `img[data-color="${colorValue}"]`,
-    );
-    if (selectedImage) {
-      current.src = (selectedImage as HTMLImageElement).src;
-      current.setAttribute("data-color", colorValue);
-    }
-
-    imgElements.forEach((imgElement) => {
-      if (imgElement.getAttribute("data-color") === colorValue) {
-        (imgElement as HTMLImageElement).style.display = "block";
-      } else {
-        (imgElement as HTMLImageElement).style.display = "none";
-      }
-    });
-  });
-
-  imgElements.forEach((imgElement) => {
-    imgElement.addEventListener("click", () => {
-      const colorValue = imgElement.getAttribute("data-color");
-
-      const selectedColor = selectElement?.value;
-
-      if (colorValue === selectedColor) {
-        return imgElement;
-      } else {
-        return;
-      }
-    });
-  });
-
-  imgElements.forEach((imgElement) => {
-    imgElement.addEventListener("click", () => {
-      const colorValue = imgElement.getAttribute("data-color");
-
-      const colorElement = document.getElementById("color");
-
-      if (colorElement) {
-        colorElement.textContent = colorValue;
-      }
-    });
-  });
-
-  const thumbClick = (event: Event) => {
-    current.src = (event.target as HTMLImageElement).src;
-  };
-
-  thumbs.forEach((thumb) =>
-    thumb.addEventListener("click", thumbClick as EventListener),
-  );
-
-  document.addEventListener("DOMContentLoaded", () => {
-    if (selectElement) {
-      const initialColor = selectElement.value;
-      imgElements.forEach((imgElement) => {
-        (imgElement as HTMLImageElement).style.display =
-          imgElement.getAttribute("data-color") === initialColor
-            ? "block"
-            : "none";
-      });
-    }
-  });
-</script>

@@ -1,5 +1,6 @@
 import type { FormState } from "../contact-form/contact-form-react";
 import { SubmitAnimation } from "../submit-animation/submit-animation";
+
 import "./submit-button.css";
 
 type Props = {

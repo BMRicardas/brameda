@@ -1,0 +1,14 @@
+---
+type Variant = "light" | "dark";
+
+type Props = {
+  variant?: Variant;
+  href: string;
+};
+
+const { variant = "light", href }: Props = Astro.props;
+---
+
+<a class:list={["btn", { "btn-dark": variant === "dark" }]} href={href}>
+  <slot />
+</a>

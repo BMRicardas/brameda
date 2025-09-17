@@ -1,0 +1,100 @@
+.related-products-carousel {
+  grid-area: related;
+  padding-block: var(--default-spacing);
+}
+
+.carousel-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding-block-end: var(--default-spacing);
+  display: flex;
+  align-items: center;
+}
+
+.carousel-title::after {
+  content: "";
+  flex: 1;
+  margin-left: 1.5rem;
+  height: 1px;
+  background-color: var(--color-grey-dark2);
+}
+
+.embla {
+  position: relative;
+}
+
+.embla__viewport {
+  overflow: hidden;
+}
+
+.embla__container {
+  display: flex;
+  margin-left: -1rem;
+}
+
+.embla__slide {
+  flex: 0 0 33.3333%;
+  min-width: 0;
+  padding-left: 1rem;
+}
+
+@media (max-width: 64em) {
+  .embla__slide {
+    flex-basis: 50%;
+  }
+}
+
+@media (max-width: 40em) {
+  .embla__slide {
+    flex-basis: 100%;
+  }
+}
+
+.embla__button {
+  appearance: none;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  touch-action: manipulation;
+  cursor: pointer;
+  border: 1px solid var(--color-grey-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-grey-dark2);
+  font-size: 3rem;
+  line-height: 1;
+  transition: background-color 0.2s;
+}
+
+.embla__button:hover:not(:disabled) {
+  background-color: var(--color-white);
+}
+
+.embla__button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.embla__button--prev {
+  left: -2rem;
+}
+
+.embla__button--next {
+  right: -2rem;
+}
+
+@media (max-width: 40em) {
+  .embla__button--prev {
+    left: 0.5rem;
+  }
+  .embla__button--next {
+    right: 0.5rem;
+  }
+}

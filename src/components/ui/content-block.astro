@@ -1,39 +1,45 @@
 ---
-import type { Theme } from "@/types/common";
-
 import BlockTitle from "./block-title.astro";
 import Container from "./container.astro";
 
+type Theme = "light" | "dark";
+type Tag = "article" | "section";
+
 type Props = {
-  sectionId?: string;
+  id?: string;
   appearanceMode?: Theme;
   title?: string;
+  as?: Tag;
 };
 
-const { sectionId, appearanceMode = "light", title } = Astro.props;
+const {
+  id,
+  appearanceMode = "light",
+  title,
+  as: Tag = "section",
+}: Props = Astro.props;
 ---
 
-<section
+<Tag
   class:list={[
-    "section",
+    "content-block",
     {
       dark: appearanceMode !== "light",
     },
   ]}
-  id={sectionId}
->
+  id={id}>
   <Container>
-    <BlockTitle appearanceMode={appearanceMode} title={title} />
+    {title && <BlockTitle {appearanceMode} {title} />}
     <slot />
   </Container>
-</section>
+</Tag>
 
 <style>
-  .section {
+  .content-block {
     padding-block: var(--default-spacing);
   }
 
-  .section.dark {
+  .content-block.dark {
     background-color: var(--color-grey-dark2);
     color: var(--color-grey-light);
   }

@@ -65,12 +65,9 @@ body {
 
 body.scroll-lock {
   overflow: hidden;
-  /* margin-right: var(--scrollbar-width);
-  position: fixed;
-  */
-  width: 100%;
+  padding-right: var(--scrollbar-width);
 
-  touch-action: none;
+  /* touch-action: none; */
 }
 
 /* Typography */

@@ -1,8 +1,14 @@
 ---
+import About from "@/components/about.astro";
+import Contacts from "@/components/contacts.astro";
 import ProductList from "@/components/product/product-list.astro";
 import Layout from "@/layouts/Layout.astro";
 ---
 
-<Layout title="UAB Brameda">
+<Layout
+  description="UAB Brameda - Jūsų patikimas partneris. Mūsų tikslas - teikti aukščiausios kokybės produktus ir paslaugas, atitinkančias Jūsų poreikius."
+  title="UAB Brameda">
   <ProductList />
+  <About />
+  <Contacts />
 </Layout>

@@ -1,0 +1,187 @@
+---
+import type { Product } from "@/schemas/contentful-transformed.types";
+
+import Price from "@/components/ui/price.astro";
+import Select from "@/components/ui/select.astro";
+
+type Props = {
+  product: Product;
+};
+
+const { product } = Astro.props;
+const {
+  title,
+  priceWithoutVat,
+  inStock,
+  description,
+  specifications,
+  variants,
+  displayMode,
+} = product;
+
+const isProductInStock = variants.some((variant) => variant.inStock) || inStock;
+---
+
+<>
+  <h3 class="product__title">{title}</h3>
+  <div class="price-wrapper">
+    <div class="price">
+      <!-- <PriceBeta price={Number(priceWithoutVat)} /> -->
+      <Price price={Number(priceWithoutVat)} />
+      <div id="stock-status">
+        {
+          isProductInStock ? (
+            <span class="in-stock">Prekė sandėlyje</span>
+          ) : (
+            <span class="out-of-stock">
+              Užsakoma prekė. Pristatymas 2-3 savaitės
+            </span>
+          )
+        }
+      </div>
+    </div>
+    <!-- <div id="variant-stock-status"></div> -->
+  </div>
+  <div class="product__desc">
+    <p>{description}</p>
+  </div>
+  <ul class="product__specs">
+    {
+      variants.length === 1 || displayMode === "all_variants" ? (
+        <li>
+          <p>Spalva</p>
+          <p id="color">{variants[0]?.color}</p>
+        </li>
+      ) : (
+        <li class="select">
+          <Select label="Pasirinkite spalvą" options={variants} />
+        </li>
+      )
+    }
+    {
+      Object.entries(specifications ?? {}).map(([key, value]) => {
+        return (
+          <li>
+            <p>{key}</p>
+            <p>{String(value)}</p>
+          </li>
+        );
+      })
+    }
+  </ul>
+</>
+
+<style>
+  .price-wrapper {
+    grid-area: price;
+  }
+
+  #stock-status:not(:empty) {
+    margin-block-start: 1rem;
+  }
+
+  :global(.in-stock) {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: var(--color-success);
+  }
+
+  :global(.out-of-stock) {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: var(--color-danger);
+  }
+
+  .product__desc {
+    grid-area: desc;
+  }
+
+  .product__title {
+    grid-area: title;
+    font-size: 4rem;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .product__specs {
+    grid-area: specs;
+  }
+
+  .product__specs li {
+    display: flex;
+    justify-content: space-between;
+
+    &:not(:first-child) {
+      padding: 0.5rem 0;
+    }
+  }
+
+  .product__specs li:not(:last-child) {
+    border-bottom: 1px solid var(--color-divider);
+  }
+
+  .product__specs li:only-of-type {
+    border-bottom: 1px solid var(--color-divider);
+  }
+</style>
+
+<script define:vars={{ variants }} is:inline>
+  const selectElement = document.querySelector("select");
+  const colorElement = document.getElementById("color");
+  const stockStatusContainer = document.getElementById("stock-status");
+
+  function updateStockStatus(selectedVariant) {
+    if (!stockStatusContainer) return;
+
+    if (selectedVariant) {
+      const isInStock = selectedVariant.inStock;
+
+      if (isInStock) {
+        stockStatusContainer.innerHTML =
+          "<span class='in-stock'>Prekė sandėlyje</span>";
+      } else {
+        const duration = selectedVariant.shippingDuration || "2-3 mėnesiai";
+        stockStatusContainer.innerHTML = `<span class='out-of-stock'>Užsakoma prekė. Pristatymas ${duration}</span>`;
+      }
+    }
+  }
+
+  if (selectElement) {
+    selectElement.addEventListener("change", (event) => {
+      const colorValue = event.target.value;
+      const selectedVariant = variants.find(
+        (variant) => variant.color === colorValue
+      );
+
+      updateStockStatus(selectedVariant);
+
+      document.dispatchEvent(
+        new CustomEvent("colorSelected", { detail: { color: colorValue } })
+      );
+    });
+
+    const initialColor = selectElement.value;
+    const initialVariant = variants.find(
+      (variant) => variant.color === initialColor
+    );
+    updateStockStatus(initialVariant);
+  }
+
+  document.addEventListener("thumbClicked", (event) => {
+    const colorValue = event.detail.color;
+
+    if (colorElement) {
+      colorElement.textContent = colorValue;
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    if (selectElement) {
+      const initialColor = selectElement.value;
+
+      document.dispatchEvent(
+        new CustomEvent("colorSelected", { detail: { color: initialColor } })
+      );
+    }
+  });
+</script>

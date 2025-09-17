@@ -1,30 +1,32 @@
-<!-- ---
-import Image from "astro/components/Image.astro";
-import close from "public/assets/close.svg";
-import hamburgerMenu from "public/assets/hamburger-menu.svg";
+---
+import { Image } from "astro:assets";
+
+import close from "../../assets/close.svg";
+import hamburgerMenu from "../../assets/hamburger-menu.svg";
 
 const MENU_BUTTON_SIZE = 50;
 ---
 
 <button
   aria-controls="mobile-menu"
+  aria-expanded="false"
+  aria-label="Toggle menu"
   class="menu-toggle"
-  data-expanded="false"
-  id="menu-button"
+  id="menu-toggle-button"
   popovertarget="mobile-menu"
   type="button">
   <Image
-    alt="Menu icon"
+    alt="Open menu"
+    class="icon-open"
     height={MENU_BUTTON_SIZE}
-    id="open-menu-image"
     loading="eager"
     src={hamburgerMenu}
     width={MENU_BUTTON_SIZE}
   />
   <Image
-    alt="Menu icon"
+    alt="Close menu"
+    class="icon-close"
     height={MENU_BUTTON_SIZE}
-    id="close-menu-image"
     loading="eager"
     src={close}
     width={MENU_BUTTON_SIZE}
@@ -37,12 +39,21 @@ const MENU_BUTTON_SIZE = 50;
     margin-inline-end: var(--scrollbar-width);
   }
 
-  #open-menu-image {
+  .icon-open {
     display: block;
   }
 
-  #close-menu-image {
+  .icon-close {
     display: none;
+  }
+
+  /* When the button's aria-expanded is true, show the close icon and hide the open one. */
+  .menu-toggle[aria-expanded="true"] .icon-open {
+    display: none;
+  }
+
+  .menu-toggle[aria-expanded="true"] .icon-close {
+    display: block;
   }
 
   @media only screen and (max-width: 50em) {
@@ -59,18 +70,14 @@ const MENU_BUTTON_SIZE = 50;
       z-index: 100;
       transition: transform var(--transition-duration);
 
+      /* Scroll-driven animation properties */
       animation-name: scrolledMenuButton;
-
       transition-duration: var(--transition-duration);
       animation-fill-mode: var(--animation-fill-mode);
       animation-timeline: var(--animation-timeline);
       animation-range-start: var(--animation-range-start);
       animation-range-end: var(--animation-range-end);
     }
-
-    /* .menu-toggle[aria-expanded="true"] {
-      transform: rotate(90deg);
-    } */
   }
 
   @keyframes scrolledMenuButton {
@@ -84,34 +91,25 @@ const MENU_BUTTON_SIZE = 50;
 </style>
 
 <script>
-  const menuButton = document.getElementById(
-    "menu-button"
-  ) as HTMLButtonElement;
-  const mobileMenu = document.getElementById("mobile-menu") as HTMLElement;
-  const openMenuImage = document.getElementById(
-    "open-menu-image"
-  ) as HTMLImageElement;
-  const closeMenuImage = document.getElementById(
-    "close-menu-image"
-  ) as HTMLImageElement;
+  // This script ensures the button's visual state (via aria-expanded)
+  // stays in sync with the popover's state, using the popover's own events.
+  document.addEventListener("DOMContentLoaded", () => {
+    const menuButton = document.getElementById("menu-toggle-button");
+    const mobileMenu = document.getElementById("mobile-menu");
 
-  menuButton.addEventListener("click", () => {
-    const expanded = menuButton.dataset.expanded === "true";
+    // Defensive check to prevent errors if elements are not on the page.
+    if (!menuButton || !mobileMenu) {
+      return;
+    }
 
-    console.log({ expanded });
+    // The 'beforetoggle' event fires just before the popover's state changes.
+    // This is the ideal place to sync our button's state.
+    mobileMenu.addEventListener("beforetoggle", (event) => {
+      // The event.newState property is either 'open' or 'closed'.
+      const isOpening = (event as ToggleEvent).newState === "open";
 
-    menuButton.dataset.expanded = expanded ? "false" : "true";
-
-    menuButton.setAttribute("aria-expanded", expanded ? "false" : "true");
-    mobileMenu.setAttribute(
-      "aria-label",
-      expanded ? "Open navigation menu" : "Close navigation menu"
-    );
-    mobileMenu.setAttribute(
-      "popover-target-action",
-      expanded ? "hide" : "show"
-    );
-    openMenuImage.style.display = expanded ? "block" : "none";
-    closeMenuImage.style.display = expanded ? "none" : "block";
+      // Update aria-expanded for accessibility and to drive CSS styling for the icons.
+      menuButton.setAttribute("aria-expanded", String(isOpening));
+    });
   });
-</script> -->
+</script>
