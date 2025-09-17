@@ -10,11 +10,6 @@ export default defineConfig({
   vite: {
     build: {
       cssCodeSplit: false,
-      rollupOptions: {
-        output: {
-          assetFileNames: "styles/style[extname]",
-        },
-      },
     },
   },
   env: {
