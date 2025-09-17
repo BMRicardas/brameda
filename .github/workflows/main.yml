@@ -31,11 +31,17 @@ jobs:
         run: |
           echo "Verifying webhook from Contentful..."
 
+          #Capture payload once for reuse
+          PAYLOAD='${{ toJSON(github.event.client_payload) }}' [ -z "$PAYLOAD" ] && PAYLOAD='{}'
+
           # Try to get signature from different possible locations
-          SIGNATURE=$(echo '${{ toJSON(github.event.client_payload) }}' | jq -r '.signature // .headers["x-contentful-webhook-signature"] // empty')
+          SIGNATURE=$(echo "$PAYLOAD" | jq -r ' .signature // .secret // .headers["x-contentful-webhook-signature"] // .headers["X-Contentful-Webhook-Signature"] // .headers["x-contentful-signature"] // .headers["X-Contentful-Signature"] // empty ')
 
           echo "::add-mask::$WEBHOOK_SECRET"
-          echo "::add-mask::$SIGNATURE"
+          if [ -n "$SIGNATURE" ]; then
+            echo "::add-mask::$SIGNATURE"
+          fi
+
           echo "Secret length: ${#WEBHOOK_SECRET}"
           echo "Signature found: ${SIGNATURE:+yes}"
           echo "Signature length: ${#SIGNATURE}"
