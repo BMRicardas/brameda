@@ -34,19 +34,20 @@ jobs:
           # Try to get signature from different possible locations
           SIGNATURE=$(echo '${{ toJSON(github.event.client_payload) }}' | jq -r '.signature // .headers["x-contentful-webhook-signature"] // empty')
 
+          echo "::add-mask::$WEBHOOK_SECRET"
+          echo "::add-mask::$SIGNATURE"
           echo "Secret length: ${#WEBHOOK_SECRET}"
           echo "Signature found: ${SIGNATURE:+yes}"
           echo "Signature length: ${#SIGNATURE}"
 
           if [ -z "$SIGNATURE" ]; then
-            echo "❌ Error: No webhook signature found"
-            echo "Payload received:"
-            echo '${{ toJSON(github.event.client_payload) }}'
+            echo "❌ Error: No webhook signature/secret found in client_payload"
+            echo "Payload keys: $(echo "$PAYLOAD" | jq -r 'keys | join(", ")')"
             exit 1
           fi
 
           if [ "$SIGNATURE" != "$WEBHOOK_SECRET" ]; then
-            echo "❌ Error: Signature mismatch"
+            echo "❌ Error: Signature/secret mismatch"
             echo "Expected format length: ${#WEBHOOK_SECRET}"
             echo "Received format length: ${#SIGNATURE}"
             exit 1
