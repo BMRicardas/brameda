@@ -13,6 +13,8 @@ export default defineConfig({
   vite: {
     build: {
       cssCodeSplit: false,
+      minify: true,
+      cssMinify: true,
     },
   },
   env: {
