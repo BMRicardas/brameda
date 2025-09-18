@@ -109,8 +109,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: [build]
-    # Uncomment the line below if you want manual approval for deployments
-    # environment: production
+    environment: production
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
