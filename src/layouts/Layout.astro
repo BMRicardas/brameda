@@ -1,9 +1,9 @@
 ---
 import Footer from "@/components/footer.astro";
 import Header from "@/components/header.astro";
+import Disclaimer from "@/components/ui/disclaimer.astro";
 import "@/styles/normalize.css";
 import "@/styles/global.css";
-import Disclaimer from "@/components/ui/disclaimer.astro";
 
 type Props = {
   title: string;
@@ -29,6 +29,12 @@ const { title, description } = Astro.props;
     <link href="/sitemap-index.xml" rel="sitemap" />
     <link href="/favicon.ico" rel="icon" type="image/svg+xml" />
     <meta content={Astro.generator} name="generator" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
     <title>{title}</title>
   </head>
   <body>

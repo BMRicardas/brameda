@@ -37,7 +37,7 @@ const shouldShowThumbnails = allVariantPhotos.length > 1;
       decoding="async"
       id="product__thumbs--current"
       inferSize
-      loading="eager"
+      loading="lazy"
       src={getMainPhotoUrl(mainPhotoSrc)}
     />
   </div>
