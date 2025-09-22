@@ -2,7 +2,7 @@
 import type { Product } from "@/schemas/contentful-transformed.types";
 
 import Price from "@/components/ui/price.astro";
-import Select from "@/components/ui/select.astro";
+import SelectColor from "@/components/ui/select-color.astro";
 
 type Props = {
   product: Product;
@@ -26,7 +26,6 @@ const isProductInStock = variants.some((variant) => variant.inStock) || inStock;
   <h3 class="product__title">{title}</h3>
   <div class="price-wrapper">
     <div class="price">
-      <!-- <PriceBeta price={Number(priceWithoutVat)} /> -->
       <Price price={Number(priceWithoutVat)} />
       <div id="stock-status">
         {
@@ -40,7 +39,6 @@ const isProductInStock = variants.some((variant) => variant.inStock) || inStock;
         }
       </div>
     </div>
-    <!-- <div id="variant-stock-status"></div> -->
   </div>
   <div class="product__desc">
     <p>{description}</p>
@@ -54,7 +52,7 @@ const isProductInStock = variants.some((variant) => variant.inStock) || inStock;
         </li>
       ) : (
         <li class="select">
-          <Select label="Pasirinkite spalvą" options={variants} />
+          <SelectColor label="Pasirinkite spalvą" options={variants} />
         </li>
       )
     }
