@@ -138,7 +138,7 @@ const isProductInStock = variants.some((variant) => variant.inStock) || inStock;
         stockStatusContainer.innerHTML =
           "<span class='in-stock'>Prekė sandėlyje</span>";
       } else {
-        const duration = selectedVariant.shippingDuration || "2-3 mėnesiai";
+        const duration = selectedVariant.shippingDuration || "3-4 savaitės";
         stockStatusContainer.innerHTML = `<span class='out-of-stock'>Užsakoma prekė. Pristatymas ${duration}</span>`;
       }
     }
