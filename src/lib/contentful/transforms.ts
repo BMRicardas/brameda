@@ -1,7 +1,7 @@
 import type {
   TypeProductVariantsWithoutUnresolvableLinksResponse,
   TypeProductWithoutUnresolvableLinksResponse,
-} from "@/types/contentful.types";
+} from "@/types/contentful";
 
 function transformVariant(
   variant: TypeProductVariantsWithoutUnresolvableLinksResponse,
