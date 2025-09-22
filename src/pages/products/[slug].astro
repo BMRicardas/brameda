@@ -5,6 +5,7 @@ import Contacts from "@/components/contacts.astro";
 import ProductPage from "@/components/product/product-page.astro";
 import Layout from "@/layouts/Layout.astro";
 import { type CollectionEntry, getCollection } from "astro:content";
+import { renderRichTextToPlainText } from "@/lib/rich-text";
 
 type Props = { product: Product };
 
@@ -25,7 +26,9 @@ export async function getStaticPaths() {
 const { product } = Astro.props;
 ---
 
-<Layout description={product.description} title={product.title}>
+<Layout
+  description={renderRichTextToPlainText(product.description)}
+  title={product.title}>
   <ProductPage product={product} />
   <Contacts />
 </Layout>

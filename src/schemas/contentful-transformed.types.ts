@@ -1,5 +1,7 @@
 import { z } from "astro:content";
 
+import { type Document } from "@contentful/rich-text-types";
+
 export const imageAssetSchema = z.object({
   url: z.string(),
   details: z.object({
@@ -31,7 +33,7 @@ const baseProductSchema = z.object({
   inStock: z.boolean(),
   mainPhoto: imageAssetSchema,
   features: z.array(z.string()),
-  description: z.string(),
+  description: z.custom<Document>(),
   specifications: z.record(z.unknown()).optional(),
   priceWithoutVat: z.number().optional(),
   videoUrl: z.string().optional(),

@@ -1,0 +1,13 @@
+---
+import type { Document } from "@contentful/rich-text-types";
+import { renderRichTextToHtml } from "@/lib/rich-text";
+
+type Props = {
+  doc: Document;
+};
+
+const { doc } = Astro.props;
+const html = renderRichTextToHtml(doc);
+---
+
+<Fragment set:html={html} />

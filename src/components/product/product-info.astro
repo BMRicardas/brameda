@@ -3,6 +3,7 @@ import type { Product } from "@/schemas/contentful-transformed.types";
 
 import Price from "@/components/ui/price.astro";
 import SelectColor from "@/components/ui/select-color.astro";
+import RichText from "../ui/rich-text.astro";
 
 type Props = {
   product: Product;
@@ -41,7 +42,7 @@ const isProductInStock = variants.some((variant) => variant.inStock) || inStock;
     </div>
   </div>
   <div class="product__desc">
-    <p>{description}</p>
+    <RichText doc={description} />
   </div>
   <ul class="product__specs">
     {
