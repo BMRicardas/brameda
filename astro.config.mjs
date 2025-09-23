@@ -1,19 +1,9 @@
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
-import { defineConfig, envField, fontProviders } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
-  experimental: {
-    fonts: [
-      {
-        provider: fontProviders.google,
-        name: "Roboto",
-        cssVariable: "--font-roboto",
-        // fallbacks: ["sans-serif"],
-      },
-    ],
-  },
   prefetch: {
     prefetchAll: true,
   },
