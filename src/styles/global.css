@@ -1,5 +1,4 @@
 @import "./normalize.css";
-@import "@fontsource/roboto";
 
 /* CSS Variables */
 :root {
@@ -56,7 +55,7 @@ html {
 }
 
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: var(--font-roboto);
   color: var(--color-grey-dark2);
   background: var(--color-white);
   min-height: 100vh;
