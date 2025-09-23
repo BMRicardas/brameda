@@ -4,18 +4,20 @@ import { defineConfig, envField, fontProviders } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
-  experimental: {
-    fonts: {
-      fonts: [
-        {
-          provider: fontProviders.google,
-          name: "Roboto",
-          cssVariable: "--font-roboto",
-          // fallbacks: ["sans-serif"],
-        },
-      ],
+  experimental: [
+    {
+      fonts: {
+        fonts: [
+          {
+            provider: fontProviders.google,
+            name: "Roboto",
+            cssVariable: "--font-roboto",
+            // fallbacks: ["sans-serif"],
+          },
+        ],
+      },
     },
-  },
+  ],
   prefetch: {
     prefetchAll: true,
   },
