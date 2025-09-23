@@ -57,9 +57,8 @@ A high-performance business website showcasing clean code, modern development pr
 
 - [GitHub Actions Workflow](.github/workflows/main.yml)
 - [Contentful Client](src/lib/contentful/client.ts)
-- [Contentful Constants](src/lib/contentful/constants.ts#L13)
-<!-- TODO update with env example (or add) -->
-- [Environment Schema](astro.config.mjs#L19)
+- [Contentful Config](src/lib/contentful/config.ts#L13)
+- [Environment Schema](astro.config.mjs#L30)
 
 ## ⚡ Quick Start
 
@@ -96,16 +95,24 @@ WEB3FORMS_PUBLIC_ACCESS_KEY=your_web3forms_key
 ```
 /
 ├── src/
+│   ├── assets/
 │   ├── components/
 │   │   ├── product/
+│   │   ├── react/
 │   │   └── ui/
+│   ├── constants/
 │   ├── content/
 │   ├── layouts/
 │   ├── lib/
-│   │   └── contentful/
+│   │   ├── contentful/
+│   │   └── rich-text/
 │   ├── pages/
+│   │   └── products/
 │   ├── schemas/
-│   └── types/
+│   ├── styles/
+│   ├── types/
+│   │   └── contentful/
+│   └── utils/
 ├── public/
 └── package.json
 ```
@@ -116,10 +123,11 @@ WEB3FORMS_PUBLIC_ACCESS_KEY=your_web3forms_key
 
 This project requires a Contentful space with the following content models:
 
+- `AboutUs`: About us section
 - `Product`: Main product information
 - `ProductVariants`: Product color and price variations
 
-Required fields are detailed in the content model types at `src/types/contentful.types.ts`
+Required fields are detailed in the content model types at `src/types/contentful/*`
 
 ### Form Setup
 
