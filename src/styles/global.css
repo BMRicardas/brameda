@@ -63,7 +63,7 @@ body {
 }
 
 body.scroll-lock {
-  overflow: hidden;
+  overflow: clip;
   padding-right: var(--scrollbar-width);
 
   /* touch-action: none; */

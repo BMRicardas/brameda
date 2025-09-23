@@ -36,11 +36,12 @@ const {
     margin: 0;
     font-size: 6.9rem;
     font-weight: 700;
+    transform-origin: left center;
     animation-name: scrolledTitle;
   }
 
   .branding h1 span {
-    margin-top: -0.8rem;
+    margin-top: -1.3rem;
     text-align: center;
     font-size: 1.3rem;
     font-weight: 400;
@@ -52,12 +53,15 @@ const {
 
   @keyframes scrolledTitle {
     from {
-      font-size: 6.9rem;
-      line-height: 1;
+      /* font-size: 6.9rem;
+      line-height: 1; */
+      transform: scale(1);
     }
     to {
-      font-size: 4.5rem;
-      line-height: 1.25;
+      /* font-size: 4.5rem;
+      line-height: 1.25; */
+      transform: scale(0.65) translateY(-15%);
+      margin-block-end: -2rem;
     }
   }
 
