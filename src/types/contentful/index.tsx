@@ -1,3 +1,14 @@
+export { isTypeAboutUs } from "./about-us.type";
+export type {
+  TypeAboutUs,
+  TypeAboutUsFields,
+  TypeAboutUsSkeleton,
+  TypeAboutUsWithAllLocalesAndWithoutLinkResolutionResponse,
+  TypeAboutUsWithAllLocalesAndWithoutUnresolvableLinksResponse,
+  TypeAboutUsWithAllLocalesResponse,
+  TypeAboutUsWithoutLinkResolutionResponse,
+  TypeAboutUsWithoutUnresolvableLinksResponse,
+} from "./about-us.type";
 export { isTypeProduct } from "./product.type";
 export type {
   TypeProduct,

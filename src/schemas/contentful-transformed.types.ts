@@ -15,6 +15,10 @@ export const imageAssetSchema = z.object({
   contentType: z.string(),
 });
 
+export const aboutUsSchema = z.object({
+  aboutUs: z.custom<Document>(),
+});
+
 export const productVariantSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -50,5 +54,6 @@ export const productSchema: z.ZodType<BaseProduct> = baseProductSchema.extend({
 });
 
 export type ImageAsset = z.infer<typeof imageAssetSchema>;
+export type AboutUs = z.infer<typeof aboutUsSchema>;
 export type ProductVariant = z.infer<typeof productVariantSchema>;
 export type Product = z.infer<typeof productSchema>;

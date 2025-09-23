@@ -153,7 +153,7 @@ const { links = headerLinks } = Astro.props;
     });
 
     // Clean up
-    window.addEventListener("unload", () => {
+    window.addEventListener("pagehide", () => {
       toggleScrollLock(false);
       window.removeEventListener("resize", updateScrollbarWidth);
     });
