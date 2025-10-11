@@ -33,6 +33,9 @@
 
   /* Scrollbar */
   --scrollbar-width: 0px;
+
+  /* Boarders */
+  --border-radius: 15px;
 }
 
 /* Reset */

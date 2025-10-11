@@ -78,7 +78,7 @@ const mainPhotoSrc = mainPhoto.url || allVariantPhotos[0]?.url || "";
   .product__img {
     grid-area: img;
     background: var(--color-grey-light);
-    border-radius: 15px;
+    border-radius: var(--border-radius);
     margin-bottom: 1.5rem;
     width: 100%;
     overflow: clip;
@@ -100,7 +100,7 @@ const mainPhotoSrc = mainPhoto.url || allVariantPhotos[0]?.url || "";
   .product__video {
     grid-area: video;
     margin-top: 5rem;
-    border-radius: 15px;
+    border-radius: var(--border-radius);
     overflow: clip;
     aspect-ratio: 16 / 9;
   }

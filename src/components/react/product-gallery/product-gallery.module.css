@@ -4,7 +4,7 @@
 
 .embla__viewport {
   overflow: hidden;
-  border-radius: 15px;
+  border-radius: var(--border-radius);
 }
 
 .embla__container {
@@ -16,12 +16,13 @@
   flex: 0 0 100%;
   min-width: 0;
   background-color: var(--color-grey-light);
-  border-radius: 15px;
+  border-radius: var(--border-radius);
   overflow: clip;
   display: flex;
   justify-content: center;
   align-items: center;
   aspect-ratio: 1 / 1;
+  user-select: none;
 }
 
 .embla__slide__image {

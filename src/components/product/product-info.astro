@@ -15,14 +15,11 @@ const { product } = Astro.props;
 const {
   title,
   priceWithoutVat,
-  inStock,
   description,
   specifications,
   variants,
   displayMode,
 } = product;
-
-const isProductInStock = variants.some((variant) => variant.inStock) || inStock;
 ---
 
 <>

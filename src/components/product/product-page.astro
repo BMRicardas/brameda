@@ -1,9 +1,8 @@
 ---
 import type { Product } from "@/schemas/contentful-transformed.types";
 
-import { RelatedProductCarousel } from "@/components/react/related-product/related-product-carousel";
+import { RelatedProductsCarousel } from "@/components/react/related-products/related-products-carousel";
 import ContentBlock from "@/components/ui/content-block.astro";
-import LinkButton from "@/components/ui/link-button.astro";
 
 import ProductInfo from "./product-info.astro";
 import ProductMedia from "./product-media.astro";
@@ -23,12 +22,9 @@ const { relatedProducts } = product;
     <ProductInfo product={product} />
     {
       relatedProducts && relatedProducts.length > 0 && (
-        <RelatedProductCarousel client:visible products={relatedProducts} />
+        <RelatedProductsCarousel client:visible products={relatedProducts} />
       )
     }
-    <div class="product__back">
-      <LinkButton href="/">Atgal</LinkButton>
-    </div>
   </div>
 </ContentBlock>
 
@@ -45,14 +41,7 @@ const { relatedProducts } = product;
       "media price"
       "media desc"
       "media specs"
-      "related related"
-      "back back";
-  }
-
-  .product__back {
-    grid-area: back;
-    display: flex;
-    justify-content: center;
+      "related related";
   }
 
   /* MEDIA QUERIES */
@@ -68,8 +57,7 @@ const { relatedProducts } = product;
         "desc"
         "media"
         "specs"
-        "related"
-        "back";
+        "related";
     }
   }
 </style>
