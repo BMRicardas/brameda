@@ -4,7 +4,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { ProductGalleryThumb } from "./product-gallery-thumb";
 import { getMainPhotoUrl, getThumbnailUrl } from "@/utils";
 
-import { EVENTS } from "@/constants";
+import { EVENTS, MAIN_IMAGE_WIDTH } from "@/constants";
 import type { ColorSelectedEvent } from "@/types";
 
 import styles from "./product-gallery.module.css";
@@ -180,6 +180,9 @@ export function ProductGallery({
                   src={photo.url}
                   alt={photo.altText || photo.fileName}
                   fetchPriority="high"
+                  loading="lazy"
+                  width={MAIN_IMAGE_WIDTH}
+                  height={MAIN_IMAGE_WIDTH}
                 />
               </div>
             );

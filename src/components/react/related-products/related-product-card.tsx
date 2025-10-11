@@ -2,6 +2,7 @@ import { type Product } from "@/schemas/contentful-transformed.types";
 import { getThumbnailUrl } from "@/utils";
 
 import styles from "./related-product-card.module.css";
+import { THUMBNAIL_WIDTH } from "@/constants";
 
 type Props = {
   product: Product;
@@ -25,6 +26,8 @@ export default function RelatedProductCard({
           alt={`Image of ${product.title}`}
           className={styles["image"]}
           loading="lazy"
+          width={THUMBNAIL_WIDTH}
+          height={THUMBNAIL_WIDTH}
         />
       </div>
       <div className={styles["content"]}>

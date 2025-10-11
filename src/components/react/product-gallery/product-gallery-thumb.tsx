@@ -1,4 +1,4 @@
-import { EVENTS } from "@/constants";
+import { EVENTS, THUMBNAIL_WIDTH } from "@/constants";
 import type { Photo } from "./product-gallery";
 
 import styles from "./product-gallery-thumb.module.css";
@@ -41,6 +41,10 @@ export function ProductGalleryThumb({
         className={styles["embla-thumbs__slide__image"]}
         src={photo.url}
         alt={photo.altText || photo.fileName}
+        width={THUMBNAIL_WIDTH}
+        height={THUMBNAIL_WIDTH}
+        loading="lazy"
+        fetchPriority={selected ? "high" : "auto"}
       />
     </button>
   );

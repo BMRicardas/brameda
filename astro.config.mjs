@@ -8,7 +8,7 @@ export default defineConfig({
     prefetchAll: true,
   },
   build: {
-    inlineStylesheets: "always",
+    inlineStylesheets: "auto",
   },
   vite: {
     build: {
