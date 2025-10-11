@@ -1,7 +1,7 @@
 ---
 import { WEB3FORMS_PUBLIC_ACCESS_KEY } from "astro:env/server";
 
-import { ContactFormReact } from "./react/contact-form/contact-form-react.jsx";
+import { ContactForm } from "./react/contact-form/contact-form";
 import BlockTitle from "./ui/block-title.astro";
 import ContactDetails from "./ui/contact-details.astro";
 import Container from "./ui/container.astro";
@@ -12,7 +12,7 @@ import Container from "./ui/container.astro";
     <BlockTitle appearanceMode="dark" title="Kontaktai" />
     <div class="contacts-container">
       <ContactDetails />
-      <ContactFormReact
+      <ContactForm
         client:visible
         web3formsPublicAccessKey={WEB3FORMS_PUBLIC_ACCESS_KEY}
       />
@@ -39,6 +39,7 @@ import Container from "./ui/container.astro";
       grid-template-columns: auto;
       gap: var(--default-spacing);
     }
+
     .contacts-container > :first-child {
       order: 2;
       text-align: center;

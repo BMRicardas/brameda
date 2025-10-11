@@ -2,7 +2,7 @@ import { z } from "astro:content";
 
 import { type Document } from "@contentful/rich-text-types";
 
-export const imageAssetSchema = z.object({
+export const ImageAssetSchema = z.object({
   url: z.string(),
   details: z.object({
     size: z.number(),
@@ -15,45 +15,45 @@ export const imageAssetSchema = z.object({
   contentType: z.string(),
 });
 
-export const aboutUsSchema = z.object({
+export const AboutUsSchema = z.object({
   aboutUs: z.custom<Document>(),
 });
 
-export const productVariantSchema = z.object({
+export const ProductVariantSchema = z.object({
   id: z.string(),
   name: z.string(),
   color: z.string(),
-  photos: z.array(imageAssetSchema),
+  photos: z.array(ImageAssetSchema),
   price: z.number().optional(),
   inStock: z.boolean(),
   shippingDuration: z.string().optional(),
 });
 
-const baseProductSchema = z.object({
+const BaseProductSchema = z.object({
   id: z.string(),
   slug: z.string(),
   title: z.string(),
   order: z.number(),
   inStock: z.boolean(),
-  mainPhoto: imageAssetSchema,
+  mainPhoto: ImageAssetSchema,
   features: z.array(z.string()),
   description: z.custom<Document>(),
   specifications: z.record(z.unknown()).optional(),
   priceWithoutVat: z.number().optional(),
   videoUrl: z.string().optional(),
-  variants: z.array(productVariantSchema),
+  variants: z.array(ProductVariantSchema),
   displayMode: z.enum(["all_variants", "color_selector"]),
 });
 
-type BaseProduct = z.infer<typeof baseProductSchema> & {
+type BaseProduct = z.infer<typeof BaseProductSchema> & {
   relatedProducts?: BaseProduct[];
 };
 
-export const productSchema: z.ZodType<BaseProduct> = baseProductSchema.extend({
+export const productSchema: z.ZodType<BaseProduct> = BaseProductSchema.extend({
   relatedProducts: z.lazy(() => productSchema.array()).optional(),
 });
 
-export type ImageAsset = z.infer<typeof imageAssetSchema>;
-export type AboutUs = z.infer<typeof aboutUsSchema>;
-export type ProductVariant = z.infer<typeof productVariantSchema>;
+export type ImageAsset = z.infer<typeof ImageAssetSchema>;
+export type AboutUs = z.infer<typeof AboutUsSchema>;
+export type ProductVariant = z.infer<typeof ProductVariantSchema>;
 export type Product = z.infer<typeof productSchema>;

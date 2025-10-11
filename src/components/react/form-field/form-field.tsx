@@ -1,49 +1,84 @@
-import { ErrorMessage } from "@hookform/error-message";
-import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import {
+  createElement,
+  useId,
+  type DetailedHTMLProps,
+  type InputHTMLAttributes,
+  type TextareaHTMLAttributes,
+} from "react";
+import type { Message } from "react-hook-form";
 
-import { InputErrorMessage } from "../input-error-message/input-error-message";
+import { InputErrorMessage } from "@/components/react/input-error-message/input-error-message";
 
 import "./form-field.css";
+import { mergeClassNames } from "@/utils";
 
-type Props = {
-  name: string;
-  label: string;
-  type?: "text" | "email" | "tel";
-  as?: "input" | "textarea";
-  register: UseFormRegister<any>;
-  errors: FieldErrors;
+type InputProps = DetailedHTMLProps<
+  InputHTMLAttributes<HTMLInputElement>,
+  HTMLInputElement
+>;
+
+type TextAreaProps = DetailedHTMLProps<
+  TextareaHTMLAttributes<HTMLTextAreaElement>,
+  HTMLTextAreaElement
+>;
+
+type BaseProps = {
+  label?: string;
+  errorMessage?: Message;
 };
 
+type Props =
+  | (BaseProps &
+      InputProps & {
+        as?: "input";
+        type?: "text" | "email" | "tel";
+        inputClassName?: string;
+      })
+  | (BaseProps &
+      TextAreaProps & {
+        as: "textarea";
+        textareaClassName?: string;
+      });
+
 export function FormField({
-  name,
   label,
-  type = "text",
-  as: Component = "input",
-  register,
-  errors,
+  as = "input",
+  errorMessage,
+  ...rest
 }: Props) {
-  const hasError = !!errors[name];
+  const id = useId();
+  const hasError = Boolean(errorMessage);
+
+  const customClassName =
+    as === "textarea"
+      ? (rest as { textareaClassName?: string }).textareaClassName
+      : (rest as { inputClassName?: string }).inputClassName;
+
+  const { inputClassName, textareaClassName, ...elementProps } = rest as any;
+
+  const className = mergeClassNames(
+    "form-field-input",
+    as === "textarea" ? "-textarea" : undefined,
+    customClassName,
+  );
+
+  const field = createElement(as, {
+    id,
+    className,
+    "aria-invalid": hasError,
+    ...elementProps,
+  });
 
   return (
     <div className="form-field-group">
-      <label htmlFor={name} className="form-field-label">
-        {label}
-      </label>
+      {label && (
+        <label htmlFor={id} className="form-field-label">
+          {label}
+        </label>
+      )}
       <div className="form-field-input-group">
-        <Component
-          id={name}
-          type={type}
-          className={`form-field-input ${Component === "textarea" ? "-textarea" : ""}`}
-          aria-invalid={hasError}
-          {...register(name)}
-        />
-        <ErrorMessage
-          errors={errors}
-          name={name}
-          render={({ message }) => (
-            <InputErrorMessage>{message}</InputErrorMessage>
-          )}
-        />
+        {field}
+        {hasError && <InputErrorMessage>{errorMessage}</InputErrorMessage>}
       </div>
     </div>
   );

@@ -4,10 +4,10 @@
 
   display: block;
   position: absolute;
-  inset: 20% 0 0 85%;
+  inset: 25% 0 0 85%;
 }
 
 .spinner-wrapper {
   position: absolute;
-  inset: 20% 5% 0 85%;
+  inset: 25% 5% 0 85%;
 }

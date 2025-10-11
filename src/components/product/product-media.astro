@@ -1,7 +1,10 @@
 ---
-import type { Product } from "@/schemas/contentful-transformed.types";
 import { Image } from "astro:assets";
-import { getMainPhotoUrl, getThumbnailUrl } from "@/utils";
+
+import type { Product } from "@/schemas/contentful-transformed.types";
+
+import { ProductGallery } from "@/components/react/product-gallery/product-gallery";
+import { getMainPhotoUrl } from "@/utils";
 
 type Props = {
   product: Product;
@@ -9,58 +12,46 @@ type Props = {
 
 const { product } = Astro.props;
 
-const { title, mainPhoto, videoUrl, variants } = product;
-
-const mainPhotoSrc = mainPhoto?.url;
+const { title, mainPhoto, videoUrl, variants, displayMode } = product;
 
 const initialColor = variants[0]?.color;
 
-const allVariantPhotos =
-  variants.flatMap(
-    (variant) =>
-      variant.photos?.map((photo, index) => ({
-        ...photo,
-        color: variant.color,
-        altText: `${title} - ${variant.name} - Photo ${index + 1}`,
-      })) ?? []
-  ) ?? [];
+const allVariantPhotos = variants.flatMap((variant) =>
+  (variant.photos ?? []).map((photo, index) => ({
+    ...photo,
+    color: variant.color,
+    altText: `${title} - ${variant.name} - Photo ${index + 1}`,
+  }))
+);
 
 const shouldShowThumbnails = allVariantPhotos.length > 1;
+
+const mainPhotoSrc = mainPhoto.url || allVariantPhotos[0]?.url || "";
 ---
 
 <div class="product-media">
-  <div class="product__img">
-    <Image
-      alt={title}
-      class="main-image"
-      data-color={initialColor}
-      decoding="async"
-      id="product__thumbs--current"
-      inferSize
-      loading="eager"
-      fetchpriority="high"
-      sizes="(max-width: 768px) 100vw, 800px"
-      src={getMainPhotoUrl(mainPhotoSrc)}
-    />
-  </div>
   {
-    shouldShowThumbnails && (
-      <ul class="product__thumbs">
-        {allVariantPhotos.map((photo) => (
-          <li class="product__thumbs__img-container">
-            <Image
-              alt={photo.altText}
-              class="product__thumbs__img"
-              data-color={photo.color}
-              data-full-src={photo.url}
-              decoding="async"
-              inferSize
-              loading="lazy"
-              src={getThumbnailUrl(photo.url)}
-            />
-          </li>
-        ))}
-      </ul>
+    shouldShowThumbnails ? (
+      <ProductGallery
+        client:visible
+        displayMode={displayMode}
+        initialColor={initialColor}
+        photos={allVariantPhotos}
+      />
+    ) : (
+      <div class="product__img">
+        <Image
+          alt={title}
+          class="main-image"
+          data-color={initialColor}
+          decoding="async"
+          fetchpriority="high"
+          inferSize
+          loading="eager"
+          sizes="(max-width: 768px) 100vw, 800px"
+          src={getMainPhotoUrl(mainPhotoSrc, 100)}
+        />
+      </div>
     )
   }
   {
@@ -106,39 +97,6 @@ const shouldShowThumbnails = allVariantPhotos.length > 1;
     }
   }
 
-  .product__thumbs {
-    grid-area: thumbs;
-    display: grid;
-    grid-gap: 1.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    list-style: none;
-
-    & .product__thumbs__img {
-      padding: 1rem;
-      width: 100%;
-      height: 100%;
-      max-height: 11rem;
-      object-fit: contain;
-    }
-  }
-
-  .product__thumbs li {
-    background-color: var(--color-grey-light);
-    border-radius: 15px;
-    cursor: pointer;
-    transition: background-color 0.2s ease-out;
-    width: 100%;
-    overflow: clip;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    aspect-ratio: 1 / 1;
-  }
-
-  .product__thumbs li:hover {
-    background: var(--color-divider);
-  }
-
   .product__video {
     grid-area: video;
     margin-top: 5rem;
@@ -153,66 +111,3 @@ const shouldShowThumbnails = allVariantPhotos.length > 1;
     height: 35rem;
   }
 </style>
-
-<script>
-  const MAIN_IMAGE_WIDTH = 800;
-
-  function getMainPhotoUrl(baseUrl: string) {
-    return `https:${baseUrl}?fm=webp&q=50&w=${MAIN_IMAGE_WIDTH}`;
-  }
-
-  const currentImage = document.getElementById(
-    "product__thumbs--current"
-  ) as HTMLImageElement;
-  const allThumbnails = document.querySelectorAll<HTMLImageElement>(
-    ".product__thumbs__img"
-  );
-
-  if (currentImage && allThumbnails.length > 0) {
-    document.addEventListener("colorSelected", (event) => {
-      const customEvent = event;
-      const colorValue = (customEvent as CustomEvent<{ color: string }>).detail
-        .color;
-
-      const firstImageOfColor = document.querySelector<HTMLImageElement>(
-        `.product__thumbs__img[data-color="${colorValue}"]`
-      );
-
-      if (firstImageOfColor) {
-        const fullSrc = firstImageOfColor.dataset.fullSrc;
-        if (fullSrc) {
-          currentImage.src = getMainPhotoUrl(fullSrc);
-        }
-        currentImage.setAttribute("data-color", colorValue);
-      }
-
-      allThumbnails.forEach((imgElement) => {
-        const thumbContainer = imgElement.closest("li");
-        if (thumbContainer) {
-          const isVisible =
-            imgElement.getAttribute("data-color") === colorValue;
-          thumbContainer.style.display = isVisible ? "flex" : "none";
-        }
-      });
-    });
-
-    allThumbnails.forEach((thumb) => {
-      thumb.addEventListener("click", (event) => {
-        const target = event.target;
-        if (!target) return;
-
-        const fullSrc = (target as HTMLElement).dataset.fullSrc;
-        if (fullSrc) {
-          currentImage.src = getMainPhotoUrl(fullSrc);
-        }
-
-        const colorValue = (target as Element).getAttribute("data-color");
-        if (colorValue) {
-          document.dispatchEvent(
-            new CustomEvent("thumbClicked", { detail: { color: colorValue } })
-          );
-        }
-      });
-    });
-  }
-</script>

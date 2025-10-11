@@ -11,8 +11,8 @@
   --color-grey-dark: #606570;
   --color-grey-dark2: #3a414e;
   --color-divider: #ccc;
-  --color-danger: #ff4444;
-  --color-success: #03c851;
+  --color-danger: #c41e3a;
+  --color-success: #2e7d32;
 
   /* Animation & Spacing */
   --default-spacing: 5rem;
@@ -60,6 +60,7 @@ body {
   background: var(--color-white);
   min-height: 100vh;
   text-rendering: optimizeSpeed;
+  padding-block-end: env(safe-area-inset-bottom);
 }
 
 body.scroll-lock {
@@ -134,6 +135,19 @@ svg {
 :focus-visible {
   outline: 2px solid var(--color-grey-dark2);
   outline-offset: 2px;
+}
+
+/* Accessibility */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* Media Queries */

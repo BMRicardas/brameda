@@ -2,19 +2,20 @@
 import type { ProductVariant } from "@/schemas/contentful-transformed.types";
 
 type Props = {
+  id: string;
   label?: string;
   options: ProductVariant[];
 };
 
-const { label, options } = Astro.props;
+const { id, label, options } = Astro.props;
 ---
 
 <div class="form-input-select">
-  <label for="select">{label}</label>
-  <select id="select">
+  <label for={id}>{label}</label>
+  <select id={id}>
     {
       options.map((option) => {
-        const color = String(option?.color);
+        const color = String(option.color);
 
         return <option value={color}>{color}</option>;
       })

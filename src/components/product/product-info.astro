@@ -2,14 +2,16 @@
 import type { Product } from "@/schemas/contentful-transformed.types";
 
 import Price from "@/components/ui/price.astro";
+import RichText from "@/components/ui/rich-text.astro";
 import SelectColor from "@/components/ui/select-color.astro";
-import RichText from "../ui/rich-text.astro";
+import { DEFAULT_SHIPPING_DURATION, EVENTS } from "@/constants";
 
 type Props = {
   product: Product;
 };
 
 const { product } = Astro.props;
+
 const {
   title,
   priceWithoutVat,
@@ -24,21 +26,11 @@ const isProductInStock = variants.some((variant) => variant.inStock) || inStock;
 ---
 
 <>
-  <h3 class="product__title">{title}</h3>
+  <h2 class="product__title">{title}</h2>
   <div class="price-wrapper">
     <div class="price">
       <Price price={Number(priceWithoutVat)} />
-      <div id="stock-status">
-        {
-          isProductInStock ? (
-            <span class="in-stock">Prekė sandėlyje</span>
-          ) : (
-            <span class="out-of-stock">
-              Užsakoma prekė. Pristatymas 2-3 savaitės
-            </span>
-          )
-        }
-      </div>
+      <div id="stock-status"></div>
     </div>
   </div>
   <div class="product__desc">
@@ -53,7 +45,11 @@ const isProductInStock = variants.some((variant) => variant.inStock) || inStock;
         </li>
       ) : (
         <li class="select">
-          <SelectColor label="Pasirinkite spalvą" options={variants} />
+          <SelectColor
+            id="variant-color"
+            label="Pasirinkite spalvą"
+            options={variants}
+          />
         </li>
       )
     }
@@ -124,63 +120,113 @@ const isProductInStock = variants.some((variant) => variant.inStock) || inStock;
   }
 </style>
 
-<script define:vars={{ variants }} is:inline>
-  const selectElement = document.querySelector("select");
+<script is:inline define:vars={{ variants, DEFAULT_SHIPPING_DURATION, EVENTS }}>
+  const selectElement = document.getElementById("variant-color");
   const colorElement = document.getElementById("color");
   const stockStatusContainer = document.getElementById("stock-status");
 
   function updateStockStatus(selectedVariant) {
     if (!stockStatusContainer) return;
+    stockStatusContainer.textContent = "";
+
+    if (!selectedVariant) {
+      return;
+    }
+
+    const span = document.createElement("span");
+    span.className = selectedVariant?.inStock ? "in-stock" : "out-of-stock";
+    span.textContent = selectedVariant?.inStock
+      ? "Prekė sandėlyje"
+      : `Užsakoma prekė. Pristatymas ${
+          selectedVariant?.shippingDuration ?? DEFAULT_SHIPPING_DURATION
+        }`;
+
+    stockStatusContainer.append(span);
+  }
+
+  function getInitialVariant() {
+    if (selectElement?.value) {
+      const match = variants.find(
+        (variant) => variant.color === selectElement.value
+      );
+      if (match) return match;
+    }
+
+    if (colorElement?.textContent) {
+      const match = variants.find(
+        (variant) => variant.color === colorElement.textContent.trim()
+      );
+      if (match) return match;
+    }
+
+    return variants[0];
+  }
+
+  function handleVariantChange(event) {
+    const colorValue = event.target.value;
+    const selectedVariant = variants.find((v) => v.color === colorValue);
+    if (!selectedVariant) return;
+
+    updateStockStatus(selectedVariant);
+    document.dispatchEvent(
+      new CustomEvent(EVENTS.COLOR_SELECTED, { detail: { color: colorValue } })
+    );
+  }
+
+  function handleColorChange(event) {
+    const colorValue = event.detail.color;
+    if (!colorValue) return;
+
+    const selectedVariant = variants.find(
+      (variant) => variant.color === colorValue
+    );
 
     if (selectedVariant) {
-      const isInStock = selectedVariant.inStock;
-
-      if (isInStock) {
-        stockStatusContainer.innerHTML =
-          "<span class='in-stock'>Prekė sandėlyje</span>";
-      } else {
-        const duration = selectedVariant.shippingDuration || "3-4 savaitės";
-        stockStatusContainer.innerHTML = `<span class='out-of-stock'>Užsakoma prekė. Pristatymas ${duration}</span>`;
-      }
-    }
-  }
-
-  if (selectElement) {
-    selectElement.addEventListener("change", (event) => {
-      const colorValue = event.target.value;
-      const selectedVariant = variants.find(
-        (variant) => variant.color === colorValue
-      );
-
       updateStockStatus(selectedVariant);
-
-      document.dispatchEvent(
-        new CustomEvent("colorSelected", { detail: { color: colorValue } })
-      );
-    });
-
-    const initialColor = selectElement.value;
-    const initialVariant = variants.find(
-      (variant) => variant.color === initialColor
-    );
-    updateStockStatus(initialVariant);
-  }
-
-  document.addEventListener("thumbClicked", (event) => {
-    const colorValue = event.detail.color;
+    }
 
     if (colorElement) {
       colorElement.textContent = colorValue;
     }
-  });
 
-  document.addEventListener("DOMContentLoaded", () => {
     if (selectElement) {
-      const initialColor = selectElement.value;
+      selectElement.value = colorValue;
+    }
+  }
 
+  const initialVariant = getInitialVariant();
+  updateStockStatus(initialVariant);
+
+  if (selectElement) {
+    selectElement.addEventListener("change", handleVariantChange);
+
+    if (document.readyState !== "loading" && selectElement.value) {
       document.dispatchEvent(
-        new CustomEvent("colorSelected", { detail: { color: initialColor } })
+        new CustomEvent(EVENTS.COLOR_SELECTED, {
+          detail: { color: selectElement.value },
+        })
       );
     }
+  }
+
+  if (selectElement && document.readyState !== "loading") {
+    const initialColor = selectElement.value;
+
+    document.dispatchEvent(
+      new CustomEvent(EVENTS.COLOR_SELECTED, {
+        detail: { color: initialColor },
+      })
+    );
+  }
+
+  document.addEventListener(EVENTS.THUMB_CLICKED, handleColorChange);
+  document.addEventListener(EVENTS.COLOR_SELECTED, handleColorChange);
+
+  document.addEventListener("astro:beforeunload", () => {
+    if (selectElement) {
+      selectElement.removeEventListener("change", handleVariantChange);
+    }
+    document.removeEventListener(EVENTS.THUMB_CLICKED, handleColorChange);
+    document.removeEventListener(EVENTS.COLOR_SELECTED, handleColorChange);
   });
 </script>

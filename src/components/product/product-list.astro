@@ -1,10 +1,10 @@
 ---
 import type { CollectionEntry } from "astro:content";
 
-import ProductItem from "@/components/product/product-item.astro";
 import { getCollection } from "astro:content";
 
-import ContentBlock from "../ui/content-block.astro";
+import ProductItem from "@/components/product/product-item.astro";
+import ContentBlock from "@/components/ui/content-block.astro";
 
 const products: CollectionEntry<"products">[] = await getCollection("products");
 

@@ -11,7 +11,7 @@ function transformVariant(
     name: variant.fields.variantName,
     color: variant.fields.color,
     photos: (
-      (variant?.fields?.photos as
+      (variant.fields.photos as
         | Array<{ fields: { file: unknown } }>
         | undefined) ?? []
     ).map((photo) => photo.fields.file),
@@ -24,8 +24,8 @@ function transformRelatedProduct(
   product: TypeProductWithoutUnresolvableLinksResponse,
 ) {
   const mainPhoto = (
-    product as { fields?: { mainPhoto?: { fields?: { file?: unknown } } } }
-  )?.fields?.mainPhoto?.fields?.file;
+    product as { fields: { mainPhoto: { fields: { file: unknown } } } }
+  ).fields.mainPhoto.fields.file;
 
   return {
     id: product.sys.id,
@@ -43,8 +43,8 @@ export function transformProduct(
     : undefined;
 
   const mainPhoto = (
-    entry as { fields?: { mainPhoto?: { fields?: { file?: unknown } } } }
-  )?.fields?.mainPhoto?.fields?.file;
+    entry as { fields: { mainPhoto: { fields: { file: unknown } } } }
+  ).fields.mainPhoto.fields.file;
 
   return {
     id: entry.sys.id,

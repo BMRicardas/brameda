@@ -1,0 +1,12 @@
+.form-footer {
+  margin-block-start: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: end;
+  position: relative;
+}

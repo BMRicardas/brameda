@@ -3,7 +3,8 @@ import { Picture } from "astro:assets";
 
 import type { Product } from "@/schemas/contentful-transformed.types";
 
-import LinkButton from "../ui/link-button.astro";
+import LinkButton from "@/components/ui/link-button.astro";
+import { getMainPhotoUrl } from "@/utils";
 
 type Props = {
   product: Product;
@@ -13,7 +14,7 @@ const { product } = Astro.props;
 
 const { title, features, mainPhoto, slug } = product;
 
-const imageSrc = "https:" + mainPhoto?.url;
+const imageSrc = getMainPhotoUrl(mainPhoto.url, 80);
 ---
 
 <article class="product-item">
@@ -22,13 +23,13 @@ const imageSrc = "https:" + mainPhoto?.url;
       alt={title}
       class="image"
       decoding="async"
+      fetchpriority="high"
+      formats={["avif", "webp"]}
       inferSize
       loading="eager"
-      fetchpriority="high"
       sizes="(max-width: 768px) 100vw, 420px"
       src={imageSrc}
       widths={[320, 420, 640]}
-      formats={["avif", "webp"]}
     />
   </a>
   <div>

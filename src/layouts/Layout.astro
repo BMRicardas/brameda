@@ -1,8 +1,6 @@
 ---
-import Header from "@/components/header.astro";
 import Footer from "@/components/footer.astro";
-import Disclaimer from "@/components/ui/disclaimer.astro";
-
+import Header from "@/components/header.astro";
 import "@/styles/normalize.css";
 import "@/styles/global.css";
 
@@ -18,11 +16,10 @@ const { image, title, description } = Astro.props;
 <!doctype html>
 <html lang="lt">
   <head>
-    <!-- TODO add meta info -->
     <meta charset="UTF-8" />
     <meta content="width=device-width" name="viewport" />
     <meta
-      content="brameda, spa, džiovyklė, antbačiai, pėdų dezinfekatorius"
+      content="brameda, spa, džiovyklė, antbačiai, pėdų dezinfekatorius, bachilai, dezinfekcija, durų kilimėliai, įmonių kilimėliai, kilimėliai, valymo priemonės, higiena"
       name="keywords"
     />
     <meta content={image} property="og:image" />
@@ -34,10 +31,10 @@ const { image, title, description } = Astro.props;
     <meta content={Astro.generator} name="generator" />
     <link href="/sitemap-index.xml" rel="sitemap" />
     <link href="/favicon.ico" rel="icon" type="image/x-icon" />
-    <link rel="canonical" href={Astro.url} />
-    <link rel="preconnect" href="https://images.ctfassets.net" crossorigin />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href={Astro.url} rel="canonical" />
+    <link crossorigin href="https://images.ctfassets.net" rel="preconnect" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
@@ -50,6 +47,5 @@ const { image, title, description } = Astro.props;
       <slot />
     </main>
     <Footer />
-    <Disclaimer>Svetaine kuriama ir pildoma</Disclaimer>
   </body>
 </html>

@@ -106,7 +106,7 @@ const MENU_BUTTON_SIZE = 50;
     // This is the ideal place to sync our button's state.
     mobileMenu.addEventListener("beforetoggle", (event) => {
       // The event.newState property is either 'open' or 'closed'.
-      const isOpening = (event as ToggleEvent).newState === "open";
+      const isOpening = event.newState === "open";
 
       // Update aria-expanded for accessibility and to drive CSS styling for the icons.
       menuButton.setAttribute("aria-expanded", String(isOpening));

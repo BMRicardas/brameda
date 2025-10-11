@@ -16,7 +16,7 @@ export function RelatedProductCard({ product }: Props) {
       <div className="image-container">
         <img
           src={getMainPhotoUrl(mainPhoto.url)}
-          alt={title}
+          alt={`Image of ${title}`}
           className="image"
           loading="lazy"
         />

@@ -1,7 +1,7 @@
-import { ErrorCheckmark } from "../checkmarks/error-checkmark";
-import { SuccessCheckmark } from "../checkmarks/success-checkmark";
-import type { FormState } from "../contact-form/contact-form-react";
-import { LoadingSpinner } from "../loading-spinner/loading-spinner";
+import { ErrorCheckmark } from "@/components/react/checkmarks/error-checkmark";
+import { SuccessCheckmark } from "@/components/react/checkmarks/success-checkmark";
+import { LoadingSpinner } from "@/components/react/loading-spinner/loading-spinner";
+import type { FormState } from "@/schemas/contact-form.types";
 
 import "./submit-animation.css";
 
@@ -10,29 +10,28 @@ type Props = {
 };
 
 export function SubmitAnimation({ formState }: Props) {
-  if (formState === "loading") {
-    return (
-      <div className="spinner-wrapper">
-        <LoadingSpinner />
-      </div>
-    );
+  switch (formState) {
+    case "idle":
+      return null;
+    case "loading":
+      return (
+        <div className="spinner-wrapper">
+          <LoadingSpinner />
+        </div>
+      );
+    case "success":
+      return (
+        <div className="wrapper">
+          <SuccessCheckmark />
+        </div>
+      );
+    case "error":
+      return (
+        <div className="wrapper">
+          <ErrorCheckmark />
+        </div>
+      );
+    default:
+      return formState satisfies never;
   }
-
-  if (formState === "success") {
-    return (
-      <div className="wrapper">
-        <SuccessCheckmark />
-      </div>
-    );
-  }
-
-  if (formState === "error") {
-    return (
-      <div className="wrapper">
-        <ErrorCheckmark />
-      </div>
-    );
-  }
-
-  return null;
 }

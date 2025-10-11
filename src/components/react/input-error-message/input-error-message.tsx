@@ -7,5 +7,9 @@ type Props = {
 };
 
 export function InputErrorMessage({ children }: Props) {
-  return <small className="error-message">{children}</small>;
+  return (
+    <small className="error-message" role="alert" aria-live="assertive">
+      {children}
+    </small>
+  );
 }

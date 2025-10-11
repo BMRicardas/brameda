@@ -1,50 +1,32 @@
-import type { FormState } from "../contact-form/contact-form-react";
-import { SubmitAnimation } from "../submit-animation/submit-animation";
+import { SubmitAnimation } from "@/components/react/submit-animation/submit-animation";
+
+import type { FormState } from "@/schemas/contact-form.types";
 
 import "./submit-button.css";
 
 type Props = {
   formState: FormState;
+  disabled?: boolean;
 };
 
-export function SubmitButton({ formState }: Props) {
-  const buttonLabel = () => {
-    switch (formState) {
-      case "idle":
-        return "Siųsti žinutę";
-      case "loading":
-        return (
-          <>
-            Siunčiama
-            <SubmitAnimation formState={formState} />
-          </>
-        );
-      case "success":
-        return (
-          <>
-            Žinutė išsiųsta
-            <SubmitAnimation formState={formState} />
-          </>
-        );
-      case "error":
-        return (
-          <>
-            Nepavyko išsiųsti
-            <SubmitAnimation formState={formState} />
-          </>
-        );
-      default:
-        return formState satisfies never;
-    }
-  };
+const LABELS: Record<FormState, { label: string; animation?: FormState }> = {
+  idle: { label: "Siųsti žinutę" },
+  loading: { label: "Siunčiama", animation: "loading" },
+  success: { label: "Žinutė išsiųsta", animation: "success" },
+  error: { label: "Nepavyko išsiųsti", animation: "error" },
+};
+
+export function SubmitButton({ formState, disabled = false }: Props) {
+  const { label, animation } = LABELS[formState];
 
   return (
     <button
       className="btn btn-dark -animation"
-      disabled={formState !== "idle"}
       type="submit"
+      disabled={disabled || formState === "loading"}
     >
-      {buttonLabel()}
+      {label}
+      {animation && <SubmitAnimation formState={animation} />}
     </button>
   );
 }

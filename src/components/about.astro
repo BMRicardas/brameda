@@ -1,8 +1,10 @@
 ---
+import type { TypeAboutUsSkeleton } from "@/types/contentful";
+
+import { contentfulClient } from "@/lib/contentful/client";
+
 import ContentBlock from "./ui/content-block.astro";
 import RichText from "./ui/rich-text.astro";
-import { contentfulClient } from "@/lib/contentful/client";
-import type { TypeAboutUsSkeleton } from "@/types/contentful";
 
 const entry = await contentfulClient.getEntry<TypeAboutUsSkeleton>(
   "35kolZTRCPaSzpJAEPhFrw"

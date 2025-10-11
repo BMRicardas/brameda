@@ -1,5 +1,5 @@
 ---
-import type { Theme } from "@/types/common";
+import type { Theme } from "@/types";
 
 type Props = {
   title?: string;
@@ -17,8 +17,7 @@ const { title, appearanceMode = "light" }: Props = Astro.props;
         {
           dark: appearanceMode !== "light",
         },
-      ]}
-    >
+      ]}>
       {title}
     </h2>
   )
