@@ -179,6 +179,7 @@ export function ProductGallery({
                   className={styles["embla__slide__image"]}
                   src={photo.url}
                   alt={photo.altText || photo.fileName}
+                  fetchPriority="high"
                 />
               </div>
             );
