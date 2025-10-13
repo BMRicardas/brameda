@@ -64,9 +64,9 @@ const { links = headerLinks } = Astro.props;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     transform: translateX(100%);
-    transition-property: transform;
+    /* transition-property: transform;
     transition-duration: var(--transition-duration);
-    transition-timing-function: var(--transition-timing-function);
+    transition-timing-function: var(--transition-timing-function); */
 
     &,
     &:popover-open {
@@ -152,18 +152,6 @@ const { links = headerLinks } = Astro.props;
     const navLinks = document.querySelectorAll(".mobile-nav a");
 
     if (!mobileMenu || !body) return;
-
-    // Check for anchor support and set header height variable if not supported
-    if (!CSS.supports("position-anchor: --header")) {
-      const header = document.querySelector("header");
-      if (header) {
-        const headerHeight = header.offsetHeight;
-        document.documentElement.style.setProperty(
-          "--header-height",
-          `${headerHeight}px`
-        );
-      }
-    }
 
     // Calculate and set scrollbar width
     function updateScrollbarWidth() {
