@@ -2,7 +2,7 @@ import { DotButton, useDotButton } from "./carousel-dot-button";
 import useEmblaCarousel from "embla-carousel-react";
 
 import type { Product } from "@/schemas/contentful-transformed.types";
-import RelatedProductCard from "./related-product-card";
+import { RelatedProductCard } from "./related-product-card";
 import styles from "./related-products-carousel.module.css";
 
 type Prop = {
