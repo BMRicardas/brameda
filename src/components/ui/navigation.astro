@@ -64,12 +64,9 @@ const { links = headerLinks } = Astro.props;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     transform: translateX(100%);
-    transition: transform var(--transition-duration)
-      var(--transition-timing-function);
-
-    /* transition-property: transform;
+    transition-property: transform;
     transition-duration: var(--transition-duration);
-    transition-timing-function: var(--transition-timing-function); */
+    transition-timing-function: var(--transition-timing-function);
 
     &,
     &:popover-open {
@@ -89,7 +86,6 @@ const { links = headerLinks } = Astro.props;
     @supports (transition-behavior: allow-discrete) {
       & {
         transition:
-          transform var(--transition-duration) var(--transition-timing-function),
           display 0s allow-discrete,
           overlay 0s allow-discrete;
       }
