@@ -50,30 +50,66 @@ const { links = headerLinks } = Astro.props;
   }
 
   .mobile-menu[popover] {
-    position: absolute;
-    position-anchor: --header;
-    left: unset;
-    right: 0;
-    top: anchor(bottom);
+    /* position: absolute; */
+    /* position-anchor: --header; */
+    /* left: unset; */
+    /* right: 0; */
+    /* top: anchor(bottom); */
     border: none;
     padding: 0;
     margin: 0;
     width: 100%;
-    height: 100dvh;
+    /* height: 100svh; */
     background: var(--color-grey-light);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    translate: 100% 0;
-    transition-property: translate;
+    transform: translateX(100%);
+    transition-property: transform;
     transition-duration: var(--transition-duration);
+    transition-timing-function: var(--transition-timing-function);
+
+    &,
+    &:popover-open {
+      animation: none;
+    }
 
     &:popover-open {
-      translate: 0;
+      transform: translateX(0);
     }
 
     @starting-style {
       &:popover-open {
-        translate: 100% 0;
+        transform: translateX(100%);
+      }
+    }
+
+    @supports (transition-behavior: allow-discrete) {
+      & {
+        transition:
+          transform var(--transition-duration) var(--transition-timing-function),
+          display 0s allow-discrete,
+          overlay 0s allow-discrete;
+      }
+    }
+
+    @supports (position-anchor: --header) {
+      & {
+        position: absolute;
+        position-anchor: --header;
+        top: anchor(bottom);
+        right: 0;
+        left: unset;
+        height: 100svh;
+      }
+    }
+
+    @supports not (position-anchor: --header) {
+      & {
+        position: fixed;
+        inset-inline: 0;
+        inset-block-start: var(--header-height, 74px);
+        inset-block-end: 0;
+        height: calc(100svh - var(--header-height, 74px));
       }
     }
   }
@@ -116,6 +152,18 @@ const { links = headerLinks } = Astro.props;
     const navLinks = document.querySelectorAll(".mobile-nav a");
 
     if (!mobileMenu || !body) return;
+
+    // Check for anchor support and set header height variable if not supported
+    if (!CSS.supports("position-anchor: --header")) {
+      const header = document.querySelector("header");
+      if (header) {
+        const headerHeight = header.offsetHeight;
+        document.documentElement.style.setProperty(
+          "--header-height",
+          `${headerHeight}px`
+        );
+      }
+    }
 
     // Calculate and set scrollbar width
     function updateScrollbarWidth() {
