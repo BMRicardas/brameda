@@ -127,7 +127,7 @@ const {
     if (!stockStatusContainer) return;
     stockStatusContainer.textContent = "";
 
-    if (!selectedVariant) {
+    if (!selectedVariant || selectedVariant.inStock === undefined) {
       return;
     }
 
