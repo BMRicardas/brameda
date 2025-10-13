@@ -1,6 +1,9 @@
 ---
+import { ClientRouter } from "astro:transitions";
+
 import Footer from "@/components/footer.astro";
 import Header from "@/components/header.astro";
+
 import "@/styles/normalize.css";
 import "@/styles/global.css";
 
@@ -47,6 +50,8 @@ const { image, title, description } = Astro.props;
       crossorigin
     />
     <title>{title}</title>
+    <ClientRouter fallback="swap" />
+    <link rel="stylesheet" href="/styles/view-transitions.css" />
   </head>
   <body>
     <Header />

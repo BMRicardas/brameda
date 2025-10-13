@@ -1,4 +1,11 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+  type CSSProperties,
+} from "react";
 import useEmblaCarousel from "embla-carousel-react";
 
 import { ProductGalleryThumb } from "./product-gallery-thumb";
@@ -34,12 +41,14 @@ type Props = {
   photos: Photo[];
   initialColor?: string;
   displayMode?: "all_variants" | "color_selector";
+  transitionName?: string;
 };
 
 export function ProductGallery({
   photos,
   initialColor,
   displayMode = "all_variants",
+  transitionName,
 }: Props) {
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     initialColor,
@@ -174,6 +183,13 @@ export function ProductGallery({
                 className={styles["embla__slide"]}
                 key={`${photo.color}-${photo.fileName}-${index}`}
                 aria-hidden={selectedIndex !== index}
+                style={
+                  transitionName
+                    ? ({
+                        viewTransitionName: transitionName,
+                      } as CSSProperties)
+                    : undefined
+                }
               >
                 <img
                   className={styles["embla__slide__image"]}

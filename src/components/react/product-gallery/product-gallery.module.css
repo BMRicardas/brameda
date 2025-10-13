@@ -17,6 +17,8 @@
   min-width: 0;
   background-color: var(--color-grey-light);
   border-radius: var(--border-radius);
+  width: 100%;
+  max-height: 50rem;
   overflow: clip;
   display: flex;
   justify-content: center;

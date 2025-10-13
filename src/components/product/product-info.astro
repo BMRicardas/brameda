@@ -13,6 +13,7 @@ type Props = {
 const { product } = Astro.props;
 
 const {
+  slug,
   title,
   priceWithoutVat,
   description,
@@ -23,7 +24,7 @@ const {
 ---
 
 <>
-  <h2 class="product__title">{title}</h2>
+  <h2 class="product__title" transition:name={`title-${slug}`}>{title}</h2>
   <div class="price-wrapper">
     <div class="price">
       <Price price={Number(priceWithoutVat)} />

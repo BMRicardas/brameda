@@ -12,7 +12,7 @@ type Props = {
 
 const { product } = Astro.props;
 
-const { title, mainPhoto, videoUrl, variants, displayMode } = product;
+const { slug, title, mainPhoto, videoUrl, variants, displayMode } = product;
 
 const initialColor = variants[0]?.color;
 
@@ -25,8 +25,8 @@ const allVariantPhotos = variants.flatMap((variant) =>
 );
 
 const shouldShowThumbnails = allVariantPhotos.length > 1;
-
 const mainPhotoSrc = mainPhoto.url || allVariantPhotos[0]?.url || "";
+const transitionName = `photo-${slug}`;
 ---
 
 <div class="product-media">
@@ -37,9 +37,10 @@ const mainPhotoSrc = mainPhoto.url || allVariantPhotos[0]?.url || "";
         displayMode={displayMode}
         initialColor={initialColor}
         photos={allVariantPhotos}
+        transition:name={transitionName}
       />
     ) : (
-      <div class="product__img">
+      <div class="product__img" transition:name={transitionName}>
         <Image
           alt={title}
           class="main-image"
@@ -77,10 +78,12 @@ const mainPhotoSrc = mainPhoto.url || allVariantPhotos[0]?.url || "";
 
   .product__img {
     grid-area: img;
+    flex: 1;
     background: var(--color-grey-light);
     border-radius: var(--border-radius);
     margin-bottom: 1.5rem;
     width: 100%;
+    max-height: 50rem;
     overflow: clip;
     display: flex;
     justify-content: center;
@@ -90,8 +93,7 @@ const mainPhotoSrc = mainPhoto.url || allVariantPhotos[0]?.url || "";
     & .main-image {
       width: 100%;
       height: 100%;
-      min-height: 38.8rem;
-      max-height: 38.8rem;
+      max-height: 48rem;
       object-fit: contain;
       padding: var(--default-spacing);
     }
