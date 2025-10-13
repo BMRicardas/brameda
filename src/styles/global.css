@@ -66,13 +66,6 @@ body {
   padding-block-end: env(safe-area-inset-bottom);
 }
 
-body.scroll-lock {
-  overflow: clip;
-  padding-right: var(--scrollbar-width);
-
-  /* touch-action: none; */
-}
-
 /* Typography */
 h1,
 h2,
