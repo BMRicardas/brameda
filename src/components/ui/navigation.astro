@@ -64,6 +64,9 @@ const { links = headerLinks } = Astro.props;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     transform: translateX(100%);
+    transition: transform var(--transition-duration)
+      var(--transition-timing-function);
+
     /* transition-property: transform;
     transition-duration: var(--transition-duration);
     transition-timing-function: var(--transition-timing-function); */
