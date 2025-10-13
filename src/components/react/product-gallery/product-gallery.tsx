@@ -184,7 +184,7 @@ export function ProductGallery({
                 key={`${photo.color}-${photo.fileName}-${index}`}
                 aria-hidden={selectedIndex !== index}
                 style={
-                  transitionName
+                  transitionName && index === 0
                     ? ({
                         viewTransitionName: transitionName,
                       } as CSSProperties)
