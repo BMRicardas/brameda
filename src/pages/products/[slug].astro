@@ -3,6 +3,7 @@ import { type CollectionEntry, getCollection } from "astro:content";
 
 import type { Product } from "@/schemas/contentful-transformed.types";
 
+import About from "@/components/about.astro";
 import Contacts from "@/components/contacts.astro";
 import ProductPage from "@/components/product/product-page.astro";
 import Layout from "@/layouts/Layout.astro";
@@ -33,5 +34,6 @@ const { product } = Astro.props;
   image={getMainPhotoUrl(product.mainPhoto.url)}
   title={product.title}>
   <ProductPage product={product} />
+  <About />
   <Contacts />
 </Layout>
