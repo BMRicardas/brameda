@@ -1,14 +1,19 @@
 ---
+import type { HTMLAttributes } from "astro/types";
+
 type Variant = "light" | "dark";
 
-type Props = {
+type Props = HTMLAttributes<"a"> & {
   variant?: Variant;
   href: string;
 };
 
-const { variant = "light", href }: Props = Astro.props;
+const { variant = "light", href, ...rest }: Props = Astro.props;
 ---
 
-<a class:list={["btn", { "btn-dark": variant === "dark" }]} href={href}>
+<a
+  class:list={["btn", { "btn-dark": variant === "dark" }]}
+  href={href}
+  {...rest}>
   <slot />
 </a>
