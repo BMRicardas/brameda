@@ -81,14 +81,6 @@ const { links = headerLinks } = Astro.props;
       }
     }
 
-    /* @supports (transition-behavior: allow-discrete) {
-      & {
-        transition:
-          display 0s allow-discrete,
-          overlay 0s allow-discrete;
-      }
-    } */
-
     @supports (position-anchor: --header) {
       & {
         position: absolute;
@@ -161,14 +153,14 @@ const { links = headerLinks } = Astro.props;
     }
 
     // Toggle scroll lock
-    const toggleScrollLock = (shouldLock: boolean) => {
+    function toggleScrollLock(shouldLock: boolean) {
       if (shouldLock) {
         updateScrollbarWidth(); // Recalculate before locking
-        body.classList.add("scroll-lock");
+        body?.classList.add("scroll-lock");
       } else {
-        body.classList.remove("scroll-lock");
+        body?.classList.remove("scroll-lock");
       }
-    };
+    }
 
     // Handle popover state changes
     mobileMenu.addEventListener("beforetoggle", (event) => {
@@ -180,9 +172,18 @@ const { links = headerLinks } = Astro.props;
 
     // Close menu on link clicks
     navLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        mobileMenu.hidePopover();
-      });
+      function closePopover() {
+        mobileMenu?.hidePopover();
+      }
+
+      if ("PointerEvent" in window) {
+        // Works for both mouse and touch
+        link.addEventListener("pointerup", closePopover, { passive: true });
+      } else {
+        // Fallback for very old browsers
+        link.addEventListener("touchend", closePopover, { passive: true });
+        link.addEventListener("click", closePopover);
+      }
     });
 
     // Clean up
