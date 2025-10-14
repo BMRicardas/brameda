@@ -65,6 +65,7 @@ body {
   min-height: 100vh;
   text-rendering: optimizeSpeed;
   padding-block-end: env(safe-area-inset-bottom);
+  padding-inline-end: var(--scrollbar-width);
 }
 
 /* Typography */
