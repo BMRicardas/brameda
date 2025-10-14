@@ -1,6 +1,7 @@
 ---
 import type { Product } from "@/schemas/contentful-transformed.types";
 
+import LinkButton from "@/components/ui/link-button.astro";
 import Price from "@/components/ui/price.astro";
 import RichText from "@/components/ui/rich-text.astro";
 import SelectColor from "@/components/ui/select-color.astro";
@@ -25,11 +26,10 @@ const {
 
 <>
   <h2 class="product__title" transition:name={`title-${slug}`}>{title}</h2>
-  <div class="price-wrapper">
-    <div class="price">
-      <Price price={Number(priceWithoutVat)} />
-      <div id="stock-status"></div>
-    </div>
+  <div class="product__info">
+    <Price price={Number(priceWithoutVat)} />
+    <div id="stock-status"></div>
+    <LinkButton href="#contacts"> Susisiekti dėl užsakymo </LinkButton>
   </div>
   <div class="product__desc">
     <RichText doc={description} />
@@ -65,8 +65,13 @@ const {
 </>
 
 <style>
-  .price-wrapper {
+  .product__info {
     grid-area: price;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 2rem;
+    margin-block-end: 2rem;
   }
 
   #stock-status:not(:empty) {
@@ -221,9 +226,7 @@ const {
   document.addEventListener(EVENTS.COLOR_SELECTED, handleColorChange);
 
   document.addEventListener("astro:beforeunload", () => {
-    if (selectElement) {
-      selectElement.removeEventListener("change", handleVariantChange);
-    }
+    selectElement.removeEventListener("change", handleVariantChange);
     document.removeEventListener(EVENTS.THUMB_CLICKED, handleColorChange);
     document.removeEventListener(EVENTS.COLOR_SELECTED, handleColorChange);
   });
