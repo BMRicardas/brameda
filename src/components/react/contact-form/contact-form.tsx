@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { FormField } from "@/components/react/form-field/form-field";
-import { SubmitButton } from "@/components/react/submit-button/submit-button";
-import { InputErrorMessage } from "../input-error-message/input-error-message";
+import { FormField } from "@/components/react/form-field";
+import { SubmitButton } from "@/components/react/submit-button";
+import { InputErrorMessage } from "@/components/react/input-error-message";
 
 import {
   FormSchema,

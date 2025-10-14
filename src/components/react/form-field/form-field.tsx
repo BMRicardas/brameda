@@ -7,7 +7,7 @@ import {
 } from "react";
 import type { Message } from "react-hook-form";
 
-import { InputErrorMessage } from "@/components/react/input-error-message/input-error-message";
+import { InputErrorMessage } from "@/components/react/input-error-message";
 
 import "./form-field.css";
 import { mergeClassNames } from "@/utils";

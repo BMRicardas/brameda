@@ -1,6 +1,6 @@
-import { ErrorCheckmark } from "@/components/react/checkmarks/error-checkmark";
-import { SuccessCheckmark } from "@/components/react/checkmarks/success-checkmark";
-import { LoadingSpinner } from "@/components/react/loading-spinner/loading-spinner";
+import { ErrorCheckmark } from "@/components/react/checkmarks";
+import { SuccessCheckmark } from "@/components/react/checkmarks";
+import { LoadingSpinner } from "@/components/react/loading-spinner";
 import type { FormState } from "@/schemas/contact-form.types";
 
 import "./submit-animation.css";

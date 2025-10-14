@@ -1,4 +1,4 @@
-import { SubmitAnimation } from "@/components/react/submit-animation/submit-animation";
+import { SubmitAnimation } from "@/components/react/submit-animation";
 
 import type { FormState } from "@/schemas/contact-form.types";
 
