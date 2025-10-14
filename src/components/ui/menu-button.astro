@@ -103,7 +103,7 @@ const MENU_BUTTON_SIZE = 50;
       const isOpening =
         "newState" in event
           ? event.newState === "open"
-          : !mobileMenu.matches(":popover-open"); // fallback
+          : !mobileMenu.matches(":popover-open");
 
       menuButton.setAttribute("aria-expanded", String(isOpening));
     });

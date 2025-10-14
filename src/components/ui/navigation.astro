@@ -171,10 +171,12 @@ const { links = headerLinks } = Astro.props;
       }
     }
 
-    // Handle popover state changes
-    mobileMenu.addEventListener("beforetoggle", (event) => {
-      updateScrollbarWidth();
+    // // Handle popover state changes
+    // mobileMenu.addEventListener("beforetoggle", () => {
+    //   updateScrollbarWidth();
+    // });
 
+    mobileMenu.addEventListener("toggle", (event) => {
       const isOpening =
         "newState" in event
           ? event.newState === "open"
@@ -186,7 +188,6 @@ const { links = headerLinks } = Astro.props;
     // Clean up
     window.addEventListener("pagehide", () => {
       toggleScrollLock(false);
-      window.removeEventListener("resize", updateScrollbarWidth);
     });
   }
 
