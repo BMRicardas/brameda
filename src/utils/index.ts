@@ -18,7 +18,6 @@ export function getMainPhotoUrl(
 
   return `${url}?fm=webp&q=${quality}&w=${MAIN_IMAGE_WIDTH}`;
 }
-
 export function getThumbnailUrl(
   baseUrl: string,
   quality: number = IMAGE_QUALITY.thumb,
