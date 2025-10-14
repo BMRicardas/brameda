@@ -2,11 +2,11 @@
 import { WEB3FORMS_PUBLIC_ACCESS_KEY } from "astro:env/server";
 
 import { ContactForm } from "./react/contact-form/contact-form";
-import ContentBlock from "./ui/content-block.astro";
 import ContactDetails from "./ui/contact-details.astro";
+import ContentBlock from "./ui/content-block.astro";
 ---
 
-<ContentBlock id="contacts" appearanceMode="dark" title="Kontaktai">
+<ContentBlock appearanceMode="dark" id="contacts" title="Kontaktai">
   <div class="contacts-container">
     <ContactDetails />
     <ContactForm
