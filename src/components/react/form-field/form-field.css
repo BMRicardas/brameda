@@ -9,7 +9,7 @@
   width: 11rem;
   padding: 1rem;
   font-size: 1.7rem;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .form-field-input-group {
@@ -28,7 +28,7 @@
   outline: none;
   color: var(--color-grey-light);
   font-size: 1.7rem;
-  font-weight: 300;
+  font-weight: 500;
 }
 
 .form-field-input:focus {
