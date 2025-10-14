@@ -33,7 +33,6 @@
   min-height: 38.8rem;
   max-height: 38.8rem;
   object-fit: contain;
-  padding: var(--default-spacing);
 }
 
 /* Thumbs container only (no per-thumb styles here) */
