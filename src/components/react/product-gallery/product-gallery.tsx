@@ -9,20 +9,9 @@ import {
 import useEmblaCarousel from "embla-carousel-react";
 
 import { ProductGalleryThumb } from "./product-gallery-thumb";
-import {
-  buildAvifSrcSet,
-  buildSrcSet,
-  getMainPhotoUrl,
-  getThumbnailUrl,
-} from "@/utils";
+import { getMainPhotoUrl, getThumbnailUrl } from "@/utils";
 
-import {
-  EVENTS,
-  IMAGE_QUALITY,
-  MAIN_IMAGE_SIZES,
-  MAIN_IMAGE_WIDTH,
-  MAIN_IMAGE_WIDTHS,
-} from "@/constants";
+import { EVENTS, MAIN_IMAGE_WIDTH } from "@/constants";
 import type { ColorSelectedEvent } from "@/types";
 
 import styles from "./product-gallery.module.css";
@@ -49,7 +38,6 @@ export type Photo = {
 };
 
 type Props = {
-  title: string;
   photos: Photo[];
   initialColor?: string;
   displayMode?: "all_variants" | "color_selector";
@@ -57,7 +45,6 @@ type Props = {
 };
 
 export function ProductGallery({
-  title,
   photos,
   initialColor,
   displayMode = "all_variants",
@@ -204,35 +191,15 @@ export function ProductGallery({
                     : undefined
                 }
               >
-                <picture>
-                  <source
-                    type="image/avif"
-                    srcSet={buildAvifSrcSet(photo.url, MAIN_IMAGE_WIDTHS)}
-                    sizes={MAIN_IMAGE_SIZES}
-                  />
-                  <source
-                    type="image/webp"
-                    srcSet={buildSrcSet(
-                      photo.url,
-                      MAIN_IMAGE_WIDTHS,
-                      IMAGE_QUALITY.main,
-                      "webp",
-                    )}
-                    sizes={MAIN_IMAGE_SIZES}
-                  />
-                  <img
-                    src={`${photo.url}?fm=webp&q=${IMAGE_QUALITY.main}&w=480`} /* safe fallback */
-                    width="448"
-                    height="524"
-                    decoding="async"
-                    fetchPriority="high"
-                    alt={photo.altText || title}
-                    className={styles["embla__slide__image"]}
-                    style={{
-                      background: "var(--image-placeholder-color,#eee)",
-                    }}
-                  />
-                </picture>
+                <img
+                  className={styles["embla__slide__image"]}
+                  src={photo.url}
+                  alt={photo.altText || photo.fileName}
+                  fetchPriority="high"
+                  loading="lazy"
+                  width={MAIN_IMAGE_WIDTH}
+                  height={MAIN_IMAGE_WIDTH}
+                />
               </div>
             );
           })}
