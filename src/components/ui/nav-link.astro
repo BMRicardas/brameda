@@ -1,13 +1,15 @@
 ---
-type Props = {
+import type { HTMLAttributes } from "astro/types";
+
+export type Props = HTMLAttributes<"a"> & {
   href: string;
   text: string;
 };
 
-const { href, text } = Astro.props;
+const { href, text, ...rest } = Astro.props;
 ---
 
-<a class="nav-link" href={href}>
+<a class="nav-link" href={href} {...rest}>
   <span class="link-text">{text}</span>
 </a>
 

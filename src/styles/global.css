@@ -55,6 +55,7 @@ html {
   line-height: 1.5;
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  scroll-padding-block-start: calc(var(--header-height, 77px) / 1.5);
 }
 
 body {

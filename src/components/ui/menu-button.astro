@@ -91,24 +91,20 @@ const MENU_BUTTON_SIZE = 50;
 </style>
 
 <script>
-  // This script ensures the button's visual state (via aria-expanded)
-  // stays in sync with the popover's state, using the popover's own events.
   document.addEventListener("DOMContentLoaded", () => {
     const menuButton = document.getElementById("menu-toggle-button");
     const mobileMenu = document.getElementById("mobile-menu");
 
-    // Defensive check to prevent errors if elements are not on the page.
     if (!menuButton || !mobileMenu) {
       return;
     }
 
-    // The 'beforetoggle' event fires just before the popover's state changes.
-    // This is the ideal place to sync our button's state.
     mobileMenu.addEventListener("beforetoggle", (event) => {
-      // The event.newState property is either 'open' or 'closed'.
-      const isOpening = event.newState === "open";
+      const isOpening =
+        "newState" in event
+          ? event.newState === "open"
+          : !mobileMenu.matches(":popover-open"); // fallback
 
-      // Update aria-expanded for accessibility and to drive CSS styling for the icons.
       menuButton.setAttribute("aria-expanded", String(isOpening));
     });
   });

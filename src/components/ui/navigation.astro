@@ -135,11 +135,20 @@ const { links = headerLinks } = Astro.props;
 </style>
 
 <script>
-  function initScrollLock() {
-    const body = document.querySelector("body");
-    const mobileMenu = document.getElementById("mobile-menu");
-    const navLinks = document.querySelectorAll(".mobile-nav a");
+  const body = document.querySelector("body");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const navLinks = document.querySelectorAll(".mobile-nav a");
 
+  function closePopover() {
+    mobileMenu?.hidePopover();
+  }
+
+  // Close menu on link clicks
+  navLinks.forEach((link) => {
+    link.addEventListener("click", closePopover);
+  });
+
+  function initScrollLock() {
     if (!mobileMenu || !body) return;
 
     // Calculate and set scrollbar width
@@ -166,24 +175,12 @@ const { links = headerLinks } = Astro.props;
     mobileMenu.addEventListener("beforetoggle", (event) => {
       updateScrollbarWidth();
 
-      const { newState } = event as ToggleEvent;
-      toggleScrollLock(newState === "open");
-    });
+      const isOpening =
+        "newState" in event
+          ? event.newState === "open"
+          : !mobileMenu.matches(":popover-open");
 
-    // Close menu on link clicks
-    navLinks.forEach((link) => {
-      function closePopover() {
-        mobileMenu?.hidePopover();
-      }
-
-      if ("PointerEvent" in window) {
-        // Works for both mouse and touch
-        link.addEventListener("pointerup", closePopover, { passive: true });
-      } else {
-        // Fallback for very old browsers
-        link.addEventListener("touchend", closePopover, { passive: true });
-        link.addEventListener("click", closePopover);
-      }
+      toggleScrollLock(isOpening);
     });
 
     // Clean up
