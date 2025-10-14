@@ -1,23 +1,14 @@
 ---
+import type { Link } from "@/types";
+
 import MenuButton from "./menu-button.astro";
 import NavLinksList from "./nav-links-list.astro";
 
-type Link = {
-  href: string;
-  text: string;
-};
-
 type Props = {
-  links?: Link[];
+  links: Link[];
 };
 
-const headerLinks = [
-  { href: "/#products", text: "Produktai" },
-  { href: "/#about", text: "Apie mus" },
-  { href: "/#contacts", text: "Kontaktai" },
-];
-
-const { links = headerLinks } = Astro.props;
+const { links } = Astro.props;
 ---
 
 <nav class="navigation">
@@ -163,18 +154,13 @@ const { links = headerLinks } = Astro.props;
 
     // Toggle scroll lock
     function toggleScrollLock(shouldLock: boolean) {
+      updateScrollbarWidth();
       if (shouldLock) {
-        updateScrollbarWidth(); // Recalculate before locking
         body?.classList.add("scroll-lock");
       } else {
         body?.classList.remove("scroll-lock");
       }
     }
-
-    // // Handle popover state changes
-    // mobileMenu.addEventListener("beforetoggle", () => {
-    //   updateScrollbarWidth();
-    // });
 
     mobileMenu.addEventListener("toggle", (event) => {
       const isOpening =
