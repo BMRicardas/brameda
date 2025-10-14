@@ -60,3 +60,21 @@ const headerLinks = [
     }
   }
 </style>
+
+<script>
+  if (!CSS.supports("position-anchor: --header")) {
+    function setHeaderHeight() {
+      const header = document.querySelector(".header") as HTMLElement | null;
+      if (header) {
+        document.documentElement.style.setProperty(
+          "--header-height",
+          `${header.offsetHeight}px`
+        );
+      }
+    }
+
+    setHeaderHeight();
+
+    window.addEventListener("resize", setHeaderHeight);
+  }
+</script>
