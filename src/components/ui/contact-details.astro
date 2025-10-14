@@ -2,28 +2,35 @@
 
 ---
 
-<div>
+<div class="contact-details">
   <h3 class="title">UAB „Brameda“</h3>
-  <ul class="contacts-list">
-    <li class="contacts-list-item">
-      <p>
-        Senamiesčio g. 102-201,<br />35116 Panevėžys,<br />Lietuva
-      </p>
-    </li>
-    <li class="contacts-list-item">
-      <p>
-        <a href="tel:+37069936437">+370 699 36437</a>
-      </p>
-    </li>
-    <li class="contacts-list-item">
-      <p>
-        <a href="mailto:info@brameda.lt">info@brameda.lt</a>
-      </p>
-    </li>
-  </ul>
+  <address>
+    <ul class="contacts-list">
+      <li class="contacts-list-item">
+        <p>
+          Senamiesčio g. 102-201,<br />35116 Panevėžys,<br />Lietuva
+        </p>
+      </li>
+      <li class="contacts-list-item">
+        <p>
+          <a href="tel:+37069936437">+370 699 36437</a>
+        </p>
+      </li>
+      <li class="contacts-list-item">
+        <p>
+          <a href="mailto:info@brameda.lt">info@brameda.lt</a>
+        </p>
+      </li>
+    </ul>
+  </address>
 </div>
 
 <style>
+  .contact-details {
+    grid-area: details;
+    text-align: start;
+  }
+
   .title {
     font-size: 2.5rem;
     font-weight: 500;
@@ -50,5 +57,11 @@
 
   .contacts-list-item p {
     color: var(--color-grey-light);
+  }
+
+  @media only screen and (max-width: 50em) {
+    .contact-details {
+      text-align: center;
+    }
   }
 </style>

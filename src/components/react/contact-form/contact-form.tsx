@@ -121,7 +121,7 @@ export function ContactForm({ web3formsPublicAccessKey }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="contact-form">
       <input
         {...register("access_key")}
         type="hidden"
@@ -157,9 +157,7 @@ export function ContactForm({ web3formsPublicAccessKey }: Props) {
         errorMessage={errors.message?.message}
       />
       <div className="form-footer">
-        <div className="button-container">
-          <SubmitButton formState={state} />
-        </div>
+        <SubmitButton formState={state} className="submit-button" />
         {errors.root?.message && (
           <InputErrorMessage>{errors.root.message}</InputErrorMessage>
         )}

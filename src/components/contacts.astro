@@ -2,47 +2,35 @@
 import { WEB3FORMS_PUBLIC_ACCESS_KEY } from "astro:env/server";
 
 import { ContactForm } from "./react/contact-form/contact-form";
-import BlockTitle from "./ui/block-title.astro";
+import ContentBlock from "./ui/content-block.astro";
 import ContactDetails from "./ui/contact-details.astro";
-import Container from "./ui/container.astro";
 ---
 
-<address class="contacts" id="contacts">
-  <Container>
-    <BlockTitle appearanceMode="dark" title="Kontaktai" />
-    <div class="contacts-container">
-      <ContactDetails />
-      <ContactForm
-        client:visible
-        web3formsPublicAccessKey={WEB3FORMS_PUBLIC_ACCESS_KEY}
-      />
-    </div>
-  </Container>
-</address>
+<ContentBlock id="contacts" appearanceMode="dark" title="Kontaktai">
+  <div class="contacts-container">
+    <ContactDetails />
+    <ContactForm
+      client:visible
+      web3formsPublicAccessKey={WEB3FORMS_PUBLIC_ACCESS_KEY}
+    />
+  </div>
+</ContentBlock>
 
 <style>
-  .contacts {
-    background-color: var(--color-grey-dark2);
-    color: var(--color-grey-light);
-    padding-block: var(--default-spacing);
-  }
-
   .contacts-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: calc(var(--default-spacing) * 2);
-    align-items: start;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas:
+      "details form"
+      "details form";
   }
 
   @media only screen and (max-width: 50em) {
     .contacts-container {
-      grid-template-columns: auto;
+      grid-template-areas:
+        "form form"
+        "details details";
       gap: var(--default-spacing);
-    }
-
-    .contacts-container > :first-child {
-      order: 2;
-      text-align: center;
     }
   }
 </style>
