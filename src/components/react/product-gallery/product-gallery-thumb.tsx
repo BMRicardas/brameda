@@ -1,7 +1,8 @@
-import { EVENTS, THUMBNAIL_WIDTH } from "@/constants";
+import { EVENTS, IMAGE_QUALITY, THUMBNAIL_WIDTH } from "@/constants";
 import type { Photo } from "./product-gallery";
 
 import styles from "./product-gallery-thumb.module.css";
+import { buildSrcSet, getThumbnailUrl } from "@/utils";
 
 type Props = {
   selected: boolean;
@@ -44,6 +45,11 @@ export function ProductGalleryThumb({
         width={THUMBNAIL_WIDTH}
         height={THUMBNAIL_WIDTH}
         loading="lazy"
+        srcSet={buildSrcSet(getThumbnailUrl(photo.url, IMAGE_QUALITY.thumb), [
+          100,
+          150,
+          THUMBNAIL_WIDTH,
+        ])}
         fetchPriority={selected ? "high" : "auto"}
       />
     </button>

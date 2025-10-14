@@ -37,3 +37,22 @@ export function getThumbnailUrl(
 export function mergeClassNames(...classes: (string | undefined)[]) {
   return classes.filter(Boolean).join(" ");
 }
+
+export function buildSrcSet(
+  url: string,
+  widths: number[],
+  quality = IMAGE_QUALITY.main,
+  format = "webp",
+) {
+  return widths
+    .map((w) => `${url}?fm=${format}&q=${quality}&w=${w}`)
+    .join(", ");
+}
+
+export function buildAvifSrcSet(
+  url: string,
+  widths: number[],
+  quality = IMAGE_QUALITY.main,
+) {
+  return buildSrcSet(url, widths, quality, "avif");
+}
