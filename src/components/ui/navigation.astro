@@ -152,15 +152,15 @@ const { links } = Astro.props;
 
     // Toggle scroll lock
     function toggleScrollLock(shouldLock: boolean) {
-      updateScrollbarWidth();
       if (shouldLock) {
         body?.classList.add("scroll-lock");
       } else {
         body?.classList.remove("scroll-lock");
       }
+      updateScrollbarWidth();
     }
 
-    mobileMenu.addEventListener("toggle", (event) => {
+    mobileMenu.addEventListener("beforetoggle", (event) => {
       const isOpening =
         "newState" in event
           ? event.newState === "open"
