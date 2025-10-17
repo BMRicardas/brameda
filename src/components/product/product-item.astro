@@ -18,10 +18,7 @@ const imageSrc = getMainPhotoUrl(mainPhoto.url, 80);
 ---
 
 <article class="product-item">
-  <a
-    class="image-container"
-    href={`products/${slug}`}
-    transition:name={`photo-${slug}`}>
+  <a class="image-container" href={`products/${slug}`}>
     <Picture
       alt={title}
       class="image"
@@ -36,7 +33,7 @@ const imageSrc = getMainPhotoUrl(mainPhoto.url, 80);
     />
   </a>
   <div>
-    <a href={`products/${slug}`} transition:name={`title-${slug}`}>
+    <a href={`products/${slug}`}>
       <h3 class="title">{title}</h3>
     </a>
     <ul>

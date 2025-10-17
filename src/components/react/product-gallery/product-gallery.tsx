@@ -41,14 +41,12 @@ type Props = {
   photos: Photo[];
   initialColor?: string;
   displayMode?: "all_variants" | "color_selector";
-  transitionName?: string;
 };
 
 export function ProductGallery({
   photos,
   initialColor,
   displayMode = "all_variants",
-  transitionName,
 }: Props) {
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     initialColor,
@@ -183,13 +181,6 @@ export function ProductGallery({
                 className={styles["embla__slide"]}
                 key={`${photo.color}-${photo.fileName}-${index}`}
                 aria-hidden={selectedIndex !== index}
-                style={
-                  transitionName && index === 0
-                    ? ({
-                        viewTransitionName: transitionName,
-                      } as CSSProperties)
-                    : undefined
-                }
               >
                 <img
                   className={styles["embla__slide__image"]}

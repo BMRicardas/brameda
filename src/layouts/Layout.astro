@@ -1,6 +1,4 @@
 ---
-import { ClientRouter } from "astro:transitions";
-
 import Footer from "@/components/footer.astro";
 import Header from "@/components/header.astro";
 import "@/styles/normalize.css";
@@ -71,7 +69,6 @@ const keywordsContent =
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <ClientRouter fallback="swap" />
     <title>{title}</title>
   </head>
   <body>

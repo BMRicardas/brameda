@@ -12,7 +12,7 @@ type Props = {
 
 const { product } = Astro.props;
 
-const { slug, title, mainPhoto, videoUrl, variants, displayMode } = product;
+const { title, mainPhoto, videoUrl, variants, displayMode } = product;
 
 const initialColor = variants[0]?.color;
 
@@ -26,7 +26,6 @@ const allVariantPhotos = variants.flatMap((variant) =>
 
 const shouldShowThumbnails = allVariantPhotos.length > 1;
 const mainPhotoSrc = mainPhoto.url || allVariantPhotos[0]?.url || "";
-const transitionName = `photo-${slug}`;
 ---
 
 <div class="product-media">
@@ -37,10 +36,9 @@ const transitionName = `photo-${slug}`;
         displayMode={displayMode}
         initialColor={initialColor}
         photos={allVariantPhotos}
-        transitionName={transitionName}
       />
     ) : (
-      <div class="product__img" transition:name={transitionName}>
+      <div class="product__img">
         <Image
           alt={title}
           class="main-image"
