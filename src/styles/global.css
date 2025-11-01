@@ -2,8 +2,10 @@
 
 /* CSS Variables */
 :root {
-  /* Colors */
+  /* Container */
   --max-width: 1200px;
+
+  /* Colors */
   --color-black: #000;
   --color-white: #fff;
   --color-grey-light: #ebebeb;
