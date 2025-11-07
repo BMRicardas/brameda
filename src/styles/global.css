@@ -16,6 +16,10 @@
   --color-danger: #c41e3a;
   --color-success: #2e7d32;
 
+  /* Checkmarks */
+  --size: 52px;
+  --stroke-width: 2px;
+
   /* Animation & Spacing */
   --default-spacing: 5rem;
 
