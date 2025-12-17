@@ -132,7 +132,12 @@ const {
     stockStatusContainer.textContent = "";
 
     if (!selectedVariant || selectedVariant.inStock === undefined) {
+      stockStatusContainer.style.display = "none";
+      stockStatusContainer.style.visibility = "hidden";
       return;
+    } else {
+      stockStatusContainer.style.display = "block";
+      stockStatusContainer.style.visibility = "visible";
     }
 
     const span = document.createElement("span");
@@ -149,14 +154,14 @@ const {
   function getInitialVariant() {
     if (selectElement?.value) {
       const match = variants.find(
-        (variant) => variant.color === selectElement.value
+        (variant) => variant.color === selectElement.value,
       );
       if (match) return match;
     }
 
     if (colorElement?.textContent) {
       const match = variants.find(
-        (variant) => variant.color === colorElement.textContent.trim()
+        (variant) => variant.color === colorElement.textContent.trim(),
       );
       if (match) return match;
     }
@@ -171,7 +176,7 @@ const {
 
     updateStockStatus(selectedVariant);
     document.dispatchEvent(
-      new CustomEvent(EVENTS.COLOR_SELECTED, { detail: { color: colorValue } })
+      new CustomEvent(EVENTS.COLOR_SELECTED, { detail: { color: colorValue } }),
     );
   }
 
@@ -180,7 +185,7 @@ const {
     if (!colorValue) return;
 
     const selectedVariant = variants.find(
-      (variant) => variant.color === colorValue
+      (variant) => variant.color === colorValue,
     );
 
     if (selectedVariant) {
@@ -206,7 +211,7 @@ const {
       document.dispatchEvent(
         new CustomEvent(EVENTS.COLOR_SELECTED, {
           detail: { color: selectElement.value },
-        })
+        }),
       );
     }
   }
@@ -217,7 +222,7 @@ const {
     document.dispatchEvent(
       new CustomEvent(EVENTS.COLOR_SELECTED, {
         detail: { color: initialColor },
-      })
+      }),
     );
   }
 

@@ -16,7 +16,7 @@ export function SubmitAnimation({ formState }: Props) {
     case "loading":
       return (
         <div className="spinner-wrapper">
-          <LoadingSpinner />
+          <LoadingSpinner size="small" />
         </div>
       );
     case "success":

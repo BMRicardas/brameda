@@ -4,7 +4,6 @@ import {
   useCallback,
   useMemo,
   useRef,
-  type CSSProperties,
 } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 
