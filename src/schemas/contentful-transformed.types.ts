@@ -34,7 +34,6 @@ const BaseProductSchema = z.object({
   slug: z.string(),
   title: z.string(),
   order: z.number(),
-  inStock: z.boolean(),
   mainPhoto: ImageAssetSchema,
   features: z.array(z.string()),
   description: z.custom<Document>(),

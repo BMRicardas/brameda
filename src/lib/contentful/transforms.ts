@@ -51,7 +51,6 @@ export function transformProduct(
     slug: entry.fields.slug,
     title: entry.fields.title,
     order: entry.fields.order,
-    inStock: entry.fields.inStock,
     mainPhoto,
     features: entry.fields.features,
     description: entry.fields.description,

@@ -33,12 +33,6 @@ export interface TypeProductFields {
    */
   order: EntryFieldTypes.Integer;
   /**
-   * Field type definition for field 'inStock' (Yra sandėlyje)
-   * @name Yra sandėlyje
-   * @localized false
-   */
-  inStock: EntryFieldTypes.Boolean;
-  /**
    * Field type definition for field 'mainPhoto' (Pagrindinė nuotrauka)
    * @name Pagrindinė nuotrauka
    * @localized false
