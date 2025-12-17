@@ -47,17 +47,15 @@ export function ProductGallery({
   initialColor,
   displayMode = "all_variants",
 }: Props) {
-  const [selectedColor, setSelectedColor] = useState<string | undefined>(
-    initialColor,
-  );
+  const [selectedColor, setSelectedColor] = useState<string | undefined>(initialColor);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const isInternalColorChange = useRef(false);
 
   const [emblaMainRef, emblaMainApi] = useEmblaCarousel({
-    active: true,
     containScroll: "keepSnaps",
     watchDrag: (api) => api.canScrollPrev() || api.canScrollNext(),
   });
+
   const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({
     align: "center",
     containScroll: "keepSnaps",
@@ -66,12 +64,9 @@ export function ProductGallery({
   });
 
   const filteredPhotos = useMemo(() => {
-    if (displayMode === "all_variants") return photos;
-    if (!selectedColor) return photos;
+    if (displayMode === "all_variants" || !selectedColor) return photos;
     return photos.filter((p) => p.color === selectedColor);
   }, [photos, selectedColor, displayMode]);
-
-  const shouldShowThumbnailsInGallery = filteredPhotos.length > 1;
 
   const effectivePhotos =
     displayMode === "color_selector" && filteredPhotos.length === 0
@@ -79,35 +74,24 @@ export function ProductGallery({
       : filteredPhotos;
 
   const mainPhotos = useMemo(
-    () =>
-      effectivePhotos.map((photo) => ({
-        ...photo,
-        url: getMainPhotoUrl(photo.url),
-      })),
-    [effectivePhotos],
+    () => effectivePhotos.map((photo) => ({ ...photo, url: getMainPhotoUrl(photo.url) })),
+    [effectivePhotos]
   );
 
-  const allThumbPhotos = useMemo(
-    () =>
-      filteredPhotos.map((photo) => ({
-        ...photo,
-        url: getThumbnailUrl(photo.url),
-      })),
-    [filteredPhotos],
+  const thumbPhotos = useMemo(
+    () => filteredPhotos.map((photo) => ({ ...photo, url: getThumbnailUrl(photo.url) })),
+    [filteredPhotos]
   );
 
   const onSelect = useCallback(() => {
     if (!emblaMainApi) return;
+
     const index = emblaMainApi.selectedScrollSnap();
     setSelectedIndex(index);
-
-    if (emblaThumbsApi) {
-      emblaThumbsApi.scrollTo(index);
-    }
+    emblaThumbsApi?.scrollTo(index);
 
     if (displayMode === "all_variants" && filteredPhotos[index]) {
       const newColor = filteredPhotos[index].color;
-
       if (newColor !== selectedColor) {
         isInternalColorChange.current = true;
         setSelectedColor(newColor);
@@ -117,39 +101,29 @@ export function ProductGallery({
         document.dispatchEvent(event);
       }
     }
-  }, [
-    emblaMainApi,
-    emblaThumbsApi,
-    displayMode,
-    filteredPhotos,
-    selectedColor,
-  ]);
+  }, [emblaMainApi, emblaThumbsApi, displayMode, filteredPhotos, selectedColor]);
 
+  // Handle carousel events
   useEffect(() => {
     if (!emblaMainApi) return;
     onSelect();
-    emblaMainApi.on("select", onSelect);
-    emblaMainApi.on("reInit", onSelect);
-    return () => {
-      emblaMainApi.off("select", onSelect);
-      emblaMainApi.off("reInit", onSelect);
-    };
+    emblaMainApi.on("select", onSelect).on("reInit", onSelect);
+    return () => { emblaMainApi.off("select", onSelect).off("reInit", onSelect) };
   }, [emblaMainApi, onSelect]);
 
+  // Handle external color selection
   useEffect(() => {
     const onColorSelected = (event: ColorSelectedEvent) => {
-      const { color } = event.detail || {};
-      if (color && displayMode === "color_selector") {
-        setSelectedColor(color);
+      if (event.detail?.color && displayMode === "color_selector") {
+        setSelectedColor(event.detail.color);
       }
     };
 
     document.addEventListener(EVENTS.COLOR_SELECTED, onColorSelected);
-    return () => {
-      document.removeEventListener(EVENTS.COLOR_SELECTED, onColorSelected);
-    };
+    return () => { document.removeEventListener(EVENTS.COLOR_SELECTED, onColorSelected) };
   }, [displayMode]);
 
+  // Reset carousel when filtered photos change
   useEffect(() => {
     if (!emblaMainApi) return;
 
@@ -163,12 +137,37 @@ export function ProductGallery({
     setSelectedIndex(0);
   }, [emblaMainApi, filteredPhotos.length, selectedColor]);
 
+  // Prefetch all images
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const prefetch = () => {
+      photos.forEach((photo) => {
+        [getMainPhotoUrl(photo.url), getThumbnailUrl(photo.url)].forEach((url) => {
+          if (url) {
+            const link = document.createElement("link");
+            link.rel = "prefetch";
+            link.as = "image";
+            link.href = url;
+            document.head.appendChild(link);
+          }
+        });
+      });
+    };
+
+    if (document.readyState === "complete") {
+      prefetch();
+    } else {
+      window.addEventListener("load", prefetch, { once: true });
+    }
+  }, [photos]);
+
   const onThumbClick = useCallback(
-    (index: number) => {
-      emblaMainApi?.scrollTo(index);
-    },
-    [emblaMainApi],
+    (index: number) => { emblaMainApi?.scrollTo(index) },
+    [emblaMainApi]
   );
+
+  const showThumbnails = filteredPhotos.length > 1;
 
   return (
     <div className={styles["embla"]}>
@@ -195,24 +194,20 @@ export function ProductGallery({
           })}
         </div>
       </div>
-      {shouldShowThumbnailsInGallery && (
+
+      {showThumbnails && (
         <div className={styles["embla-thumbs"]}>
-          <div
-            className={styles["embla-thumbs__viewport"]}
-            ref={emblaThumbsRef}
-          >
+          <div className={styles["embla-thumbs__viewport"]} ref={emblaThumbsRef}>
             <div className={styles["embla-thumbs__container"]}>
-              {allThumbPhotos.map((photo, index) => {
-                return (
-                  <ProductGalleryThumb
-                    key={`thumb-${photo.color}-${photo.fileName}-${index}`}
-                    index={index}
-                    selected={index === selectedIndex}
-                    photo={photo}
-                    onThumbClick={() => onThumbClick(index)}
-                  />
-                );
-              })}
+              {thumbPhotos.map((photo, index) => (
+                <ProductGalleryThumb
+                  key={`thumb-${photo.color}-${photo.fileName}-${index}`}
+                  index={index}
+                  selected={index === selectedIndex}
+                  photo={photo}
+                  onThumbClick={() => onThumbClick(index)}
+                />
+              ))}
             </div>
           </div>
         </div>
