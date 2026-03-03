@@ -82,7 +82,7 @@ export function ContactForm({ web3formsPublicAccessKey }: Props) {
     };
 
     try {
-      const response = await fetch("https://api.web3forms.com/submite", {
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
