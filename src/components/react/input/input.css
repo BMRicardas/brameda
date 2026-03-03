@@ -1,0 +1,35 @@
+.input {
+  appearance: none;
+  width: 100%;
+  padding: 1rem;
+  background: none;
+  border: 1px solid var(--color-grey-light);
+  box-shadow: none;
+  outline: none;
+  color: var(--color-grey-light);
+  font-size: 1.7rem;
+  font-weight: 500;
+
+  &:focus {
+    box-shadow: 0 0 5px var(--color-grey-light);
+  }
+
+  &[aria-invalid="true"] {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 3px var(--color-danger);
+
+    &:focus {
+      box-shadow: 0 0 5px var(--color-grey-light);
+    }
+  }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--color-grey-light) !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--color-grey-dark2) inset !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+  }
+}

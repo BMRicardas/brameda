@@ -32,6 +32,8 @@ export function SubmitAnimation({ formState }: Props) {
         </div>
       );
     default:
-      return formState satisfies never;
+      throw new Error(
+        `Form state "${formState satisfies never}" is not supported`,
+      );
   }
 }
