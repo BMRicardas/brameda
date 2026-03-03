@@ -10,8 +10,6 @@
     "preview": "astro preview",
     "astro": "astro",
     "compile": "tsc",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
     "lint": "npm run lint:code && npm run lint:format && npm run compile -- --noEmit",
     "lint:fix": "npm run lint:code:fix && npm run lint:format:fix",
     "lint:code": "npx eslint src/** --report-unused-disable-directives",
@@ -39,21 +37,12 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "^8.6.14",
-    "@storybook/addon-interactions": "^8.6.14",
-    "@storybook/addon-links": "^10.2.14",
-    "@storybook/blocks": "^8.6.14",
-    "@storybook/react": "^10.2.14",
-    "@storybook/react-vite": "^10.2.14",
-    "@storybook/test": "^8.6.15",
     "@typescript-eslint/parser": "^8.56.1",
     "autoprefixer": "^10.4.27",
     "eslint": "^10.0.2",
     "eslint-plugin-astro": "^1.6.0",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-perfectionist": "^5.6.0",
-    "prettier-plugin-astro": "^0.14.1",
-    "storybook": "^10.2.14"
+    "prettier-plugin-astro": "^0.14.1"
   },
   "engines": {
     "node": ">=20.0.0"
