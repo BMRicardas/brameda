@@ -2,8 +2,8 @@ import { z } from "astro/zod";
 
 import { type Document } from "@contentful/rich-text-types";
 
-// Raw Contentful response validation schemas
-export const RawImageAssetSchema = z.object({
+// Shared asset schema (used in both raw and transformed types)
+export const ImageAssetSchema = z.object({
   url: z.string(),
   details: z.object({
     size: z.number(),
@@ -16,6 +16,8 @@ export const RawImageAssetSchema = z.object({
   contentType: z.string(),
 });
 
+// Raw Contentful response validation schemas
+
 export const RawProductVariantSchema = z.object({
   sys: z.object({ id: z.string() }),
   fields: z
@@ -26,7 +28,7 @@ export const RawProductVariantSchema = z.object({
         .array(
           z
             .object({
-              fields: z.object({ file: RawImageAssetSchema }).passthrough(),
+              fields: z.object({ file: ImageAssetSchema }).passthrough(),
             })
             .passthrough(),
         )
@@ -46,7 +48,7 @@ export const RawProductSchema = z.object({
       order: z.number(),
       mainPhoto: z
         .object({
-          fields: z.object({ file: RawImageAssetSchema }).passthrough(),
+          fields: z.object({ file: ImageAssetSchema }).passthrough(),
         })
         .passthrough(),
       features: z.array(z.string()),
@@ -67,7 +69,7 @@ export const RawProductSchema = z.object({
                   mainPhoto: z
                     .object({
                       fields: z
-                        .object({ file: RawImageAssetSchema })
+                        .object({ file: ImageAssetSchema })
                         .passthrough(),
                     })
                     .passthrough(),
@@ -80,19 +82,6 @@ export const RawProductSchema = z.object({
       displayMode: z.enum(["all_variants", "color_selector"]),
     })
     .passthrough(),
-});
-
-export const ImageAssetSchema = z.object({
-  url: z.string(),
-  details: z.object({
-    size: z.number(),
-    image: z.object({
-      width: z.number(),
-      height: z.number(),
-    }),
-  }),
-  fileName: z.string(),
-  contentType: z.string(),
 });
 
 export const AboutUsSchema = z.object({

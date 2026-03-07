@@ -9,7 +9,7 @@ import {
   type FormInput,
   type FormState,
 } from "@/schemas/contact-form.types";
-import { FORM_RESET_TIMEOUT } from "@/constants";
+import { FORM } from "@/constants";
 import { Input } from "../input";
 import { FormFieldInput } from "../form-field/form-field-input";
 import { FormFieldTextarea } from "../form-field/form-field-textarea";
@@ -54,7 +54,7 @@ export function ContactForm({ web3formsPublicAccessKey }: Props) {
 
     const timer = setTimeout(() => {
       setIsSuccess(false);
-    }, FORM_RESET_TIMEOUT);
+    }, FORM.RESET_TIMEOUT);
 
     return () => clearTimeout(timer);
   }, [isSuccess]);

@@ -5,7 +5,7 @@ import LinkButton from "@/components/ui/link-button.astro";
 import Price from "@/components/ui/price.astro";
 import RichText from "@/components/ui/rich-text.astro";
 import SelectColor from "@/components/ui/select-color.astro";
-import { DEFAULT_SHIPPING_DURATION, EVENTS } from "@/constants";
+import { EVENTS, SHIPPING } from "@/constants";
 
 type Props = {
   product: Product;
@@ -122,7 +122,7 @@ const {
   }
 </style>
 
-<script define:vars={{ variants, DEFAULT_SHIPPING_DURATION, EVENTS }} is:inline>
+<script define:vars={{ variants, SHIPPING, EVENTS }} is:inline>
   const selectElement = document.getElementById("variant-color");
   const colorElement = document.getElementById("color");
   const stockStatusContainer = document.getElementById("stock-status");
@@ -145,7 +145,7 @@ const {
     span.textContent = selectedVariant?.inStock
       ? "Prekė sandėlyje"
       : `Užsakoma prekė. Pristatymas ${
-          selectedVariant?.shippingDuration ?? DEFAULT_SHIPPING_DURATION
+          selectedVariant?.shippingDuration ?? SHIPPING.DEFAULT_DURATION
         }`;
 
     stockStatusContainer.append(span);
@@ -175,7 +175,6 @@ const {
     if (!selectedVariant) return;
 
     updateStockStatus(selectedVariant);
-    // @ts-expect-error - EVENTS is passed via define:vars
     document.dispatchEvent(
       new CustomEvent(EVENTS.COLOR_SELECTED, { detail: { color: colorValue } }),
     );

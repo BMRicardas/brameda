@@ -1,5 +1,5 @@
 ---
-import { VAT } from "@/constants";
+import { PRICING } from "@/constants";
 
 type Props = {
   price?: number;
@@ -8,7 +8,7 @@ type Props = {
 const { price }: Props = Astro.props;
 
 const priceWithoutVat = Number(price);
-const priceWithVat = priceWithoutVat * VAT;
+const priceWithVat = priceWithoutVat * PRICING.VAT;
 
 function localizedPrice(price: number) {
   return new Intl.NumberFormat("lt-LT", {
