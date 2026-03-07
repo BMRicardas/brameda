@@ -21,7 +21,7 @@ const allVariantPhotos = variants.flatMap((variant) =>
     ...photo,
     color: variant.color,
     altText: `${title} - ${variant.name} - Photo ${index + 1}`,
-  }))
+  })),
 );
 
 const shouldShowThumbnails = allVariantPhotos.length > 1;

@@ -104,12 +104,12 @@ const { key, price } = Astro.props;
   const VAT_RATE = 0.21;
 
   const priceComponents = document.querySelectorAll<HTMLElement>(
-    "[data-price-component]"
+    "[data-price-component]",
   );
 
   priceComponents.forEach((component) => {
     const switchElement = component.querySelector<HTMLInputElement>(
-      'input[type="checkbox"]'
+      'input[type="checkbox"]',
     );
     const priceElement =
       component.querySelector<HTMLDataElement>("[data-price]");

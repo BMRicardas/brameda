@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.astro/
+
+# Assets
+src/assets/
+
+# Generated files
+.github/
+coverage/

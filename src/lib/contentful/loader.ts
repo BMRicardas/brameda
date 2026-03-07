@@ -4,7 +4,10 @@ import { transformProduct } from "./transforms";
 import type { TypeProductSkeleton } from "@/types/contentful";
 import { CONTENT_TYPES, DEFAULT_INCLUDE_LEVEL } from "./config";
 import type { CreateClientParams } from "contentful";
-import { productSchema } from "@/schemas/contentful-transformed.types";
+import {
+  ProductSchema,
+  RawProductSchema,
+} from "@/schemas/contentful-transformed.types";
 
 export function contentfulLoader(options: CreateClientParams): Loader {
   if (!options.space || !options.accessToken) {
@@ -40,7 +43,8 @@ export function contentfulLoader(options: CreateClientParams): Loader {
         }
 
         items.map((item) => {
-          const transformedData = transformProduct(item);
+          const validatedItem = RawProductSchema.parse(item);
+          const transformedData = transformProduct(validatedItem);
 
           const digest = generateDigest({ ...transformedData });
 
@@ -66,6 +70,6 @@ export function contentfulLoader(options: CreateClientParams): Loader {
         logger.error(`Error loading entries: ${error}`);
       }
     },
-    schema: productSchema,
+    schema: ProductSchema,
   };
 }

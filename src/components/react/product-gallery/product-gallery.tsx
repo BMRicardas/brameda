@@ -1,10 +1,4 @@
-import {
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-  useRef,
-} from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 
 import { ProductGalleryThumb } from "./product-gallery-thumb";
@@ -47,7 +41,9 @@ export function ProductGallery({
   initialColor,
   displayMode = "all_variants",
 }: Props) {
-  const [selectedColor, setSelectedColor] = useState<string | undefined>(initialColor);
+  const [selectedColor, setSelectedColor] = useState<string | undefined>(
+    initialColor,
+  );
   const [selectedIndex, setSelectedIndex] = useState(0);
   const isInternalColorChange = useRef(false);
 
@@ -74,13 +70,21 @@ export function ProductGallery({
       : filteredPhotos;
 
   const mainPhotos = useMemo(
-    () => effectivePhotos.map((photo) => ({ ...photo, url: getMainPhotoUrl(photo.url) })),
-    [effectivePhotos]
+    () =>
+      effectivePhotos.map((photo) => ({
+        ...photo,
+        url: getMainPhotoUrl(photo.url),
+      })),
+    [effectivePhotos],
   );
 
   const thumbPhotos = useMemo(
-    () => filteredPhotos.map((photo) => ({ ...photo, url: getThumbnailUrl(photo.url) })),
-    [filteredPhotos]
+    () =>
+      filteredPhotos.map((photo) => ({
+        ...photo,
+        url: getThumbnailUrl(photo.url),
+      })),
+    [filteredPhotos],
   );
 
   const onSelect = useCallback(() => {
@@ -101,14 +105,22 @@ export function ProductGallery({
         document.dispatchEvent(event);
       }
     }
-  }, [emblaMainApi, emblaThumbsApi, displayMode, filteredPhotos, selectedColor]);
+  }, [
+    emblaMainApi,
+    emblaThumbsApi,
+    displayMode,
+    filteredPhotos,
+    selectedColor,
+  ]);
 
   // Handle carousel events
   useEffect(() => {
     if (!emblaMainApi) return;
     onSelect();
     emblaMainApi.on("select", onSelect).on("reInit", onSelect);
-    return () => { emblaMainApi.off("select", onSelect).off("reInit", onSelect) };
+    return () => {
+      emblaMainApi.off("select", onSelect).off("reInit", onSelect);
+    };
   }, [emblaMainApi, onSelect]);
 
   // Handle external color selection
@@ -120,7 +132,9 @@ export function ProductGallery({
     };
 
     document.addEventListener(EVENTS.COLOR_SELECTED, onColorSelected);
-    return () => { document.removeEventListener(EVENTS.COLOR_SELECTED, onColorSelected) };
+    return () => {
+      document.removeEventListener(EVENTS.COLOR_SELECTED, onColorSelected);
+    };
   }, [displayMode]);
 
   // Reset carousel when filtered photos change
@@ -143,15 +157,17 @@ export function ProductGallery({
 
     const prefetch = () => {
       photos.forEach((photo) => {
-        [getMainPhotoUrl(photo.url), getThumbnailUrl(photo.url)].forEach((url) => {
-          if (url) {
-            const link = document.createElement("link");
-            link.rel = "prefetch";
-            link.as = "image";
-            link.href = url;
-            document.head.appendChild(link);
-          }
-        });
+        [getMainPhotoUrl(photo.url), getThumbnailUrl(photo.url)].forEach(
+          (url) => {
+            if (url) {
+              const link = document.createElement("link");
+              link.rel = "prefetch";
+              link.as = "image";
+              link.href = url;
+              document.head.appendChild(link);
+            }
+          },
+        );
       });
     };
 
@@ -163,8 +179,10 @@ export function ProductGallery({
   }, [photos]);
 
   const onThumbClick = useCallback(
-    (index: number) => { emblaMainApi?.scrollTo(index) },
-    [emblaMainApi]
+    (index: number) => {
+      emblaMainApi?.scrollTo(index);
+    },
+    [emblaMainApi],
   );
 
   const showThumbnails = filteredPhotos.length > 1;
@@ -197,7 +215,10 @@ export function ProductGallery({
 
       {showThumbnails && (
         <div className={styles["embla-thumbs"]}>
-          <div className={styles["embla-thumbs__viewport"]} ref={emblaThumbsRef}>
+          <div
+            className={styles["embla-thumbs__viewport"]}
+            ref={emblaThumbsRef}
+          >
             <div className={styles["embla-thumbs__container"]}>
               {thumbPhotos.map((photo, index) => (
                 <ProductGalleryThumb

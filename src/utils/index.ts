@@ -12,7 +12,7 @@ export function getMainPhotoUrl(
     throw new Error("Quality must be an integer between 0 and 100");
   }
 
-  if (!baseUrl) return "";
+  if (!baseUrl?.trim()) return "";
 
   const url = baseUrl.startsWith("http") ? baseUrl : `https:${baseUrl}`;
 
@@ -32,27 +32,4 @@ export function getThumbnailUrl(
   const url = baseUrl.startsWith("http") ? baseUrl : `https:${baseUrl}`;
 
   return `${url}?fm=webp&q=${quality}&w=${THUMBNAIL_WIDTH}`;
-}
-
-export function mergeClassNames(...classes: (string | undefined)[]) {
-  return classes.filter(Boolean).join(" ");
-}
-
-export function buildSrcSet(
-  url: string,
-  widths: number[],
-  quality = IMAGE_QUALITY.main,
-  format = "webp",
-) {
-  return widths
-    .map((w) => `${url}?fm=${format}&q=${quality}&w=${w}`)
-    .join(", ");
-}
-
-export function buildAvifSrcSet(
-  url: string,
-  widths: number[],
-  quality = IMAGE_QUALITY.main,
-) {
-  return buildSrcSet(url, widths, quality, "avif");
 }

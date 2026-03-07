@@ -10,7 +10,7 @@ const products: CollectionEntry<"products">[] = await getCollection("products");
 
 function sortByOrder(
   a: CollectionEntry<"products">["data"],
-  b: CollectionEntry<"products">["data"]
+  b: CollectionEntry<"products">["data"],
 ) {
   return a.order - b.order;
 }

@@ -1,11 +1,12 @@
 import { defineCollection } from "astro:content";
-import { productSchema } from "@/schemas/contentful-transformed.types";
-import { contentfulLoader } from "@/lib/contentful/loader";
+
 import { contentfulConfig } from "@/lib/contentful/config";
+import { contentfulLoader } from "@/lib/contentful/loader";
+import { ProductSchema } from "@/schemas/contentful-transformed.types";
 
 const products = defineCollection({
   loader: contentfulLoader(contentfulConfig),
-  schema: productSchema,
+  schema: ProductSchema,
 });
 
 export const collections = { products };

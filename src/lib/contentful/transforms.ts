@@ -1,50 +1,44 @@
-import type {
-  TypeProductVariantsWithoutUnresolvableLinksResponse,
-  TypeProductWithoutUnresolvableLinksResponse,
-} from "@/types/contentful";
+import { z } from "astro/zod";
+import { RawProductSchema } from "@/schemas/contentful-transformed.types";
 
-function transformVariant(
-  variant: TypeProductVariantsWithoutUnresolvableLinksResponse,
-) {
+type ValidatedProduct = z.infer<typeof RawProductSchema>;
+type ValidatedVariant = z.infer<
+  typeof RawProductSchema
+>["fields"]["variants"][number];
+type ValidatedRelatedProduct = NonNullable<
+  ValidatedProduct["fields"]["relatedProducts"]
+>[number];
+
+function transformVariant(variant: ValidatedVariant) {
+  const photoList = (variant.fields.photos ?? []).map(
+    (photo) => photo.fields.file,
+  );
+  const photos = photoList.filter(
+    (p): p is NonNullable<typeof p> => p !== undefined,
+  );
+
   return {
     id: variant.sys.id,
     name: variant.fields.variantName,
     color: variant.fields.color,
-    photos: (
-      (variant.fields.photos as
-        | Array<{ fields: { file: unknown } }>
-        | undefined) ?? []
-    ).map((photo) => photo.fields.file),
+    photos,
     inStock: variant.fields.inStock,
     shippingDuration: variant.fields.shippingDuration,
   };
 }
 
-function transformRelatedProduct(
-  product: TypeProductWithoutUnresolvableLinksResponse,
-) {
-  const mainPhoto = (
-    product as { fields: { mainPhoto: { fields: { file: unknown } } } }
-  ).fields.mainPhoto.fields.file;
-
+function transformRelatedProduct(product: ValidatedRelatedProduct) {
   return {
     id: product.sys.id,
     slug: product.fields.slug,
     title: product.fields.title,
-    mainPhoto,
+    mainPhoto: product.fields.mainPhoto.fields.file,
   };
 }
 
-export function transformProduct(
-  entry: TypeProductWithoutUnresolvableLinksResponse,
-) {
-  const specifications = entry.fields.specifications
-    ? (entry.fields.specifications as Record<string, unknown>)
-    : undefined;
-
-  const mainPhoto = (
-    entry as { fields: { mainPhoto: { fields: { file: unknown } } } }
-  ).fields.mainPhoto.fields.file;
+export function transformProduct(entry: ValidatedProduct) {
+  const specifications = entry.fields.specifications;
+  const mainPhoto = entry.fields.mainPhoto.fields.file;
 
   return {
     id: entry.sys.id,
@@ -57,12 +51,8 @@ export function transformProduct(
     specifications,
     priceWithoutVat: entry.fields.priceWithoutVat,
     videoUrl: entry.fields.embeddedYouTubeLink,
-    variants: entry.fields.variants
-      .map((variant) => variant && transformVariant(variant))
-      .filter((variant) => variant !== undefined),
-    relatedProducts: entry.fields.relatedProducts
-      ?.map((product) => product && transformRelatedProduct(product))
-      .filter((product) => product !== undefined),
+    variants: entry.fields.variants.map(transformVariant),
+    relatedProducts: entry.fields.relatedProducts?.map(transformRelatedProduct),
     displayMode: entry.fields.displayMode,
   };
 }

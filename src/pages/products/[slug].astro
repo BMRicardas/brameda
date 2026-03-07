@@ -32,7 +32,8 @@ const { product } = Astro.props;
 <Layout
   description={renderRichTextToPlainText(product.description)}
   image={getMainPhotoUrl(product.mainPhoto.url)}
-  title={product.title}>
+  title={product.title}
+>
   <ProductPage product={product} />
   <About />
   <Contacts />

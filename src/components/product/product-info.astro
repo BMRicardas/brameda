@@ -175,6 +175,7 @@ const {
     if (!selectedVariant) return;
 
     updateStockStatus(selectedVariant);
+    // @ts-expect-error - EVENTS is passed via define:vars
     document.dispatchEvent(
       new CustomEvent(EVENTS.COLOR_SELECTED, { detail: { color: colorValue } }),
     );

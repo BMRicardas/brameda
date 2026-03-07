@@ -4,7 +4,7 @@ import {
   type DetailedHTMLProps,
   type TextareaHTMLAttributes,
 } from "react";
-import { mergeClassNames } from "@/utils";
+import clsx from "clsx";
 import "./textarea.css";
 
 export type Props = DetailedHTMLProps<
@@ -20,7 +20,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, Props>(
       <div className="textarea-wrapper">
         <textarea
           ref={ref}
-          className={mergeClassNames("textarea", className)}
+          className={clsx("textarea", className)}
           maxLength={maxLength}
           onChange={(e) => {
             setCharCount(e.target.value.length);

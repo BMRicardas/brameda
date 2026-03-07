@@ -4,8 +4,7 @@ import perfectionist from "eslint-plugin-perfectionist";
 export default [
   // add more generic rule sets here, such as:
   // js.configs.recommended,
-  ...eslintPluginAstro.configs.all,
-  ...eslintPluginAstro.configs["flat/jsx-a11y-strict"],
+  ...eslintPluginAstro.configs.recommended,
   {
     plugins: {
       perfectionist,
