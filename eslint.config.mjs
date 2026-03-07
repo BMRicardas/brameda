@@ -1,3 +1,4 @@
+import reactPlugin from "@eslint-react/eslint-plugin";
 import eslintPluginAstro from "eslint-plugin-astro";
 import perfectionist from "eslint-plugin-perfectionist";
 
@@ -8,6 +9,7 @@ export default [
   {
     plugins: {
       perfectionist,
+      reactPlugin,
     },
     rules: {
       "perfectionist/sort-imports": "error",
