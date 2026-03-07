@@ -1,6 +1,5 @@
-import { z } from "astro/zod";
-
 import { type Document } from "@contentful/rich-text-types";
+import { z } from "astro/zod";
 
 // Shared asset schema (used in both raw and transformed types)
 export const ImageAssetSchema = z.object({

@@ -1,12 +1,12 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 
-import { ProductGalleryThumb } from "./product-gallery-thumb";
-import { getMainPhotoUrl, getThumbnailUrl } from "@/utils";
-
-import { EVENTS, IMAGE } from "@/constants";
 import type { ColorSelectedEvent } from "@/types";
 
+import { EVENTS, IMAGE } from "@/constants";
+import { getMainPhotoUrl, getThumbnailUrl } from "@/utils";
+
+import { ProductGalleryThumb } from "./product-gallery-thumb";
 import styles from "./product-gallery.module.css";
 
 declare global {

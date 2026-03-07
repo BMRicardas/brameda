@@ -12,7 +12,7 @@ import type {
  * @type {TypeProductVariantsFields}
  * @memberof TypeProductVariants
  */
-export interface TypeProductVariantsFields {
+export type TypeProductVariantsFields = {
   /**
    * Field type definition for field 'variantName' (Varianto pavadinimas)
    * @name Varianto pavadinimas
@@ -43,7 +43,7 @@ export interface TypeProductVariantsFields {
    * @localized false
    */
   photos?: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>;
-}
+};
 
 /**
  * Entry skeleton type definition for content type 'productVariants' (product-variant)

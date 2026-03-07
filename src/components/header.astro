@@ -64,7 +64,9 @@ const headerLinks = [
 <script>
   if (!CSS.supports("position-anchor: --header")) {
     function setHeaderHeight() {
-      const header = document.querySelector(".header") as HTMLElement | null;
+      const header = document.querySelector(
+        ".header",
+      ) satisfies HTMLElement | null;
       if (header) {
         document.documentElement.style.setProperty(
           "--header-height",

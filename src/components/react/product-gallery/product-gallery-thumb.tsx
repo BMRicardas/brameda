@@ -1,4 +1,5 @@
 import { EVENTS, IMAGE } from "@/constants";
+
 import type { Photo } from "./product-gallery";
 
 import styles from "./product-gallery-thumb.module.css";

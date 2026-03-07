@@ -1,7 +1,8 @@
-import { DotButton, useDotButton } from "./carousel-dot-button";
 import useEmblaCarousel from "embla-carousel-react";
 
 import type { Product } from "@/schemas/contentful-transformed.types";
+
+import { DotButton, useDotButton } from "./carousel-dot-button";
 import { RelatedProductCard } from "./related-product-card";
 import styles from "./related-products-carousel.module.css";
 
@@ -29,8 +30,8 @@ export function RelatedProductsCarousel({ products }: Prop) {
               products.length <= 2 ? styles["embla__container--static"] : ""
             }`}
           >
-            {products.map((product, index) => (
-              <div className={styles["embla__slide"]} key={index}>
+            {products.map((product) => (
+              <div className={styles["embla__slide"]} key={product.id}>
                 <RelatedProductCard product={product} />
               </div>
             ))}

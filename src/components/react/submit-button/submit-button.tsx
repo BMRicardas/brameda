@@ -1,9 +1,10 @@
 import type { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
+
 import { clsx } from "clsx";
 
-import { SubmitAnimation } from "@/components/react/submit-animation";
-
 import type { FormState } from "@/schemas/contact-form.types";
+
+import { SubmitAnimation } from "@/components/react/submit-animation";
 
 import "./submit-button.css";
 

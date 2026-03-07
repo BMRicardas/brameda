@@ -1,29 +1,38 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitButton } from "@/components/react/submit-button";
+
 import { InputErrorMessage } from "@/components/react/input-error-message";
+import { SubmitButton } from "@/components/react/submit-button";
+import { FORM } from "@/constants";
+import { ERROR_MESSAGES } from "@/constants/messages";
+import { env } from "@/lib/env";
 import {
   FormSchema,
   MESSAGE_MAX_LENGTH,
   type FormInput,
   type FormState,
 } from "@/schemas/contact-form.types";
-import { FORM } from "@/constants";
-import { Input } from "../input";
+
 import { FormFieldInput } from "../form-field/form-field-input";
 import { FormFieldTextarea } from "../form-field/form-field-textarea";
+import { Input } from "../input";
 import "./contact-form.css";
 
-type Props = { web3formsPublicAccessKey: string };
+type Props = { web3formsPublicAccessKey?: string };
+
+const isNonEmptyString = (value: unknown): value is string =>
+  typeof value === "string" && value.trim() !== "";
 
 export function ContactForm({ web3formsPublicAccessKey }: Props) {
   const [isSuccess, setIsSuccess] = useState(false);
+  const publicKey =
+    web3formsPublicAccessKey || env().WEB3FORMS_PUBLIC_ACCESS_KEY;
   const { register, handleSubmit, reset, setError, clearErrors, formState } =
     useForm<FormInput>({
       resolver: zodResolver(FormSchema),
       defaultValues: {
-        access_key: web3formsPublicAccessKey,
+        access_key: publicKey,
         botcheck: "",
         name: "",
         phone: "",
@@ -69,11 +78,15 @@ export function ContactForm({ web3formsPublicAccessKey }: Props) {
     const controller = new AbortController();
     controllerRef.current = controller;
 
+    const contactInfo = [data.name, data.email || data.phone].filter(
+      isNonEmptyString,
+    );
+    const from_name =
+      contactInfo.length > 0 ? contactInfo.join(" - ") : "Unknown Sender";
+
     const payload = {
       access_key: data.access_key,
-      from_name: [data.name, data.email || data.phone]
-        .filter(Boolean)
-        .join(" - "),
+      from_name,
       subject: "Užklausa iš tinklapio",
       vardas: data.name ?? "",
       telefonas: data.phone ?? "",
@@ -92,6 +105,10 @@ export function ContactForm({ web3formsPublicAccessKey }: Props) {
         signal: controller.signal,
       });
 
+      if (controller.signal.aborted) {
+        return;
+      }
+
       if (!response.ok) {
         console.error(
           "Web3Forms submission failed",
@@ -100,7 +117,7 @@ export function ContactForm({ web3formsPublicAccessKey }: Props) {
         );
         setError("root", {
           type: "server",
-          message: "Įvyko nenumatyta klaida. Bandykite dar kartą.",
+          message: ERROR_MESSAGES.FORM_SUBMISSION_FAILED,
         });
         return;
       }
@@ -110,13 +127,14 @@ export function ContactForm({ web3formsPublicAccessKey }: Props) {
     } catch (error) {
       console.error("Network error while submitting contact form", error);
 
-      if (error instanceof DOMException && error.name === "AbortError") return;
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
 
-      if (!controllerRef.current?.signal.aborted) {
+      if (!controller.signal.aborted) {
         setError("root", {
           type: "server",
-          message:
-            "Įvyko tinklo klaida. Patikrinkite savo interneto ryšį ir bandykite dar kartą.",
+          message: ERROR_MESSAGES.NETWORK_ERROR,
         });
       }
     } finally {
@@ -128,11 +146,7 @@ export function ContactForm({ web3formsPublicAccessKey }: Props) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="contact-form">
-      <Input
-        {...register("access_key")}
-        type="hidden"
-        value={web3formsPublicAccessKey}
-      />
+      <Input {...register("access_key")} type="hidden" value={publicKey} />
 
       <Input
         {...register("botcheck")}

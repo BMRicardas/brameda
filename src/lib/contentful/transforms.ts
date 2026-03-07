@@ -1,5 +1,11 @@
+import type { AssetFile } from "contentful";
+
 import { z } from "astro/zod";
-import { RawProductSchema } from "@/schemas/contentful-transformed.types";
+
+import {
+  ImageAssetSchema,
+  RawProductSchema,
+} from "@/schemas/contentful-transformed.types";
 
 type ValidatedProduct = z.infer<typeof RawProductSchema>;
 type ValidatedVariant = z.infer<
@@ -9,13 +15,14 @@ type ValidatedRelatedProduct = NonNullable<
   ValidatedProduct["fields"]["relatedProducts"]
 >[number];
 
+const isAssetFile = (file: unknown): file is AssetFile =>
+  ImageAssetSchema.safeParse(file).success;
+
 function transformVariant(variant: ValidatedVariant) {
   const photoList = (variant.fields.photos ?? []).map(
     (photo) => photo.fields.file,
   );
-  const photos = photoList.filter(
-    (p): p is NonNullable<typeof p> => p !== undefined,
-  );
+  const photos = photoList.filter(isAssetFile);
 
   return {
     id: variant.sys.id,

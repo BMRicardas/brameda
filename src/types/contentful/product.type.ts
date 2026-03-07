@@ -5,6 +5,7 @@ import type {
   EntrySkeletonType,
   LocaleCode,
 } from "contentful";
+
 import type { TypeProductVariantsSkeleton } from "./product-variants.type";
 
 /**
@@ -13,7 +14,7 @@ import type { TypeProductVariantsSkeleton } from "./product-variants.type";
  * @type {TypeProductFields}
  * @memberof TypeProduct
  */
-export interface TypeProductFields {
+export type TypeProductFields = {
   /**
    * Field type definition for field 'slug' (slug)
    * @name slug
@@ -90,7 +91,7 @@ export interface TypeProductFields {
    * @localized false
    */
   displayMode: EntryFieldTypes.Symbol<"all_variants" | "color_selector">;
-}
+};
 
 /**
  * Entry skeleton type definition for content type 'product' (product)

@@ -3,14 +3,14 @@ import {
   type Options,
 } from "@contentful/rich-text-html-renderer";
 import { documentToPlainTextString } from "@contentful/rich-text-plain-text-renderer";
-import { BLOCKS, type Document, type Text } from "@contentful/rich-text-types";
+import { BLOCKS, type Document, helpers } from "@contentful/rich-text-types";
 
-const options: Options = {
+const options = {
+  preserveWhitespace: true,
   renderNode: {
     [BLOCKS.PARAGRAPH]: (node, next) => {
       const textContent = node.content
-        .filter((child) => child.nodeType === "text")
-        .map((child) => (child as Text).value)
+        .flatMap((child) => (helpers.isText(child) ? [child.value] : []))
         .join("");
 
       if (!textContent.trim()) {
@@ -20,7 +20,7 @@ const options: Options = {
       return `<p>${next(node.content).replace(/\n/g, "<br>")}</p>`;
     },
   },
-};
+} satisfies Options;
 
 export function renderRichTextToHtml(doc: Document) {
   return documentToHtmlString(doc, options);

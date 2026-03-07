@@ -12,14 +12,14 @@ import type {
  * @type {TypeAboutUsFields}
  * @memberof TypeAboutUs
  */
-export interface TypeAboutUsFields {
+export type TypeAboutUsFields = {
   /**
    * Field type definition for field 'aboutUs' (Apie mus)
    * @name Apie mus
    * @localized false
    */
   aboutUs: EntryFieldTypes.RichText;
-}
+};
 
 /**
  * Entry skeleton type definition for content type 'aboutUs' (about-us)

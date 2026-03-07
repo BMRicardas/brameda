@@ -1,7 +1,6 @@
+import { IMAGE } from "@/constants";
 import { type Product } from "@/schemas/contentful-transformed.types";
 import { getThumbnailUrl } from "@/utils";
-
-import { IMAGE } from "@/constants";
 
 import styles from "./related-product-card.module.css";
 

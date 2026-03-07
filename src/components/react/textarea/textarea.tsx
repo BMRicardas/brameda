@@ -1,10 +1,11 @@
+import clsx from "clsx";
 import {
   forwardRef,
   useState,
   type DetailedHTMLProps,
   type TextareaHTMLAttributes,
 } from "react";
-import clsx from "clsx";
+
 import "./textarea.css";
 
 export type Props = DetailedHTMLProps<

@@ -1,7 +1,8 @@
+import type { FormState } from "@/schemas/contact-form.types";
+
 import { ErrorCheckmark } from "@/components/react/checkmarks";
 import { SuccessCheckmark } from "@/components/react/checkmarks";
 import { LoadingSpinner } from "@/components/react/loading-spinner";
-import type { FormState } from "@/schemas/contact-form.types";
 
 import "./submit-animation.css";
 

@@ -1,10 +1,11 @@
+import clsx from "clsx";
+
+import "./input.css";
 import {
   forwardRef,
   type DetailedHTMLProps,
   type InputHTMLAttributes,
 } from "react";
-import "./input.css";
-import clsx from "clsx";
 
 export type Props = DetailedHTMLProps<
   InputHTMLAttributes<HTMLInputElement>,
