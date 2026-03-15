@@ -44,7 +44,7 @@ export default defineConfig({
       entrypoint: "astro/assets/services/sharp",
     },
   },
-  site: "https://brameda.lt",
+  site: "https://www.brameda.lt",
   integrations: [
     sitemap({
       xslURL: "/sitemap.xsl",

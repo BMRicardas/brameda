@@ -14,8 +14,7 @@ import {
   type FormState,
 } from "@/schemas/contact-form.types";
 
-import { FormFieldInput } from "../form-field/form-field-input";
-import { FormFieldTextarea } from "../form-field/form-field-textarea";
+import { FormFieldInput, FormFieldTextarea } from "../form-field";
 import { Input } from "../input";
 import "./contact-form.css";
 

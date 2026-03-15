@@ -43,9 +43,3 @@ export const getThumbnailUrl = (
   baseUrl: unknown,
   quality: number = IMAGE.QUALITY.thumb,
 ): string => buildImageUrl(baseUrl, { quality, width: IMAGE.THUMBNAIL_WIDTH });
-
-export const getResponsiveImageUrl = (
-  baseUrl: unknown,
-  width: number,
-  quality: number = IMAGE.QUALITY.main,
-): string => buildImageUrl(baseUrl, { quality, width });

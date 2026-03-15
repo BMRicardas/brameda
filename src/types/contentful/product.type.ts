@@ -14,7 +14,7 @@ import type { TypeProductVariantsSkeleton } from "./product-variants.type";
  * @type {TypeProductFields}
  * @memberof TypeProduct
  */
-export type TypeProductFields = {
+export interface TypeProductFields {
   /**
    * Field type definition for field 'slug' (slug)
    * @name slug
@@ -91,7 +91,19 @@ export type TypeProductFields = {
    * @localized false
    */
   displayMode: EntryFieldTypes.Symbol<"all_variants" | "color_selector">;
-};
+  /**
+   * Field type definition for field 'brand' (Prekės ženklas)
+   * @name Prekės ženklas
+   * @localized false
+   */
+  brand: EntryFieldTypes.Symbol;
+  /**
+   * Field type definition for field 'country' (Šalis)
+   * @name Šalis
+   * @localized false
+   */
+  country: EntryFieldTypes.Symbol;
+}
 
 /**
  * Entry skeleton type definition for content type 'product' (product)
@@ -99,7 +111,7 @@ export type TypeProductFields = {
  * @type {TypeProductSkeleton}
  * @author 2GqZ7dBVhhscVgaXCLGmAa
  * @since 2024-07-11T17:53:19.244Z
- * @version 123
+ * @version 135
  */
 export type TypeProductSkeleton = EntrySkeletonType<
   TypeProductFields,
@@ -111,7 +123,7 @@ export type TypeProductSkeleton = EntrySkeletonType<
  * @type {TypeProduct}
  * @author Ričardas Brazdžius<ricardas.brazdzius@gmail.com>
  * @since 2024-07-11T17:53:19.244Z
- * @version 123
+ * @version 135
  * @link https://app.contentful.com/spaces/cowmzwzvcxvm/environments/master/content_types/product
  */
 export type TypeProduct<

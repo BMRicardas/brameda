@@ -8,7 +8,7 @@ type Props = HTMLAttributes<"a"> & {
   href: string;
 };
 
-const { variant = "light", href, ...rest }: Props = Astro.props;
+const { variant = "light", href, ...rest } = Astro.props;
 ---
 
 <a

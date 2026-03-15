@@ -9,21 +9,24 @@ type Props = {
 };
 
 export function RelatedProductCard({ product }: Props) {
+  const href = `/products/${product.slug}`;
   return (
-    <a href={`/products/${product.slug}`} className={styles["card"]}>
-      <div className={styles["image-container"]}>
-        <img
-          src={getThumbnailUrl(product.mainPhoto.url)}
-          alt={`Image of ${product.title}`}
-          className={styles["image"]}
-          loading="lazy"
-          width={IMAGE.THUMBNAIL_WIDTH}
-          height={IMAGE.THUMBNAIL_WIDTH}
-        />
-      </div>
-      <div className={styles["content"]}>
-        <h4 className={styles["title"]}>{product.title}</h4>
-      </div>
-    </a>
+    <article className={styles["card"]}>
+      <a href={href} className={styles["card-link"]}>
+        <header className={styles["image-container"]}>
+          <img
+            src={getThumbnailUrl(product.mainPhoto.url)}
+            alt={product.title}
+            className={styles["image"]}
+            loading="lazy"
+            width={IMAGE.THUMBNAIL_WIDTH}
+            height={IMAGE.THUMBNAIL_WIDTH}
+          />
+        </header>
+        <div className={styles["content"]}>
+          <h4 className={styles["title"]}>{product.title}</h4>
+        </div>
+      </a>
+    </article>
   );
 }

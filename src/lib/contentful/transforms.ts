@@ -61,5 +61,7 @@ export function transformProduct(entry: ValidatedProduct) {
     variants: entry.fields.variants.map(transformVariant),
     relatedProducts: entry.fields.relatedProducts?.map(transformRelatedProduct),
     displayMode: entry.fields.displayMode,
+    brand: entry.fields.brand,
+    country: entry.fields.country,
   };
 }

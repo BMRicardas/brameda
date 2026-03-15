@@ -1,0 +1,11 @@
+---
+import type { StructuredData } from "@/types";
+
+type Props = {
+  structuredData: StructuredData;
+};
+
+const { structuredData } = Astro.props;
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />

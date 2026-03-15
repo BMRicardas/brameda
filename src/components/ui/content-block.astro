@@ -1,26 +1,21 @@
 ---
 import BlockTitle from "./block-title.astro";
 import Container from "./container.astro";
-
-type Theme = "light" | "dark";
-type Tag = "article" | "section";
+import type { Tag, Theme } from "@/types";
 
 type Props = {
   id?: string;
   appearanceMode?: Theme;
   title?: string;
-  as?: Tag;
+  tag?: Tag;
 };
 
-const {
-  id,
-  appearanceMode = "light",
-  title,
-  as: Tag = "section",
-}: Props = Astro.props;
+const { id, appearanceMode = "light", title, tag = "section" } = Astro.props;
+
+const Element = tag;
 ---
 
-<Tag
+<Element
   class:list={[
     "content-block",
     {
@@ -33,7 +28,7 @@ const {
     {title && <BlockTitle {appearanceMode} {title} />}
     <slot />
   </Container>
-</Tag>
+</Element>
 
 <style>
   .content-block {

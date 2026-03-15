@@ -5,14 +5,15 @@ import { contentfulClient } from "@/lib/contentful/client";
 
 import ContentBlock from "./ui/content-block.astro";
 import RichText from "./ui/rich-text.astro";
+import { CONTENTFUL } from "@/constants";
 
 const entry = await contentfulClient.getEntry<TypeAboutUsSkeleton>(
-  "35kolZTRCPaSzpJAEPhFrw",
+  CONTENTFUL.ABOUT_US_ID,
 );
 
 const aboutUs = entry.fields.aboutUs;
 ---
 
-<ContentBlock appearanceMode="dark" as="article" id="about" title="Apie mus">
+<ContentBlock appearanceMode="dark" tag="article" id="about" title="Apie mus">
   <RichText doc={aboutUs} />
 </ContentBlock>

@@ -1,0 +1,7 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "tags": ["-lintignore"],
+  "entry": ["src/layouts/Layout.astro"],
+  "project": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.astro"],
+  "ignoreDependencies": ["@contentful/rich-text-types", "embla-carousel"]
+}

@@ -3,18 +3,22 @@ import Footer from "@/components/footer.astro";
 import Header from "@/components/header.astro";
 import "@/styles/normalize.css";
 import "@/styles/global.css";
+import SeoSchema from "@/components/seo-schema.astro";
+import type { StructuredData } from "@/types";
+import { COMPANY } from "@/constants";
 
 type Props = {
   image?: string;
   title: string;
   description: string;
   robots?: string;
+  structuredData: StructuredData | StructuredData[];
 };
 
-const { image, title, description, robots } = Astro.props;
+const { image, title, description, robots, structuredData } = Astro.props;
 
-const siteUrl = Astro.site ?? "https://brameda.lt";
-const canonicalUrl = Astro.url;
+const siteUrl = Astro.site?.href ?? COMPANY.URL;
+const canonicalUrl = Astro.url.href;
 const absoluteOgImage = image ? String(new URL(image, siteUrl)) : undefined;
 const robotsContent =
   robots ??
@@ -43,7 +47,7 @@ const keywordsContent =
     <meta content={canonicalUrl} property="og:url" />
     <meta content={title} property="og:title" />
     <meta content={description} property="og:description" />
-    <meta content="UAB Brameda" property="og:site_name" />
+    <meta content={COMPANY.NAME} property="og:site_name" />
     <meta content="lt_LT" property="og:locale" />
     {absoluteOgImage && <meta content={absoluteOgImage} property="og:image" />}
     {absoluteOgImage && <meta content={title} property="og:image:alt" />}
@@ -69,6 +73,7 @@ const keywordsContent =
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
+    {[structuredData].flat().map((data) => <SeoSchema structuredData={data} />)}
     <title>{title}</title>
   </head>
   <body>

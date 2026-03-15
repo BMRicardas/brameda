@@ -12,7 +12,7 @@ import type {
  * @type {TypeProductVariantsFields}
  * @memberof TypeProductVariants
  */
-export type TypeProductVariantsFields = {
+export interface TypeProductVariantsFields {
   /**
    * Field type definition for field 'variantName' (Varianto pavadinimas)
    * @name Varianto pavadinimas
@@ -30,7 +30,7 @@ export type TypeProductVariantsFields = {
    * @name Yra sandėlyje
    * @localized false
    */
-  inStock: EntryFieldTypes.Boolean;
+  inStock?: EntryFieldTypes.Boolean;
   /**
    * Field type definition for field 'shippingDuration' (Siuntimo trukmė)
    * @name Siuntimo trukmė
@@ -43,7 +43,7 @@ export type TypeProductVariantsFields = {
    * @localized false
    */
   photos?: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>;
-};
+}
 
 /**
  * Entry skeleton type definition for content type 'productVariants' (product-variant)
@@ -51,7 +51,7 @@ export type TypeProductVariantsFields = {
  * @type {TypeProductVariantsSkeleton}
  * @author 2GqZ7dBVhhscVgaXCLGmAa
  * @since 2024-07-11T20:51:33.068Z
- * @version 83
+ * @version 89
  */
 export type TypeProductVariantsSkeleton = EntrySkeletonType<
   TypeProductVariantsFields,
@@ -63,7 +63,7 @@ export type TypeProductVariantsSkeleton = EntrySkeletonType<
  * @type {TypeProductVariants}
  * @author Ričardas Brazdžius<ricardas.brazdzius@gmail.com>
  * @since 2024-07-11T20:51:33.068Z
- * @version 83
+ * @version 89
  * @link https://app.contentful.com/spaces/cowmzwzvcxvm/environments/master/content_types/productVariants
  */
 export type TypeProductVariants<

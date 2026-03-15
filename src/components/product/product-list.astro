@@ -1,21 +1,13 @@
 ---
-import type { CollectionEntry } from "astro:content";
-
-import { getCollection } from "astro:content";
-
 import ProductItem from "@/components/product/product-item.astro";
 import ContentBlock from "@/components/ui/content-block.astro";
+import type { Product } from "@/schemas/contentful-transformed.types";
 
-const products: CollectionEntry<"products">[] = await getCollection("products");
+type Props = {
+  products: Product[];
+};
 
-function sortByOrder(
-  a: CollectionEntry<"products">["data"],
-  b: CollectionEntry<"products">["data"],
-) {
-  return a.order - b.order;
-}
-
-const sortedProducts = products.map((p) => p.data).sort(sortByOrder);
+const { products } = Astro.props;
 ---
 
 <ContentBlock appearanceMode="light" id="products" title="Mūsų produktai">
@@ -23,7 +15,7 @@ const sortedProducts = products.map((p) => p.data).sort(sortByOrder);
     products.length === 0 ? (
       <p>Produktų nėra</p>
     ) : (
-      sortedProducts.map((product) => {
+      products.map((product) => {
         return <ProductItem product={product} />;
       })
     )

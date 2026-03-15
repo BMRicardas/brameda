@@ -17,7 +17,7 @@ export const ImageAssetSchema = z.object({
 
 // Raw Contentful response validation schemas
 
-export const RawProductVariantSchema = z.object({
+const RawProductVariantSchema = z.object({
   sys: z.object({ id: z.string() }),
   fields: z
     .object({
@@ -79,6 +79,13 @@ export const RawProductSchema = z.object({
         )
         .optional(),
       displayMode: z.enum(["all_variants", "color_selector"]),
+      brand: z.string(),
+      country: z.union([
+        z.literal("Jungtinė Karalystė"),
+        z.literal("Vokietija"),
+        z.literal("Kinija"),
+        z.literal("Lietuva"),
+      ]),
     })
     .passthrough(),
 });
@@ -110,14 +117,17 @@ const BaseProductSchema = z.object({
   videoUrl: z.string().optional(),
   variants: z.array(ProductVariantSchema),
   displayMode: z.enum(["all_variants", "color_selector"]),
+  brand: z.string(),
+  country: z.union([
+    z.literal("Jungtinė Karalystė"),
+    z.literal("Vokietija"),
+    z.literal("Kinija"),
+    z.literal("Lietuva"),
+  ]),
 });
 
-type BaseProduct = z.infer<typeof BaseProductSchema> & {
-  relatedProducts?: BaseProduct[];
-};
-
-export const ProductSchema: z.ZodType<BaseProduct> = BaseProductSchema.extend({
-  relatedProducts: z.lazy(() => ProductSchema.array()).optional(),
+export const ProductSchema = BaseProductSchema.extend({
+  relatedProducts: z.array(BaseProductSchema).optional(),
 });
 
 export type ImageAsset = z.infer<typeof ImageAssetSchema>;

@@ -11,12 +11,12 @@ type Props = {
   product: Product;
 };
 
-const { product }: Props = Astro.props;
+const { product } = Astro.props;
 
 const { relatedProducts } = product;
 ---
 
-<ContentBlock as="article">
+<ContentBlock tag="article">
   <div class="product-page-container">
     <ProductMedia product={product} />
     <ProductInfo product={product} />

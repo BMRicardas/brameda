@@ -5,7 +5,7 @@ type Props = {
   price?: number;
 };
 
-const { price }: Props = Astro.props;
+const { price } = Astro.props;
 
 const priceWithoutVat = Number(price);
 const priceWithVat = priceWithoutVat * PRICING.VAT;

@@ -1,24 +1,27 @@
 ---
+import { COMPANY } from "@/constants";
 
+const { ADDRESS, EMAIL, NAME, PHONE } = COMPANY;
 ---
 
 <div class="contact-details">
-  <h3 class="title">UAB „Brameda“</h3>
+  <h3 class="title">{NAME}</h3>
   <address>
     <ul class="contacts-list">
       <li class="contacts-list-item">
         <p>
-          Senamiesčio g. 102-201,<br />35116 Panevėžys,<br />Lietuva
+          {ADDRESS.STREET},<br />{ADDRESS.POST_CODE}
+          {ADDRESS.CITY},<br />{ADDRESS.COUNTRY}
         </p>
       </li>
       <li class="contacts-list-item">
         <p>
-          <a href="tel:+37069936437">+370 699 36437</a>
+          <a href=`tel:${PHONE.replaceAll(' ', '')}`>{PHONE}</a>
         </p>
       </li>
       <li class="contacts-list-item">
         <p>
-          <a href="mailto:info@brameda.lt">info@brameda.lt</a>
+          <a href=`mailto:${EMAIL}`>{EMAIL}</a>
         </p>
       </li>
     </ul>

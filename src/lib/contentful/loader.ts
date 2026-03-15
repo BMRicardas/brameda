@@ -54,6 +54,8 @@ export function contentfulLoader(options: CreateClientParams): Loader {
     throw new Error("Missing required Contentful configuration");
   }
 
+  const isDev = import.meta.env.DEV;
+
   return {
     name: "contentful-loader",
     load: async ({
@@ -63,7 +65,7 @@ export function contentfulLoader(options: CreateClientParams): Loader {
       generateDigest,
     }: LoaderContext): Promise<void> => {
       try {
-        logger.info("Loading Contentful entries");
+        if (isDev) logger.info("Loading Contentful entries");
 
         const lastModified = meta.get("lastModified");
 
@@ -118,9 +120,11 @@ export function contentfulLoader(options: CreateClientParams): Loader {
           }
         });
 
-        logger.info(
-          `Contentful loader complete: ${successCount} loaded, ${skippedCount} skipped`,
-        );
+        if (isDev) {
+          logger.info(
+            `Contentful loader complete: ${successCount} loaded, ${skippedCount} skipped`,
+          );
+        }
       } catch (error) {
         logger.error(
           `Fatal error loading Contentful entries: ${error instanceof Error ? error.message : String(error)}`,

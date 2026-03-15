@@ -1,5 +1,5 @@
 ---
-import { type CollectionEntry, getCollection } from "astro:content";
+import { getCollection } from "astro:content";
 
 import type { Product } from "@/schemas/contentful-transformed.types";
 
@@ -9,12 +9,12 @@ import ProductPage from "@/components/product/product-page.astro";
 import Layout from "@/layouts/Layout.astro";
 import { renderRichTextToPlainText } from "@/lib/rich-text";
 import { getMainPhotoUrl } from "@/utils";
+import { getProductStructuredData } from "@/utils/seo-schema-builder";
 
 type Props = { product: Product };
 
 export async function getStaticPaths() {
-  const products: CollectionEntry<"products">[] =
-    await getCollection("products");
+  const products = await getCollection("products");
 
   return products.map(({ data: product }) => ({
     params: {
@@ -25,13 +25,17 @@ export async function getStaticPaths() {
     },
   }));
 }
-
 const { product } = Astro.props;
+
+const description = renderRichTextToPlainText(product.description);
+const mainPhotoUrl = getMainPhotoUrl(product.mainPhoto.url);
+const productStructuredData = getProductStructuredData(product, Astro.url.href);
 ---
 
 <Layout
-  description={renderRichTextToPlainText(product.description)}
-  image={getMainPhotoUrl(product.mainPhoto.url)}
+  description={description}
+  image={mainPhotoUrl}
+  structuredData={productStructuredData}
   title={product.title}
 >
   <ProductPage product={product} />

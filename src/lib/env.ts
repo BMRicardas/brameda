@@ -15,7 +15,7 @@ const EnvSchema = z.object({
 
 type EnvConfig = z.infer<typeof EnvSchema>;
 
-export const getEnv = (): EnvConfig => {
+const getEnv = (): EnvConfig => {
   const result = EnvSchema.safeParse({
     CONTENTFUL_SPACE_ID: import.meta.env.CONTENTFUL_SPACE_ID,
     CONTENTFUL_DELIVERY_TOKEN: import.meta.env.CONTENTFUL_DELIVERY_TOKEN,
