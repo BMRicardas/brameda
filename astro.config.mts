@@ -5,17 +5,10 @@ import { defineConfig, envField } from "astro/config";
 // https://astro.build/config
 export default defineConfig({
   prefetch: {
-    prefetchAll: true,
+    defaultStrategy: "viewport",
   },
   build: {
     inlineStylesheets: "auto",
-  },
-  vite: {
-    build: {
-      cssCodeSplit: false,
-      minify: true,
-      cssMinify: true,
-    },
   },
   env: {
     schema: {
@@ -32,8 +25,8 @@ export default defineConfig({
         context: "server",
       }),
       WEB3FORMS_PUBLIC_ACCESS_KEY: envField.string({
-        access: "secret",
-        context: "server",
+        access: "public",
+        context: "client",
       }),
     },
   },
@@ -48,6 +41,9 @@ export default defineConfig({
   integrations: [
     sitemap({
       xslURL: "/sitemap.xsl",
+      changefreq: "weekly",
+      priority: 0.7,
+      lastmod: new Date(),
     }),
     react(),
   ],

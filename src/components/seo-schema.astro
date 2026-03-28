@@ -8,4 +8,8 @@ type Props = {
 const { structuredData } = Astro.props;
 ---
 
-<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+<script
+  type="application/ld+json"
+  set:html={JSON.stringify(structuredData)}
+  is:inline
+/>

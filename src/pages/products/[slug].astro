@@ -33,10 +33,10 @@ const productStructuredData = getProductStructuredData(product, Astro.url.href);
 ---
 
 <Layout
-  description={description}
   image={mainPhotoUrl}
-  structuredData={productStructuredData}
   title={product.title}
+  description={description}
+  structuredData={productStructuredData}
 >
   <ProductPage product={product} />
   <About />

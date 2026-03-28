@@ -6,6 +6,9 @@ import "@/styles/global.css";
 import SeoSchema from "@/components/seo-schema.astro";
 import type { StructuredData } from "@/types";
 import { COMPANY } from "@/constants";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
 type Props = {
   image?: string;
@@ -17,14 +20,20 @@ type Props = {
 
 const { image, title, description, robots, structuredData } = Astro.props;
 
-const siteUrl = Astro.site?.href ?? COMPANY.URL;
+const siteUrl = Astro.site?.href;
+
+if (!siteUrl) {
+  throw new Error(
+    "`site` must be set in astro.config.mjs for canonical URLs and OG tags.",
+  );
+}
+
 const canonicalUrl = Astro.url.href;
 const absoluteOgImage = image ? String(new URL(image, siteUrl)) : undefined;
 const robotsContent =
   robots ??
   "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1";
-const keywordsContent =
-  "brameda, spa, džiovyklė, antbačiai, pėdų dezinfekatorius, bachilai, dezinfekcija, pėdų dezinfekcija, įmonių kilimėliai";
+const fullTitle = title === COMPANY.NAME ? title : `${title} | ${COMPANY.NAME}`;
 ---
 
 <!doctype html>
@@ -37,7 +46,6 @@ const keywordsContent =
     <meta content={description} name="description" />
     <meta content={robotsContent} name="robots" />
     <meta content={Astro.generator} name="generator" />
-    <meta content={keywordsContent} name="keywords" />
 
     <!-- Canonical -->
     <link href={canonicalUrl} rel="canonical" />
@@ -62,19 +70,13 @@ const keywordsContent =
     <!-- <meta name="twitter:site" content="@your_handle" /> -->
 
     <!-- Housekeeping -->
-    <link href="/favicon.ico" rel="icon" type="image/x-icon" />
+    <link href="/favicon.ico" rel="icon" />
     <link href="/sitemap-index.xml" rel="sitemap" type="application/xml" />
 
     <!-- Performance hints -->
     <link crossorigin href="https://images.ctfassets.net" rel="preconnect" />
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
     {[structuredData].flat().map((data) => <SeoSchema structuredData={data} />)}
-    <title>{title}</title>
+    <title>{fullTitle}</title>
   </head>
   <body>
     <Header />
