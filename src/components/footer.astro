@@ -6,7 +6,7 @@ const currentYear = new Date().getFullYear();
 ---
 
 <footer class="footer">
-  <Container innerContentClassList="footerContainer">
+  <Container class="footer-container">
     <p>
       {currentYear} &copy; {COMPANY.NAME} visos teisės saugomos
     </p>
@@ -25,7 +25,7 @@ const currentYear = new Date().getFullYear();
     padding-block-start: var(--default-spacing);
   }
 
-  :global(.footerContainer) {
+  .footer-container {
     display: flex;
     justify-content: space-between;
     gap: var(--default-spacing);
@@ -49,7 +49,7 @@ const currentYear = new Date().getFullYear();
   }
 
   @media only screen and (max-width: 50em) {
-    :global(.footerContainer) {
+    .footer-container {
       flex-direction: column;
       gap: 0;
     }

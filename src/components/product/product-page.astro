@@ -16,7 +16,7 @@ const { product } = Astro.props;
 const { relatedProducts } = product;
 ---
 
-<ContentBlock tag="article">
+<ContentBlock as="article">
   <div class="product-page-container">
     <ProductMedia product={product} />
     <ProductInfo product={product} />

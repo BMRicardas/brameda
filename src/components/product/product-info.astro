@@ -228,10 +228,4 @@ const {
 
   document.addEventListener(EVENTS.THUMB_CLICKED, handleColorChange);
   document.addEventListener(EVENTS.COLOR_SELECTED, handleColorChange);
-
-  document.addEventListener("astro:beforeunload", () => {
-    selectElement.removeEventListener("change", handleVariantChange);
-    document.removeEventListener(EVENTS.THUMB_CLICKED, handleColorChange);
-    document.removeEventListener(EVENTS.COLOR_SELECTED, handleColorChange);
-  });
 </script>

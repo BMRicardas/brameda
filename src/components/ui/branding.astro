@@ -11,20 +11,26 @@ const {
 ---
 
 <a class="branding" href="/">
-  <h1>
-    {title}<span>{subtitle}</span>
+  <h1 class="title">
+    {title}
   </h1>
+  <span class="subtitle">{subtitle}</span>
 </a>
 
 <style>
-  .branding:any-link {
+  .branding {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
     text-decoration: none;
     color: #000;
   }
 
-  .branding h1 span,
-  .branding h1 {
+  .title,
+  .subtitle {
     display: block;
+    transform-origin: left center;
     transition-duration: var(--transition-duration);
     animation-fill-mode: var(--animation-fill-mode);
     animation-timeline: var(--animation-timeline);
@@ -32,43 +38,43 @@ const {
     animation-range-end: var(--animation-range-end);
   }
 
-  .branding h1 {
+  .title {
     margin: 0;
-    font-size: 6.9rem;
     font-weight: 700;
-    transform-origin: left center;
     animation-name: scrolledTitle;
   }
 
-  .branding h1 span {
-    margin-top: -1.3rem;
+  .subtitle {
+    align-self: stretch;
     text-align: center;
-    font-size: 1.3rem;
     font-weight: 500;
     color: var(--color-grey-dark2);
-    transform: translateY(0);
-    opacity: 1;
-    animation-name: scrolledSpan;
+    animation-name: scrolledSubtitle;
   }
 
   @keyframes scrolledTitle {
     from {
-      transform: scale(1);
+      font-size: 6rem;
+      letter-spacing: 2px;
     }
     to {
-      transform: scale(0.65) translateY(-15%);
-      margin-block-end: -2rem;
+      font-size: calc((6 * 0.65) * 1rem);
+      letter-spacing: 0;
     }
   }
 
-  @keyframes scrolledSpan {
+  @keyframes scrolledSubtitle {
     from {
-      transform: translateY(0);
       opacity: 1;
+      translate: 0 0;
+      font-size: 1.2rem;
+      margin-block-start: -1.5rem;
     }
     to {
-      transform: translateY(-100%);
       opacity: 0;
+      translate: 0 -100%;
+      font-size: 0;
+      margin-block-start: 0;
     }
   }
 </style>

@@ -1,11 +1,12 @@
 ---
+import type { Link } from "@/types";
 import Branding from "./ui/branding.astro";
 import Container from "./ui/container.astro";
 import Navigation from "./ui/navigation.astro";
 
 const headerLinks = [
   {
-    href: "/#products",
+    href: "#products",
     text: "Produktai",
   },
   {
@@ -16,11 +17,11 @@ const headerLinks = [
     href: "#contacts",
     text: "Kontaktai",
   },
-];
+] satisfies Link[];
 ---
 
-<header class="header">
-  <Container innerContentClassList="headerContainer">
+<header id="header" class="header">
+  <Container class="header-container">
     <Branding />
     <Navigation links={headerLinks} />
   </Container>
@@ -28,12 +29,13 @@ const headerLinks = [
 
 <style>
   .header {
-    background-color: var(--color-white);
     position: sticky;
+    background-color: var(--color-white);
     inset-block-start: 0;
     inset-inline: 0;
     anchor-name: --header;
-    z-index: 100;
+    z-index: 1;
+    padding-block: 0.5rem;
 
     animation-name: scrolledHeader;
 
@@ -44,16 +46,15 @@ const headerLinks = [
     animation-range-end: var(--animation-range-end);
   }
 
-  :global(.headerContainer) {
+  .header-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 100%;
   }
 
   @keyframes scrolledHeader {
     from {
-      box-shadow: transparent;
+      box-shadow: none;
     }
     to {
       box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.15);
@@ -62,21 +63,32 @@ const headerLinks = [
 </style>
 
 <script>
-  if (!CSS.supports("position-anchor: --header")) {
-    function setHeaderHeight() {
-      const header = document.querySelector(
-        ".header",
-      ) satisfies HTMLElement | null;
-      if (header) {
-        document.documentElement.style.setProperty(
-          "--header-height",
-          `${header.offsetHeight}px`,
-        );
-      }
+  function numbersOnly(value: string | number | undefined) {
+    if (typeof value === "undefined") return "";
+
+    if (typeof value === "number") {
+      const str = String(value);
+      return str.replaceAll(/\D/g, "");
     }
 
-    setHeaderHeight();
-
-    window.addEventListener("resize", setHeaderHeight);
+    return value.replaceAll(/\D/g, "");
   }
+
+  function setHeaderHeight() {
+    const headerHeight = numbersOnly(
+      document.getElementById("header")?.offsetHeight,
+    );
+    const headerHeightProperty = numbersOnly(
+      document.documentElement.style.getPropertyValue("--header-height"),
+    );
+
+    const isHeightEqual = headerHeight === headerHeightProperty;
+
+    if (isHeightEqual) return;
+
+    document.documentElement.style.setProperty("--header-height", headerHeight);
+  }
+
+  window.addEventListener("DOMContentLoaded", setHeaderHeight);
+  window.addEventListener("scroll", setHeaderHeight);
 </script>

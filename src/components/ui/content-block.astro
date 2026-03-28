@@ -1,34 +1,41 @@
 ---
+import type { HTMLTag, Polymorphic } from "astro/types";
 import BlockTitle from "./block-title.astro";
 import Container from "./container.astro";
-import type { Tag, Theme } from "@/types";
+import type { Theme } from "@/types";
 
-type Props = {
+type Props<Tag extends Extract<HTMLTag, "article" | "section">> = Polymorphic<{
+  as: Tag;
   id?: string;
   appearanceMode?: Theme;
   title?: string;
-  tag?: Tag;
-};
+  class?: string;
+}>;
 
-const { id, appearanceMode = "light", title, tag = "section" } = Astro.props;
-
-const Element = tag;
+const {
+  as: Tag = "section",
+  id,
+  appearanceMode = "light",
+  title,
+  class: className,
+} = Astro.props;
 ---
 
-<Element
+<Tag
+  id={id}
   class:list={[
     "content-block",
     {
-      dark: appearanceMode !== "light",
+      dark: appearanceMode === "dark",
     },
+    className,
   ]}
-  id={id}
 >
   <Container>
     {title && <BlockTitle {appearanceMode} {title} />}
     <slot />
   </Container>
-</Element>
+</Tag>
 
 <style>
   .content-block {

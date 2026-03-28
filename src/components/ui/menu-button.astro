@@ -1,112 +1,100 @@
 ---
-import { Image } from "astro:assets";
-
-import close from "@/assets/close.svg";
-import hamburgerMenu from "@/assets/hamburger-menu.svg";
-
 const MENU_BUTTON_SIZE = 50;
 ---
 
 <button
   aria-controls="mobile-menu"
   aria-expanded="false"
-  aria-label="Toggle menu"
+  aria-label="Open menu"
   class="menu-toggle"
   id="menu-toggle-button"
   popovertarget="mobile-menu"
   type="button"
 >
-  <Image
-    alt="Open menu"
-    class="icon-open"
-    height={MENU_BUTTON_SIZE}
-    loading="lazy"
-    src={hamburgerMenu}
+  <svg
+    viewBox="0 -960 960 960"
     width={MENU_BUTTON_SIZE}
-  />
-  <Image
-    alt="Close menu"
-    class="icon-close"
     height={MENU_BUTTON_SIZE}
-    loading="lazy"
-    src={close}
-    width={MENU_BUTTON_SIZE}
-  />
+    aria-hidden="true"
+  >
+    <path
+      class="icon-menu"
+      fill="currentColor"
+      d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"
+    ></path>
+    <path
+      class="icon-close"
+      fill="currentColor"
+      d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+    ></path>
+  </svg>
 </button>
 
 <style>
   .menu-toggle {
     display: none;
-    margin-inline-end: var(--scrollbar-width);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: currentColor;
   }
 
-  .icon-open {
-    display: block;
+  .icon-menu,
+  .icon-close {
+    transition:
+      opacity 0.28s ease,
+      transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-box: fill-box;
+    transform-origin: center;
   }
 
   .icon-close {
-    display: none;
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.75);
   }
 
-  /* When the button's aria-expanded is true, show the close icon and hide the open one. */
-  .menu-toggle[aria-expanded="true"] .icon-open {
-    display: none;
+  .menu-toggle[aria-expanded="true"] .icon-menu {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.75);
   }
 
   .menu-toggle[aria-expanded="true"] .icon-close {
-    display: block;
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .icon-menu,
+    .icon-close {
+      transition: opacity 0.15s ease;
+      transform: none !important;
+    }
   }
 
   @media only screen and (max-width: 50em) {
     .menu-toggle {
       display: block;
-      position: fixed;
-      top: calc((74 / 10) * 1px);
-      right: 1rem;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: currentColor;
-      padding: 0;
-      z-index: 100;
-      transition: transform var(--transition-duration);
-
-      /* Scroll-driven animation properties */
-      animation-name: scrolledMenuButton;
-      transition-duration: var(--transition-duration);
-      animation-fill-mode: var(--animation-fill-mode);
-      animation-timeline: var(--animation-timeline);
-      animation-range-start: var(--animation-range-start);
-      animation-range-end: var(--animation-range-end);
-    }
-  }
-
-  @keyframes scrolledMenuButton {
-    from {
-      top: calc((74 / 10) * 1px);
-    }
-    to {
-      top: calc((65 / 10) * 1px);
     }
   }
 </style>
 
 <script>
-  document.addEventListener("astro:page-load", () => {
+  function initMenuToggle() {
     const menuButton = document.getElementById("menu-toggle-button");
     const mobileMenu = document.getElementById("mobile-menu");
 
-    if (!menuButton || !mobileMenu) {
-      return;
-    }
+    if (!menuButton || !mobileMenu) return;
 
-    mobileMenu.addEventListener("beforetoggle", (event) => {
-      const isOpening =
-        "newState" in event
-          ? event.newState === "open"
-          : !mobileMenu.matches(":popover-open");
+    mobileMenu.addEventListener("toggle", (event) => {
+      const isOpen = event.newState === "open";
 
-      menuButton.setAttribute("aria-expanded", String(isOpening));
+      menuButton.setAttribute("aria-expanded", String(isOpen));
+      menuButton.setAttribute(
+        "aria-label",
+        isOpen ? "Close menu" : "Open menu",
+      );
     });
-  });
+  }
+
+  document.addEventListener("DOMContentLoaded", initMenuToggle);
 </script>

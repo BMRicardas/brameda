@@ -1,25 +1,19 @@
 ---
-type Props = {
-  innerContentClassList?:
-    | string[]
-    | string
-    | Record<string, boolean>
-    | undefined;
-};
+import type { HTMLTag, Polymorphic } from "astro/types";
 
-const { innerContentClassList } = Astro.props;
+type Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag; class?: string }>;
+
+const { as: Tag = "div", class: className, ...rest } = Astro.props;
 ---
 
-<div class="container">
-  <div class:list={[innerContentClassList]}>
-    <slot />
-  </div>
-</div>
+<Tag class:list={["container", className]} {...rest}>
+  <slot />
+</Tag>
 
 <style>
   .container {
     width: var(--max-width);
     max-width: 95%;
-    margin: auto;
+    margin-inline: auto;
   }
 </style>

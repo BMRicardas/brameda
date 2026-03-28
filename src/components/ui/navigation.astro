@@ -19,11 +19,11 @@ const { links } = Astro.props;
   <!-- Mobile Menu -->
   <MenuButton />
   <div class="mobile-menu" id="mobile-menu" popover>
-    <div class="nav-content">
-      <ul class="mobile-nav">
-        <NavLinksList {links} />
-      </ul>
-    </div>
+    <!-- <div class="nav-content"> -->
+    <ul class="mobile-nav">
+      <NavLinksList {links} />
+    </ul>
+    <!-- </div> -->
   </div>
 </nav>
 
@@ -41,23 +41,18 @@ const { links } = Astro.props;
   }
 
   [popover] {
-    margin: unset;
-  }
-
-  .mobile-menu[popover] {
     border: none;
-    width: 100%;
-    background: var(--color-grey-light);
-    overflow-y: auto;
+    background-color: var(--color-grey-light);
+
     -webkit-overflow-scrolling: touch;
     transform: translateX(100%);
-    transition-property: transform;
+    transition-property: transform transition;
+    transition-behavior: allow-discrete;
     transition-duration: var(--transition-duration);
     transition-timing-function: var(--transition-timing-function);
+    width: 100%;
 
-    &,
-    &:popover-open {
-      animation: none;
+    &::backdrop {
     }
 
     &:popover-open {
@@ -74,10 +69,8 @@ const { links } = Astro.props;
       & {
         position: absolute;
         position-anchor: --header;
-        top: anchor(bottom);
-        right: 0;
-        left: unset;
-        height: 100dvh;
+        inset: anchor(bottom) 0 0 0;
+        height: calc(100dvh - (var(--header-height) * 1px));
       }
     }
 
@@ -85,28 +78,27 @@ const { links } = Astro.props;
       & {
         position: fixed;
         inset-inline: 0;
-        inset-block-start: var(--header-height, 77px);
-        inset-block-end: 0;
-        height: calc(100dvh - var(--header-height, 77px));
+        inset-block-start: calc(var(--header-height) * 1px);
+        height: calc(100dvh - (var(--header-height) * 1px));
       }
     }
   }
 
+  body:has([popover]:popover-open) {
+    overflow: hidden;
+  }
+
   .nav-content {
-    height: 100%;
-    padding: 4rem 2rem;
     display: flex;
     flex-direction: column;
   }
 
   .mobile-nav {
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0;
-    margin: 0;
-    flex: 1;
     gap: var(--default-spacing);
   }
 
@@ -115,16 +107,9 @@ const { links } = Astro.props;
       display: none;
     }
   }
-
-  @media (max-width: 30em) {
-    .mobile-menu[popover] {
-      width: 100%;
-    }
-  }
 </style>
 
 <script>
-  const body = document.querySelector("body");
   const mobileMenu = document.getElementById("mobile-menu");
   const navLinks = document.querySelectorAll(".mobile-nav a");
 
@@ -132,48 +117,7 @@ const { links } = Astro.props;
     mobileMenu?.hidePopover();
   }
 
-  // Close menu on link clicks
   navLinks.forEach((link) => {
     link.addEventListener("click", closePopover);
   });
-
-  function initScrollLock() {
-    if (!mobileMenu || !body) return;
-
-    // Calculate and set scrollbar width
-    function updateScrollbarWidth() {
-      const scrollBarWidth =
-        window.innerWidth - document.documentElement.clientWidth;
-      document.documentElement.style.setProperty(
-        "--scrollbar-width",
-        `${scrollBarWidth}px`,
-      );
-    }
-
-    // Toggle scroll lock
-    function toggleScrollLock(shouldLock: boolean) {
-      if (shouldLock) {
-        body?.classList.add("scroll-lock");
-      } else {
-        body?.classList.remove("scroll-lock");
-      }
-      updateScrollbarWidth();
-    }
-
-    mobileMenu.addEventListener("beforetoggle", (event) => {
-      const isOpening =
-        "newState" in event
-          ? event.newState === "open"
-          : !mobileMenu.matches(":popover-open");
-
-      toggleScrollLock(isOpening);
-    });
-
-    // Clean up
-    document.addEventListener("astro:beforeunload", () => {
-      toggleScrollLock(false);
-    });
-  }
-
-  document.addEventListener("astro:page-load", initScrollLock);
 </script>

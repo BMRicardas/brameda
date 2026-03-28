@@ -1,12 +1,9 @@
-import type { HTMLTag } from "astro/types";
-
 export type Theme = "light" | "dark";
 export type ColorSelectedEvent = CustomEvent<{ color: string }>;
 export type Link = {
   href: string;
   text: string;
 };
-export type Tag = Extract<HTMLTag, "article" | "section">;
 
 type BaseStructuredData = {
   "@context": "https://schema.org";
