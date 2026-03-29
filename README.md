@@ -58,7 +58,7 @@ A high-performance business website showcasing clean code, modern development pr
 - [GitHub Actions Workflow](.github/workflows/main.yml)
 - [Contentful Client](src/lib/contentful/client.ts)
 - [Contentful Config](src/lib/contentful/config.ts#L13)
-- [Environment Schema](astro.config.mjs#L30)
+- [Environment Schema](astro.config.mts#L30)
 
 ## ⚡ Quick Start
 
