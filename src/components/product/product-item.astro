@@ -49,7 +49,11 @@ const imageSrc = getMainPhotoUrl(mainPhoto.url, 80);
         })
       }
     </ul>
-    <LinkButton href={`products/${slug}`}>Skaityti daugiau</LinkButton>
+    <LinkButton
+      href={`products/${slug}`}
+      aria-label={`Skaityti daugiau apie: ${title}`}
+      >Skaityti daugiau</LinkButton
+    >
   </div>
 </article>
 

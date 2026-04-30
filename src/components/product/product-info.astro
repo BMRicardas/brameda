@@ -120,6 +120,15 @@ const {
   .product__specs li:only-of-type {
     border-bottom: 1px solid var(--color-divider);
   }
+
+  @media only screen and (max-width: 50em) {
+    .product__info {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
 </style>
 
 <script define:vars={{ variants, SHIPPING, EVENTS }} is:inline>

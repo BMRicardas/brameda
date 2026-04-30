@@ -1,4 +1,3 @@
-export { isTypeAboutUs } from "./about-us.type";
 export type {
   TypeAboutUs,
   TypeAboutUsFields,
@@ -9,7 +8,6 @@ export type {
   TypeAboutUsWithoutLinkResolutionResponse,
   TypeAboutUsWithoutUnresolvableLinksResponse,
 } from "./about-us.type";
-export { isTypeProduct } from "./product.type";
 export type {
   TypeProduct,
   TypeProductFields,
@@ -20,7 +18,6 @@ export type {
   TypeProductWithoutLinkResolutionResponse,
   TypeProductWithoutUnresolvableLinksResponse,
 } from "./product.type";
-export { isTypeProductVariants } from "./product-variants.type";
 export type {
   TypeProductVariants,
   TypeProductVariantsFields,

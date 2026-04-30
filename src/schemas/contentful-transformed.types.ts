@@ -15,6 +15,15 @@ export const ImageAssetSchema = z.object({
   contentType: z.string(),
 });
 
+const DisplayModeEnum = z.enum(["all_variants", "color_selector"]);
+
+const SupportedCountries = z.union([
+  z.literal("Jungtinė Karalystė"),
+  z.literal("Vokietija"),
+  z.literal("Kinija"),
+  z.literal("Lietuva"),
+]);
+
 // Raw Contentful response validation schemas
 
 const RawProductVariantSchema = z.object({
@@ -54,7 +63,7 @@ export const RawProductSchema = z.object({
       description: z.custom<Document>(),
       specifications: z.record(z.unknown()).optional(),
       priceWithoutVat: z.number().optional(),
-      embeddedYouTubeLink: z.string().optional(),
+      youTubeVideoIDs: z.array(z.string()).optional(),
       variants: z.array(RawProductVariantSchema),
       relatedProducts: z
         .array(
@@ -78,14 +87,9 @@ export const RawProductSchema = z.object({
             .passthrough(),
         )
         .optional(),
-      displayMode: z.enum(["all_variants", "color_selector"]),
+      displayMode: DisplayModeEnum,
       brand: z.string(),
-      country: z.union([
-        z.literal("Jungtinė Karalystė"),
-        z.literal("Vokietija"),
-        z.literal("Kinija"),
-        z.literal("Lietuva"),
-      ]),
+      country: SupportedCountries,
     })
     .passthrough(),
 });
@@ -114,16 +118,11 @@ const BaseProductSchema = z.object({
   description: z.custom<Document>(),
   specifications: z.record(z.unknown()).optional(),
   priceWithoutVat: z.number().optional(),
-  videoUrl: z.string().optional(),
+  youTubeVideoIDs: z.array(z.string()).optional(),
   variants: z.array(ProductVariantSchema),
-  displayMode: z.enum(["all_variants", "color_selector"]),
+  displayMode: DisplayModeEnum,
   brand: z.string(),
-  country: z.union([
-    z.literal("Jungtinė Karalystė"),
-    z.literal("Vokietija"),
-    z.literal("Kinija"),
-    z.literal("Lietuva"),
-  ]),
+  country: SupportedCountries,
 });
 
 export const ProductSchema = BaseProductSchema.extend({

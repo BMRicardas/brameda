@@ -1,14 +1,8 @@
 ---
 import Footer from "@/components/footer.astro";
+import Head from "@/components/head.astro";
 import Header from "@/components/header.astro";
-import "@/styles/normalize.css";
-import "@/styles/global.css";
-import SeoSchema from "@/components/seo-schema.astro";
 import type { StructuredData } from "@/types";
-import { COMPANY } from "@/constants";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
 
 type Props = {
   image?: string;
@@ -18,66 +12,12 @@ type Props = {
   structuredData: StructuredData | StructuredData[];
 };
 
-const { image, title, description, robots, structuredData } = Astro.props;
-
-const siteUrl = Astro.site?.href;
-
-if (!siteUrl) {
-  throw new Error(
-    "`site` must be set in astro.config.mjs for canonical URLs and OG tags.",
-  );
-}
-
-const canonicalUrl = Astro.url.href;
-const absoluteOgImage = image ? String(new URL(image, siteUrl)) : undefined;
-const robotsContent =
-  robots ??
-  "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1";
-const fullTitle = title === COMPANY.NAME ? title : `${title} | ${COMPANY.NAME}`;
+const props = Astro.props;
 ---
 
 <!doctype html>
 <html lang="lt">
-  <head>
-    <meta charset="UTF-8" />
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-
-    <!-- Meta basics -->
-    <meta content={description} name="description" />
-    <meta content={robotsContent} name="robots" />
-    <meta content={Astro.generator} name="generator" />
-
-    <!-- Canonical -->
-    <link href={canonicalUrl} rel="canonical" />
-
-    <!-- Open Graph -->
-    <meta content="website" property="og:type" />
-    <meta content={canonicalUrl} property="og:url" />
-    <meta content={title} property="og:title" />
-    <meta content={description} property="og:description" />
-    <meta content={COMPANY.NAME} property="og:site_name" />
-    <meta content="lt_LT" property="og:locale" />
-    {absoluteOgImage && <meta content={absoluteOgImage} property="og:image" />}
-    {absoluteOgImage && <meta content={title} property="og:image:alt" />}
-
-    <!-- Twitter -->
-    <meta content="summary_large_image" name="twitter:card" />
-    <meta content={title} name="twitter:title" />
-    <meta content={description} name="twitter:description" />
-    {absoluteOgImage && <meta content={absoluteOgImage} name="twitter:image" />}
-    {absoluteOgImage && <meta content={title} name="twitter:image:alt" />}
-    <!-- Optional: set your handle -->
-    <!-- <meta name="twitter:site" content="@your_handle" /> -->
-
-    <!-- Housekeeping -->
-    <link href="/favicon.ico" rel="icon" />
-    <link href="/sitemap-index.xml" rel="sitemap" type="application/xml" />
-
-    <!-- Performance hints -->
-    <link crossorigin href="https://images.ctfassets.net" rel="preconnect" />
-    {[structuredData].flat().map((data) => <SeoSchema structuredData={data} />)}
-    <title>{fullTitle}</title>
-  </head>
+  <Head {...props} />
   <body>
     <Header />
     <main id="main">

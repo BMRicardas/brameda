@@ -174,7 +174,7 @@ export function ProductGallery({
     if (document.readyState === "complete") {
       prefetch();
     } else {
-      window.addEventListener("load", prefetch, { once: true });
+      document.addEventListener("load", prefetch, { once: true });
     }
   }, [photos]);
 

@@ -34,7 +34,7 @@ export function SubmitButton({
 
   return (
     <button
-      className={clsx("btn btn-dark -animation", className)}
+      className={clsx("btn btn-dark", className)}
       type="submit"
       disabled={disabled || formState === "loading"}
       {...rest}

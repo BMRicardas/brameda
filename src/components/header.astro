@@ -66,12 +66,7 @@ const headerLinks = [
   function numbersOnly(value: string | number | undefined) {
     if (typeof value === "undefined") return "";
 
-    if (typeof value === "number") {
-      const str = String(value);
-      return str.replaceAll(/\D/g, "");
-    }
-
-    return value.replaceAll(/\D/g, "");
+    return String(value).replaceAll(/\D/g, "");
   }
 
   function setHeaderHeight() {
@@ -82,13 +77,11 @@ const headerLinks = [
       document.documentElement.style.getPropertyValue("--header-height"),
     );
 
-    const isHeightEqual = headerHeight === headerHeightProperty;
-
-    if (isHeightEqual) return;
+    if (headerHeight === headerHeightProperty) return;
 
     document.documentElement.style.setProperty("--header-height", headerHeight);
   }
 
-  window.addEventListener("DOMContentLoaded", setHeaderHeight);
-  window.addEventListener("scroll", setHeaderHeight);
+  document.addEventListener("astro:page-load", setHeaderHeight);
+  document.addEventListener("scroll", setHeaderHeight);
 </script>

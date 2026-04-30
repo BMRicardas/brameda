@@ -11,10 +11,7 @@ type ImageUrlParams = {
   width: number;
 };
 
-function buildImageUrl(
-  baseUrl: unknown,
-  { quality, width }: ImageUrlParams,
-): string {
+function buildImageUrl(baseUrl: unknown, { quality, width }: ImageUrlParams) {
   if (!isValidImageUrl(baseUrl)) {
     return "";
   }
@@ -34,12 +31,26 @@ function buildImageUrl(
   return `${url}?fm=webp&q=${quality}&w=${width}`;
 }
 
-export const getMainPhotoUrl = (
+export function getMainPhotoUrl(
   baseUrl: unknown,
   quality: number = IMAGE.QUALITY.main,
-): string => buildImageUrl(baseUrl, { quality, width: IMAGE.MAIN_WIDTH });
+) {
+  return buildImageUrl(baseUrl, { quality, width: IMAGE.MAIN_WIDTH });
+}
 
-export const getThumbnailUrl = (
+export function getThumbnailUrl(
   baseUrl: unknown,
   quality: number = IMAGE.QUALITY.thumb,
-): string => buildImageUrl(baseUrl, { quality, width: IMAGE.THUMBNAIL_WIDTH });
+) {
+  return buildImageUrl(baseUrl, { quality, width: IMAGE.THUMBNAIL_WIDTH });
+}
+
+export function getYouTubeEmbedUrls(videoId: string[] | undefined) {
+  if (!videoId || videoId.length === 0) {
+    return [];
+  }
+
+  const embedUrls = videoId.map((id) => `https://www.youtube.com/embed/${id}`);
+
+  return embedUrls;
+}

@@ -3,5 +3,5 @@
   "tags": ["-lintignore"],
   "entry": ["src/layouts/Layout.astro"],
   "project": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.astro"],
-  "ignoreDependencies": ["@contentful/rich-text-types", "embla-carousel"]
+  "ignoreDependencies": ["@contentful/rich-text-types"]
 }

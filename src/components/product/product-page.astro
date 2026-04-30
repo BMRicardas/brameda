@@ -6,6 +6,7 @@ import ContentBlock from "@/components/ui/content-block.astro";
 
 import ProductInfo from "./product-info.astro";
 import ProductMedia from "./product-media.astro";
+import LinkButton from "../ui/link-button.astro";
 
 type Props = {
   product: Product;
@@ -20,6 +21,7 @@ const { relatedProducts } = product;
   <div class="product-page-container">
     <ProductMedia product={product} />
     <ProductInfo product={product} />
+    <LinkButton href="/" class="back">Atgal</LinkButton>
     {
       relatedProducts && relatedProducts.length > 0 && (
         <RelatedProductsCarousel client:visible products={relatedProducts} />
@@ -41,7 +43,13 @@ const { relatedProducts } = product;
       "media price"
       "media desc"
       "media specs"
+      "back back"
       "related related";
+  }
+
+  .back {
+    grid-area: back;
+    justify-self: center;
   }
 
   /* MEDIA QUERIES */
@@ -57,7 +65,12 @@ const { relatedProducts } = product;
         "price"
         "desc"
         "specs"
+        "back"
         "related";
+    }
+
+    .back {
+      justify-self: stretch;
     }
   }
 </style>

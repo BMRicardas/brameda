@@ -18,7 +18,7 @@ function sortByOrder(
   return a.order - b.order;
 }
 
-const sortedProducts = products.map((p) => p.data).sort(sortByOrder);
+const sortedProducts = products.map((p) => p.data).toSorted(sortByOrder);
 
 const structuredItemListData = getItemListStructuredData(sortedProducts);
 ---

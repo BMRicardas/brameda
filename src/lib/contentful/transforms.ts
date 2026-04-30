@@ -57,7 +57,7 @@ export function transformProduct(entry: ValidatedProduct) {
     description: entry.fields.description,
     specifications,
     priceWithoutVat: entry.fields.priceWithoutVat,
-    videoUrl: entry.fields.embeddedYouTubeLink,
+    youTubeVideoIDs: entry.fields.youTubeVideoIDs,
     variants: entry.fields.variants.map(transformVariant),
     relatedProducts: entry.fields.relatedProducts?.map(transformRelatedProduct),
     displayMode: entry.fields.displayMode,

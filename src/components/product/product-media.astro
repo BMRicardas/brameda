@@ -4,7 +4,7 @@ import { Image } from "astro:assets";
 import type { Product } from "@/schemas/contentful-transformed.types";
 
 import { ProductGallery } from "@/components/react/product-gallery";
-import { getMainPhotoUrl } from "@/utils";
+import { getMainPhotoUrl, getYouTubeEmbedUrls } from "@/utils";
 
 type Props = {
   product: Product;
@@ -12,7 +12,7 @@ type Props = {
 
 const { product } = Astro.props;
 
-const { title, mainPhoto, videoUrl, variants, displayMode } = product;
+const { title, mainPhoto, youTubeVideoIDs, variants, displayMode } = product;
 
 const initialColor = variants[0]?.color;
 
@@ -26,6 +26,7 @@ const allVariantPhotos = variants.flatMap((variant) =>
 
 const shouldShowThumbnails = allVariantPhotos.length > 1;
 const mainPhotoSrc = mainPhoto.url || allVariantPhotos[0]?.url || "";
+const videoEmbedUrls = getYouTubeEmbedUrls(youTubeVideoIDs);
 ---
 
 <div class="product-media">
@@ -54,15 +55,20 @@ const mainPhotoSrc = mainPhoto.url || allVariantPhotos[0]?.url || "";
     )
   }
   {
-    videoUrl && (
-      <div class="product__video">
-        <iframe
-          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen={true}
-          loading="lazy"
-          src={videoUrl}
-          title={`Video of ${title}`}
-        />
+    videoEmbedUrls.length > 0 && (
+      <div class="product-video-list">
+        {videoEmbedUrls.map((url, index) => (
+          <div class="product__video">
+            <iframe
+              id={`product-video-${index}`}
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen={true}
+              loading="lazy"
+              src={url}
+              title={`Video of ${title} - ${index + 1}`}
+            />
+          </div>
+        ))}
       </div>
     )
   }
@@ -97,9 +103,15 @@ const mainPhotoSrc = mainPhoto.url || allVariantPhotos[0]?.url || "";
     }
   }
 
-  .product__video {
+  .product-video-list {
     grid-area: video;
+    display: flex;
+    flex-direction: column;
     margin-top: 5rem;
+    gap: var(--default-spacing);
+  }
+
+  .product__video {
     border-radius: var(--border-radius);
     overflow: clip;
     aspect-ratio: 16 / 9;

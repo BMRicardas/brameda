@@ -14,11 +14,7 @@
   cursor: pointer;
   outline: none;
   transition: 0.2s;
-  min-width: 10ch;
-
-  &.-animation {
-    min-width: 25ch;
-  }
+  min-width: 25ch;
 }
 
 .btn:hover,

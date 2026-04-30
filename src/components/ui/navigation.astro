@@ -110,14 +110,16 @@ const { links } = Astro.props;
 </style>
 
 <script>
-  const mobileMenu = document.getElementById("mobile-menu");
-  const navLinks = document.querySelectorAll(".mobile-nav a");
+  function initMobileMenu() {
+    const mobileMenu = document.getElementById("mobile-menu");
+    const navLinks = document.querySelectorAll(".mobile-nav a");
 
-  function closePopover() {
-    mobileMenu?.hidePopover();
+    navLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        mobileMenu?.hidePopover();
+      });
+    });
   }
 
-  navLinks.forEach((link) => {
-    link.addEventListener("click", closePopover);
-  });
+  document.addEventListener("astro:page-load", initMobileMenu);
 </script>
